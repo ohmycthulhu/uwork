@@ -32,3 +32,24 @@ Route::group([
   $router->get('/{slug}', 'API\\CategoriesController@bySlug')
     ->name('api.categories.slug');
 });
+
+/**
+ * Location routes
+ */
+// Regions information
+Route::group([
+  'prefix' => 'regions'
+], function ($router) {
+  $router->get('/', 'API\\LocationController@regions')
+    ->name('api.regions.all');
+  $router->get('/{id}', 'API\\LocationController@regionById')
+    ->name('api.regions.id');
+  $router->get('/{id}/cities', 'API\\LocationController@regionCities')
+    ->name('api.regions.id.cities');
+});
+
+// Cities information
+Route::get('/cities/{id}', 'API\\LocationController@cityById')
+  ->name('api.cities.id');
+Route::get('/cities/{id}/districts', 'API\\LocationController@cityDistricts')
+  ->name('api.cities.id.districts');
