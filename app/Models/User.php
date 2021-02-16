@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends Authenticatable implements JWTSubject
+{
+  use SoftDeletes, Notifiable;
+
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array
+   */
+  protected $fillable = [
+    'first_name', 'last_name', 'father_name',
+    'email', 'phone', 'password',
+  ];
+
+  /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'password', 'phone', 'email',
+  ];
+
+  /**
+   * Method to verify phone number
+   *
+   * @return $this
+  */
+  public function verifyPhone(): User {
+    $this->phone_verified = false;
+    $this->save();
+    return $this;
+  }
+
+  /**
+   * Set phone
+   *
+   * @param string $phone
+   * @param bool $verified
+   *
+   * @return $this
+  */
+  public function setPhone(string $phone, bool $verified = false): User {
+    $this->phone = $phone;
+    $this->phone_verified = $verified;
+    $this->save();
+
+    return $this;
+  }
+
+  /**
+   * Scopes
+  */
+
+  /**
+   * Scope by verified users
+   *
+   * @param Builder $query
+   * @param bool $verified
+   *
+   * @return Builder
+  */
+  public function scopeVerified(Builder $query, bool $verified = true): Builder {
+    return $query->where('phone_verified', $verified);
+  }
+
+  /**
+   * Get the identifier that will be stored in the subject claim of the JWT.
+   *
+   * @return mixed
+   */
+  public function getJWTIdentifier()
+  {
+    return $this->getKey();
+  }
+
+  /**
+   * Return a key value array, containing any custom claims to be added to the JWT.
+   *
+   * @return array
+   */
+  public function getJWTCustomClaims(): array
+  {
+    return [];
+  }
+}
