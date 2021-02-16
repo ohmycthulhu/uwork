@@ -336,6 +336,44 @@
             }
         </td>
     </tr>
+    <tr>
+        <td>
+            /api/login
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                email: String|null,
+                phone: String|null,
+                password: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                user: User|null,
+                access_token: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                user: User|null,
+            }
+        </td>
+    </tr>
     </tbody>
     </table>
 </div>

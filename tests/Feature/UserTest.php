@@ -8,6 +8,7 @@ use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -119,5 +120,44 @@ class UserTest extends TestCase
       'password' => $password,
       'password_confirmation' => $password,
     ]);
+  }
+
+  /**
+   * Method to test login
+   *
+   * @return void
+  */
+  public function testLogin() {
+    $password = Str::random();
+    $user = factory(User::class)
+      ->create(['phone_verified' => false, 'password' => Hash::make($password)]);
+
+    $this->get(route('api.user'))
+      ->assertStatus(401);
+
+    $this->post(route('api.login'), ['email' => $user->email, 'password' => $password])
+      ->assertStatus(403);
+
+    $this->post(route('api.login'), ['email' => $user->email])
+      ->assertStatus(403);
+
+    $this->post(route('api.login'), ['phone' => $user->phone])
+      ->assertStatus(403);
+
+    $user->verifyPhone();
+
+    $token = $this->post(route('api.login'), ['phone' => $user->phone, 'password' => $password])
+      ->assertOk()
+      ->json(['access_token']);
+
+    $this->assertNotNull($token);
+
+    $userId = $this->get(route('api.user'), ['headers' => ["Authorization" => "Bearer $token"]])
+      ->assertOk()
+      ->json("user.id");
+
+    $this->assertEquals($user->id, $userId);
+
+    User::query()->forceDelete();
   }
 }

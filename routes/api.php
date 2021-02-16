@@ -63,3 +63,15 @@ Route::post('/verify/{uuid}', 'API\\AuthenticationController@verifyPhoneNumber')
   ->name('api.verify');
 Route::post('/resend/{phone}', 'API\\AuthenticationController@resendVerification')
   ->name('api.resend');
+Route::post('/login', 'API\\AuthenticationController@login')
+  ->name('api.login');
+
+/*
+ * Authenticated routes
+ */
+Route::group([
+  'middleware' => 'auth:api'
+], function ($router) {
+  $router->get('/user', 'API\\AuthenticationController@user')
+    ->name('api.user');
+});

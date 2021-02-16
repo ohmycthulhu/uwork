@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\PhoneVerificationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginFormRequest;
 use App\Http\Requests\PhoneVerificationRequest;
 use App\Http\Requests\RegistrationFormRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
@@ -141,5 +143,49 @@ class AuthenticationController extends Controller
         'status' => 'okay',
         'uuid' => $uuid,
       ]);
+    }
+
+    /**
+     * Method to login user
+     *
+     * @param LoginFormRequest $request
+     *
+     * @return JsonResponse
+    */
+    public function login(LoginFormRequest $request): JsonResponse {
+      // Get params
+      $params = $request->validated();
+
+      // Try to log in
+      $token = auth()->attempt($params);
+
+      if (!$token) {
+        return response()->json(['error' => 'Invalid credentials'], 403);
+      }
+
+      $user = Auth::user();
+      // Check if phone is verified
+      if (!$user->phone_verified) {
+        // If not verified, log out and return error
+        return response()->json(['error' => 'Phone is not verified'], 403);
+      }
+
+
+      // Return token and user info
+      return response()->json([
+        'access_token' => $token,
+        'user' => $user,
+      ]);
+    }
+
+    /**
+     * Method to get current user
+     *
+     * @return JsonResponse
+    */
+    public function user(): JsonResponse {
+      $user = Auth::user();
+
+      return response()->json(['user' => $user]);
     }
 }
