@@ -72,6 +72,17 @@
     </td>
     <td>Entity representing certain district</td>
 </tr>
+<tr>
+    <td>User</td>
+    <td>{
+            id: Int,
+            first_name: String,
+            last_name: String,
+            father_name: String
+        }
+    </td>
+    <td>User model</td>
+</tr>
 </tbody>
 </table>
 
@@ -222,6 +233,106 @@
         <td>
             {
                 districts: District[]
+            }
+        </td>
+    </tr>
+    </tbody>
+    </table>
+</div>
+
+## Authentication and authorization
+
+<div>
+<p>
+    For authorization, back-end uses JWT tokens which are being sent
+    in "Authorization" header the following way: "Bearer {token}".
+</p>
+<p>
+    In authentication, there can be used either email or phone,
+    and password. Before login, user should verify phone number.
+    After registration, 6 letter code is being sent to inputted number.
+    User can resend code, but only 3 times in an hour.
+    After that, API will return error while trying to reset code.
+    For verifying code, you should know also UUID of verification.
+    UUID is valid for 10 minutes. After that, you should resend code
+    and get new UUID for verification.
+</p>
+<hr />
+<p>
+    Endpoints are listed below:
+</p>
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/register
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                first_name: String,
+                last_name: String,
+                father_name: String,
+                email: String,
+                phone: String,
+                password: String,
+                password_confirmation: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                user: User|null,
+                verification_uuid: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/verify/{uuid}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                code: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                tries_left: Number|null,
+                verification_uuid: String|null,
+                status: String|null,
+                user: User|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/resend/{phone}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                verification_uuid: String|null,
+                status: String|null,
+                uuid: String|null,
             }
         </td>
     </tr>

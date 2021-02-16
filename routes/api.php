@@ -53,3 +53,13 @@ Route::get('/cities/{id}', 'API\\LocationController@cityById')
   ->name('api.cities.id');
 Route::get('/cities/{id}/districts', 'API\\LocationController@cityDistricts')
   ->name('api.cities.id.districts');
+
+/*
+ * Authentication methods
+ */
+Route::post('/register', 'API\\AuthenticationController@register')
+  ->name('api.register');
+Route::post('/verify/{uuid}', 'API\\AuthenticationController@verifyPhoneNumber')
+  ->name('api.verify');
+Route::post('/resend/{phone}', 'API\\AuthenticationController@resendVerification')
+  ->name('api.resend');

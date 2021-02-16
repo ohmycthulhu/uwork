@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
    * @return $this
   */
   public function verifyPhone(): User {
-    $this->phone_verified = false;
+    $this->phone_verified = true;
     $this->save();
     return $this;
   }
@@ -75,6 +75,18 @@ class User extends Authenticatable implements JWTSubject
   }
 
   /**
+   * Scope by phone
+   *
+   * @param Builder $query
+   * @param string $phone
+   *
+   * @return Builder
+  */
+  public function scopePhone(Builder $query, string $phone): Builder {
+    return $query->where('phone', $phone);
+  }
+
+  /**
    * Get the identifier that will be stored in the subject claim of the JWT.
    *
    * @return mixed
@@ -92,5 +104,10 @@ class User extends Authenticatable implements JWTSubject
   public function getJWTCustomClaims(): array
   {
     return [];
+  }
+
+  public function routeNotificationForNexmo($notification)
+  {
+    return $this->phone;
   }
 }
