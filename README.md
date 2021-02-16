@@ -257,6 +257,11 @@
     UUID is valid for 10 minutes. After that, you should resend code
     and get new UUID for verification.
 </p>
+<p>
+    For resetting password, you first send post request to /reset,
+    then send request to /passwords/{uuid} to set new password. 
+    UUID is valid for 4 hours and removed after first set.
+</p>
 <hr />
 <p>
     Endpoints are listed below:
@@ -360,6 +365,48 @@
     </tr>
     <tr>
         <td>
+            /api/passwords
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                email: String|null,
+                phone: String|null
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/passwords/{uuid}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                password: String
+                password_confirmation: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/user
         </td>
         <td>
@@ -369,6 +416,117 @@
         </td>
         <td>
             {
+                error: String|null,
+                user: User|null,
+            }
+        </td>
+    </tr>
+    </tbody>
+    </table>
+</div>
+
+## Users controller
+<div>
+<p>
+    All routes are protected by authentication middleware,
+    so in each request you should add authorization header.
+</p>
+<hr />
+<p>
+    List of available routes
+</p>
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/user
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                first_name: String,
+                last_name: String,
+                father_name: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                user: User|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/emails
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                email: String,
+                password: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                user: User|null,
+                status: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/phones
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                phone: String,
+                password: String,
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                user: User|null,
+                verification_uuid: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/passwords
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                current_password: String,
+                password: String,
+                password_confirmation: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
                 error: String|null,
                 user: User|null,
             }

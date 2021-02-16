@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Helpers\PhoneVerificationHelper;
+use App\Helpers\ResetPasswordHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginFormRequest;
 use App\Http\Requests\PhoneVerificationRequest;
 use App\Http\Requests\RegistrationFormRequest;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\SetPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -95,10 +98,11 @@ class AuthenticationController extends Controller
 
       // If everything is okay, return success message
       $userId = $verification['data']['id'];
-      $user = $this->user::query()->verified(false)->find($userId);
+      $phone = $verification['data']['phone'];
+      $user = $this->user::query()->find($userId);
 
-      if ($user) {
-        $user->verifyPhone();
+      if ($user && !($user->phone === $phone && $user->phone_verified)) {
+        $user->setPhone($phone, true);
       }
 
       return response()->json([
@@ -187,5 +191,58 @@ class AuthenticationController extends Controller
       $user = Auth::user();
 
       return response()->json(['user' => $user]);
+    }
+
+    /**
+     * Method to reset password
+     *
+     * @param ResetPasswordRequest $request
+     *
+     * @return JsonResponse
+    */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse {
+      $email = $request->input('email');
+      $phone = $request->input('phone');
+      $query = $this->user::query();
+      if ($email) {
+        $query->email($email);
+      }
+      if ($phone) {
+        $query->phone($phone);
+      }
+      $user = $query->first();
+
+      if (!$user->phone_verified) {
+        return response()->json(['error' => 'Phone is not confirmed'], 403);
+      }
+
+      ResetPasswordHelper::createSession($user, !!$email, !!$phone);
+
+      return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * Method to set password
+     *
+     * @param SetPasswordRequest $request
+     * @param string $uuid
+     *
+     * @return JsonResponse
+    */
+    public function setPassword(SetPasswordRequest $request, string $uuid): JsonResponse {
+      $userId = ResetPasswordHelper::checkUUID($uuid);
+
+      if (!$userId) {
+        return response()->json(['error' => 'UUID is invalid'], 403);
+      }
+
+      $password = $request->input('password');
+      $user = $this->user::query()->find($userId);
+
+      $user->setPassword($password);
+
+      ResetPasswordHelper::removeUuid($uuid);
+
+      return response()->json(['status' => 'success']);
     }
 }

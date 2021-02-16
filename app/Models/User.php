@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -59,6 +60,20 @@ class User extends Authenticatable implements JWTSubject
   }
 
   /**
+   * Set password
+   *
+   * @param string $password
+   *
+   * @return $this
+  */
+  public function setPassword(string $password): User {
+    $this->password = Hash::make($password);
+    $this->save();
+
+    return $this;
+  }
+
+  /**
    * Scopes
   */
 
@@ -84,6 +99,18 @@ class User extends Authenticatable implements JWTSubject
   */
   public function scopePhone(Builder $query, string $phone): Builder {
     return $query->where('phone', $phone);
+  }
+
+  /**
+   * Scope by email
+   *
+   * @param Builder $query
+   * @param string $email
+   *
+   * @return Builder
+  */
+  public function scopeEmail(Builder $query, string $email): Builder {
+    return $query->where('email', $email);
   }
 
   /**

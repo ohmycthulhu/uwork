@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Helpers\PhoneVerificationHelper;
 use App\Models\User;
+use App\Notifications\PasswordResetNotification;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -158,6 +159,132 @@ class UserTest extends TestCase
 
     $this->assertEquals($user->id, $userId);
 
+    Auth::logout();
+    User::query()->forceDelete();
+  }
+
+  /**
+   * Method to test password reset
+   *
+   * @return void
+  */
+  public function testPasswordReset() {
+    Notification::fake();
+    // Create user
+    $user = factory(User::class)
+      ->create(['phone_verified' => false]);
+
+    // Send request to reset non-existing user
+    $this->post(route('api.reset'), ['phone' => $user->phone])
+      ->assertStatus(403);
+
+    $user->verifyPhone();
+
+    // Send request to reset password
+    $this->post(route('api.reset'), ['phone' => $user->phone])
+      ->assertOk();
+
+    $password = Str::random();
+    $form = ['password' => $password, 'password_confirmation' => $password];
+
+    // Send wrong token
+    $randomUuid = Str::uuid();
+    $this->post(route('api.reset.set', ['uuid' => $randomUuid]), $form)
+      ->assertStatus(403);
+
+    // Check if notification has been sent
+    Notification::assertSentTo($user, PasswordResetNotification::class, function ($notification) use ($user, $form) {
+      // Get token and set new password
+      $uuid = $notification->toArray($user)['uuid'];
+
+      $this->post(route('api.reset.set', ['uuid' => $uuid]), $form)
+        ->assertOk();
+
+      return true;
+    });
+
+    $this->post(route('api.login'), ['phone' => $user->phone, 'password' => $password])
+      ->assertOk();
+
+    Auth::logout();
+
+    // Delete user
+    $user->delete();
+  }
+
+  /**
+   * Method to test profile change
+   *
+   * @return void
+  */
+  public function testUserChange() {
+    Notification::fake();
+    $password = Str::random();
+    // Create user
+    $user = factory(User::class)->create(['password' => Hash::make($password)]);
+
+    // Authenticate user
+    Auth::login($user);
+
+    $name = Str::random();
+    $form = ['first_name' => $name];
+    // Send request to change name
+    $this->put(route('api.user.update.profile'), $form)
+      ->assertOk();
+
+    $user = User::query()->find($user->id);
+
+    $this->assertEquals($name, $user->first_name);
+
+    $newPassword = Str::random();
+    $form = ['current_password' => $newPassword, 'password' => $newPassword, 'password_confirmation' => $newPassword];
+    // Send request to change password
+    $this->put(route('api.user.update.password'), $form)
+      ->assertStatus(403);
+
+    $form['current_password'] = $password;
+    $this->put(route('api.user.update.password'), $form)
+      ->assertOk();
+
+    $this->post(route('api.login'), ['phone' =>$user->phone, 'password' => $newPassword])
+      ->assertOk();
+    $password = $newPassword;
+
+    // Send request to change email
+    $form = ['email' => 'example@email.com', 'password' => $password];
+    $this->put(route('api.user.update.email'), $form)
+      ->assertOk();
+
+    $this->assertEquals('example@email.com', User::query()->find($user->id)->email);
+
+    // Send request to change phone
+    $newPhone = '995124612';
+    $form = ['phone' => $newPhone, 'password' => $password];
+    $verificationUuid = $this->put(route('api.user.update.phone'), $form)
+      ->assertOk()
+      ->json('verification_uuid');
+
+    // Check if phone has changed
+    $this->assertEquals($user->phone, User::query()->find($user->id)->phone);
+
+    // Ensure notification has been sent
+    Notification::assertSentTo($user, VerifyPhoneNotification::class, function ($notification) use ($user, $verificationUuid, $newPhone) {
+      $code = $notification->toArray($user)['code'];
+
+      // Confirm phone and check if user's phone has changed
+      $this->post(route('api.verify', ['uuid' => $verificationUuid]), ['code' => $code])
+        ->assertOk();
+
+      $u = User::query()->find($user->id);
+      $this->assertEquals($newPhone, $u->phone);
+      $this->assertTrue(!!$u->phone_verified);
+
+      return true;
+    });
+
+
+    // Delete user
+    Auth::logout();
     User::query()->forceDelete();
   }
 }

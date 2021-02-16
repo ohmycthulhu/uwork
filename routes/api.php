@@ -65,6 +65,10 @@ Route::post('/resend/{phone}', 'API\\AuthenticationController@resendVerification
   ->name('api.resend');
 Route::post('/login', 'API\\AuthenticationController@login')
   ->name('api.login');
+Route::post('/passwords', 'API\\AuthenticationController@resetPassword')
+  ->name('api.reset');
+Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
+  ->name('api.reset.set');
 
 /*
  * Authenticated routes
@@ -74,4 +78,9 @@ Route::group([
 ], function ($router) {
   $router->get('/user', 'API\\AuthenticationController@user')
     ->name('api.user');
+
+  $router->put('/user', 'API\\UserController@changeProfile')->name('api.user.update.profile');
+  $router->put('/user/emails', 'API\\UserController@changeEmail')->name('api.user.update.email');
+  $router->put('/user/phones', 'API\\UserController@changePhone')->name('api.user.update.phone');
+  $router->put('/user/passwords', 'API\\UserController@changePassword')->name('api.user.update.password');
 });

@@ -21,7 +21,7 @@ class PhoneVerificationHelper
    * @return string
   */
   public static function createSession($model, int $id, string $phone): string {
-    $uuid = \Illuminate\Support\Str::random(32);
+    $uuid = \Illuminate\Support\Str::uuid();
 
     $code = \Illuminate\Support\Str::random(6);
 
