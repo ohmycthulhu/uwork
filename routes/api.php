@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
 
 /**
  * Categories routes
-*/
+ */
 Route::group([
   'prefix' => 'categories'
 ], function ($router) {
@@ -76,11 +76,20 @@ Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
 Route::group([
   'middleware' => 'auth:api'
 ], function ($router) {
-  $router->get('/user', 'API\\AuthenticationController@user')
-    ->name('api.user');
+  $router->group([
+    'prefix' => '/user'
+  ], function ($router) {
+    $router->get('/', 'API\\AuthenticationController@user')->name('api.user');
 
-  $router->put('/user', 'API\\UserController@changeProfile')->name('api.user.update.profile');
-  $router->put('/user/emails', 'API\\UserController@changeEmail')->name('api.user.update.email');
-  $router->put('/user/phones', 'API\\UserController@changePhone')->name('api.user.update.phone');
-  $router->put('/user/passwords', 'API\\UserController@changePassword')->name('api.user.update.password');
+    $router->put('/', 'API\\UserController@changeProfile')->name('api.user.update.profile');
+    $router->put('/emails', 'API\\UserController@changeEmail')->name('api.user.update.email');
+    $router->put('/phones', 'API\\UserController@changePhone')->name('api.user.update.phone');
+    $router->put('/passwords', 'API\\UserController@changePassword')->name('api.user.update.password');
+
+    $router->group([
+      'prefix' => '/profiles'
+    ], function ($router) {
+      $router->post('/', 'API\\ProfileController@create')->name('api.profile.create');
+    });
+  });
 });

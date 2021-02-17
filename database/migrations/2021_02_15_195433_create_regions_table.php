@@ -16,6 +16,7 @@ class CreateRegionsTable extends Migration
         Schema::create('regions', function (Blueprint $table) {
             $table->id();
             $table->string('name', 256)->index();
+            $table->string('google_id')->nullable()->unique();
             $table->softDeletes();
             $table->timestamps();
         });

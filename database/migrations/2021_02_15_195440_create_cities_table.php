@@ -6,32 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCitiesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('cities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 256)->index();
-            $table->foreignId('region_id')
-              ->references('id')
-              ->on('regions')
-              ->cascadeOnDelete();
-            $table->softDeletes();
-            $table->timestamps();
-        });
-    }
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    Schema::create('cities', function (Blueprint $table) {
+      $table->id();
+      $table->string('name', 256)->index();
+      $table->foreignId('region_id')
+        ->references('id')
+        ->on('regions')
+        ->cascadeOnDelete();
+      $table->string('google_id')->nullable()->unique();
+      $table->softDeletes();
+      $table->timestamps();
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('cities');
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::dropIfExists('cities');
+  }
 }

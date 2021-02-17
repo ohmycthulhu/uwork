@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Categories\Category;
+use App\Models\User\ProfileSpeciality;
+use App\Observers\ProfileSpecialityObserver;
 use App\Observers\SlugableObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Category::observe(SlugableObserver::class);
+        ProfileSpeciality::observe(ProfileSpecialityObserver::class);
     }
 }

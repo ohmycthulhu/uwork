@@ -83,6 +83,15 @@
     </td>
     <td>User model</td>
 </tr>
+<tr>
+    <td>SpecialityForm</td>
+    <td>{
+            category_id: Int,
+            price: Float,
+        }
+    </td>
+    <td>Form for specifying specialities</td>
+</tr>
 </tbody>
 </table>
 
@@ -529,6 +538,55 @@
                 errors: String[]|null,
                 error: String|null,
                 user: User|null,
+            }
+        </td>
+    </tr>
+    </tbody>
+    </table>
+</div>
+
+## Profiles
+<div>
+<p>
+    Set of routes for managing user's profiles.
+    All routes should be accessed with authorization token.
+    The user can have only one profile. If you try to create another,
+    server will return 403 error.
+</p>
+<hr>
+<p>
+    Set of available routes are listed below 
+</p>
+
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/user/profiles
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                about: String,
+                phone: String|null,
+                specialities: SpecialityForm[]
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                profile: User|null,
+                verification_uuid: String|null,
             }
         </td>
     </tr>

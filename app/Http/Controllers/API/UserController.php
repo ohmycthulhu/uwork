@@ -94,7 +94,7 @@ class UserController extends Controller
 
     $phone = $request->input('phone');
 
-    $uuid = PhoneVerificationHelper::createSession($user, $user->id, $phone);
+    $uuid = PhoneVerificationHelper::createSession($user, User::class, $user->id, $phone);
 
     return response()->json([
       'user' => $user,

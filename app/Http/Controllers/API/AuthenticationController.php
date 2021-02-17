@@ -55,7 +55,7 @@ class AuthenticationController extends Controller
           ->json(['error' => $e->getMessage()], 405);
       }
       // Generate phone verification code and send
-      $uuid = PhoneVerificationHelper::createSession($user, $user->id, $form['phone']);
+      $uuid = PhoneVerificationHelper::createSession($user, User::class, $user->id, $form['phone']);
 
       // Return user and response
 
@@ -97,17 +97,18 @@ class AuthenticationController extends Controller
       }
 
       // If everything is okay, return success message
-      $userId = $verification['data']['id'];
+      $modelId = $verification['data']['id'];
+      $modelClass = $verification['data']['class'];
       $phone = $verification['data']['phone'];
-      $user = $this->user::query()->find($userId);
+      $model = $modelClass::query()->find($modelId);
 
-      if ($user && !($user->phone === $phone && $user->phone_verified)) {
-        $user->setPhone($phone, true);
+      if ($model && !($model->phone === $phone && $model->phone_verified)) {
+        $model->setPhone($phone, true);
       }
 
       return response()->json([
         'status' => 'success',
-        'user' => $user,
+        'user' => $model,
       ]);
     }
 
@@ -140,7 +141,7 @@ class AuthenticationController extends Controller
       // Adds try to phone number
       PhoneVerificationHelper::blockPhone($phoneNumber);
 
-      $uuid = PhoneVerificationHelper::createSession($user, $user->id, $phoneNumber);
+      $uuid = PhoneVerificationHelper::createSession($user, User::class, $user->id, $phoneNumber);
 
       // Send notification and save phone number as temporary blocked
       return response()->json([

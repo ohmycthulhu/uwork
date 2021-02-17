@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -14,26 +15,27 @@ class PhoneVerificationHelper
    * Method to create new verification session
    * Returns uuid of session
    *
-   * @param $model
+   * @param User $user
+   * @param string $class
    * @param int $id
    * @param string $phone
    *
    * @return string
   */
-  public static function createSession($model, int $id, string $phone): string {
+  public static function createSession(User $user, string $class, int $id, string $phone): string {
     $uuid = \Illuminate\Support\Str::uuid();
 
     $code = \Illuminate\Support\Str::random(6);
 
     $data = [
       'phone' => $phone,
-      'class' => $model,
+      'class' => $class,
       'id' => $id,
       'code' => $code,
       'tries' => 3,
     ];
 
-    Notification::send($model, new VerifyPhoneNotification($code));
+    Notification::send($user, new VerifyPhoneNotification($code));
 
     self::setCache($uuid, $data, 10);
 
