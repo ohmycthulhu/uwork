@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Categories\Category;
 use App\Models\User;
+use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
@@ -58,6 +60,8 @@ class ProfileTest extends TestCase
    * @return void
   */
   public function testCreation() {
+    Notification::fake();
+
     // Create user
     $user = factory(User::class)->create();
 
@@ -76,10 +80,28 @@ class ProfileTest extends TestCase
     }
 
     // Send request and ensure everything is okay
-    $this->post(route('api.profile.create'), $form)
+    $response = $this->post(route('api.profile.create'), $form)
       ->assertOk();
 
+    $profile = $response->json('profile');
+    $verificationUuid = $response->json('verification_uuid');
+
     $this->assertDatabaseCount('profiles', 1);
+
+    // Assert notification sent
+    Notification::assertSentTo($user, VerifyPhoneNotification::class, function ($n) use ($user, $verificationUuid) {
+      $code = $n->toArray($user)['code'];
+
+      $this->post(route('api.verify', ['uuid' => $verificationUuid]), ['code' => $code])
+        ->assertOk();
+
+      return true;
+    });
+
+    // Check profile phone and phone verification
+    $p = User\Profile::query()->find($profile['id']);
+    $this->assertEquals($form['phone'], $p->phone);
+    $this->assertTrue(!!$p->phone_verified);
 
     // Delete user
     $user->forceDelete();
@@ -97,6 +119,7 @@ class ProfileTest extends TestCase
     $categories = Category::query()->inRandomOrder()->take(3)->pluck('id');
     return [
       'about' => 'Some text about me',
+      'phone' => '1231251',
       'specialities' => $categories->map(function ($id) {
         return ['category_id' => $id, 'price' => rand(100, 200) / 10];
       })->toArray(),

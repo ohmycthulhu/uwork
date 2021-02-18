@@ -47,7 +47,7 @@ class ProfileController extends Controller
     if ($phone === $user->phone) {
       $profile->setPhone($phone, true);
     } else {
-      $uuid = PhoneVerificationHelper::createSession($user, Profile::clas, $profile->id, $phone);
+      $uuid = PhoneVerificationHelper::createSession($user, Profile::class, $profile->id, $phone);
     }
 
     $profile->load(['specialities.category']);
