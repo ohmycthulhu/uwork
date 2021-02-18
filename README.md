@@ -577,7 +577,36 @@
             {
                 about: String,
                 phone: String|null,
-                specialities: SpecialityForm[]
+                specialities: SpecialityForm[],
+                images: Int[]|null,
+                avatar: File|null
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                profile: User|null,
+                verification_uuid: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profiles/update
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                about: String|null,
+                phone: String|null,
+                avatar: File|null,
+                images: Int[]|null,
+                remove_specialities: Int[]|null
+                add_specialities: SpecialityForm[]|null
             }
         </td>
         <td>

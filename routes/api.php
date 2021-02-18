@@ -90,6 +90,7 @@ Route::group([
       'prefix' => '/profiles'
     ], function ($router) {
       $router->post('/', 'API\\ProfileController@create')->name('api.profile.create');
+      $router->post('/update', 'API\\ProfileController@update')->name('api.profile.update');
     });
   });
 });

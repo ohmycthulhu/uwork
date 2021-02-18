@@ -24,7 +24,7 @@ class Image extends Media
     $query->empty()
       ->ids($mediaIds);
 
-    $query->update(['media_type' => $modelType, 'model_id' => $modelId]);
+    $query->update(['model_type' => $modelType, 'model_id' => $modelId]);
 
     return $query->get();
   }

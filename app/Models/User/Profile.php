@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Profile extends Model
+class Profile extends Model implements HasMedia
 {
-  use SoftDeletes;
+  use SoftDeletes, HasMediaTrait;
 
   // Fillable fields
   protected $fillable = [
@@ -31,8 +36,9 @@ class Profile extends Model
    * @param bool $verified
    *
    * @return $this
-  */
-  public function setPhone(string $phone, bool $verified): Profile {
+   */
+  public function setPhone(string $phone, bool $verified): Profile
+  {
     $this->phone = $phone;
     $this->phone_verified = $verified;
     $this->save();
@@ -59,11 +65,36 @@ class Profile extends Model
    * @param int $categoryId
    *
    * @return int
-  */
-  public function removeSpeciality(int $categoryId): int {
+   */
+  public function removeSpeciality(int $categoryId): int
+  {
     return $this->specialities()
       ->categoryId($categoryId)
       ->delete();
+  }
+
+  /**
+   * Method to change avatar
+   *
+   * @param UploadedFile $image
+   *
+   * @return $this
+   */
+  public function setAvatar(UploadedFile $image): Profile
+  {
+    $fileName = Str::random() . ".{$image->getClientOriginalExtension()}";
+
+    try {
+      Storage::disk('public')
+        ->put("avatars/$fileName", \Illuminate\Support\Facades\File::get($image));
+    } catch (\Exception $e) {
+      throw $e;
+    }
+
+    $this->picture = "avatars/$fileName";
+    $this->save();
+
+    return $this;
   }
 
   /**
@@ -73,8 +104,9 @@ class Profile extends Model
    * Relation to user
    *
    * @return BelongsTo
-  */
-  public function user(): BelongsTo {
+   */
+  public function user(): BelongsTo
+  {
     return $this->belongsTo(User::class, 'user_id');
   }
 
@@ -82,8 +114,9 @@ class Profile extends Model
    * Relation to specialities
    *
    * @return HasMany
-  */
-  public function specialities(): HasMany {
+   */
+  public function specialities(): HasMany
+  {
     return $this->hasMany(ProfileSpeciality::class, 'profile_id');
   }
 
@@ -98,8 +131,9 @@ class Profile extends Model
    * @param bool $visible
    *
    * @return Builder
-  */
-  public function scopeVisible(Builder $query, bool $visible): Builder {
+   */
+  public function scopeVisible(Builder $query, bool $visible): Builder
+  {
     return $query->where('is_hidden', !$visible);
   }
 
