@@ -93,3 +93,10 @@ Route::group([
     });
   });
 });
+
+
+/*
+ * File routes
+ */
+Route::post('/files', 'API\\FileController@uploadImage')
+  ->name('api.files');
