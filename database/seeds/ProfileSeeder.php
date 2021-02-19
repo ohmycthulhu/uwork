@@ -15,12 +15,28 @@ class ProfileSeeder extends Seeder
         $categories = \App\Models\Categories\Category::all();
 
         foreach ($users as $user) {
-          $profile = $user->profile()
-            ->create(factory(\App\Models\User\Profile::class)->make()->toArray());
+          $profile = $user->profile()->first() ??
+            $user->profile()->create(factory(\App\Models\User\Profile::class)->make()->toArray());
 
           foreach ($categories->shuffle()->slice(0, 3) as $category) {
             $profile->addSpeciality($category->id, rand(100, 5000) / 10);
           }
+
+          foreach ($users->shuffle()->take(3) as $u) {
+            $profile->reviews()
+              ->create(
+                factory(\App\Models\Profile\Review::class)
+                  ->make(['user_id' => $u->id])
+                  ->toArray()
+              );
+          }
+
+          $profile->views()
+            ->createMany(
+              factory(\App\Models\Profile\ProfileView::class, 15)
+                ->make()
+                ->toArray()
+            );
         }
     }
 }

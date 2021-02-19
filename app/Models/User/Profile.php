@@ -2,6 +2,8 @@
 
 namespace App\Models\User;
 
+use App\Models\Profile\ProfileView;
+use App\Models\Profile\Review;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +22,8 @@ class Profile extends Model implements HasMedia
 
   // Fillable fields
   protected $fillable = [
-    'about', 'phone', 'picture'
+    'about', 'phone', 'picture', 'reviews_count', 'rating',
+    'views_count', 'open_count',
   ];
 
   // Hidden fields
@@ -28,6 +31,39 @@ class Profile extends Model implements HasMedia
   /**
    * Methods
    */
+
+  /**
+   * Method to synchronize rating and reviews count
+   *
+   * @return $this
+  */
+  public function synchronizeReviews(): Profile {
+    $reviewsCount = $this->reviews()->count();
+    if ($reviewsCount != $this->reviews_count) {
+      $this->reviews_count = $reviewsCount;
+      $this->rating = $reviewsCount > 0 ? ($this->reviews()->sum('rating') / $reviewsCount) : 0;
+
+      $this->save();
+    }
+
+    return $this;
+  }
+
+  /**
+   * Method to synchronize views
+   *
+   * @return $this
+  */
+  public function synchronizeViews(): Profile {
+    $viewsCount = $this->views()->count();
+    $openCount = $this->views()->open()->count();
+    if ($viewsCount != $this->views_count || $openCount != $this->open_count) {
+      $this->views_count = $viewsCount;
+      $this->open_count = $openCount;
+      $this->save();
+    }
+    return $this;
+  }
 
   /**
    * Method to set the phone
@@ -118,6 +154,24 @@ class Profile extends Model implements HasMedia
   public function specialities(): HasMany
   {
     return $this->hasMany(ProfileSpeciality::class, 'profile_id');
+  }
+
+  /**
+   * Relation to reviews
+   *
+   * @return HasMany
+  */
+  public function reviews(): HasMany {
+    return $this->hasMany(Review::class, 'profile_id');
+  }
+
+  /**
+   * Relation to views
+   *
+   * @return HasMany
+  */
+  public function views(): HasMany {
+    return $this->hasMany(ProfileView::class, 'profile_id');
   }
 
   /**

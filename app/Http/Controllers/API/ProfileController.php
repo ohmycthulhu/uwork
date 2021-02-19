@@ -4,9 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\PhoneVerificationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\AddViewRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
+use App\Http\Requests\Profile\CreateReviewFormRequest;
 use App\Http\Requests\Profile\EditProfileRequest;
 use App\Models\Media\Image;
+use App\Models\Profile\ProfileView;
+use App\Models\Profile\Review;
 use App\Models\User\Profile;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Http\JsonResponse;
@@ -141,5 +145,90 @@ class ProfileController extends Controller
       'profile' => $profile,
       'verification_uuid' => $verUuid,
     ], 200);
+  }
+
+  /**
+   * Method to add review to profile
+   *
+   * @param CreateReviewFormRequest $request
+   * @param Profile $profile
+   *
+   * @return JsonResponse
+  */
+  public function createReview(CreateReviewFormRequest $request, Profile $profile): JsonResponse {
+    $user = Auth::user();
+    // Check if profile doesn't belongs to user
+    if ($profile->user_id == $user->id) {
+      return response()->json(['error' => 'You can\'t review own profile'], 403);
+    }
+
+    // Check if user already left review on the profile
+    $existingReview = $profile->reviews()->userId($user->id)->first();
+    if ($existingReview) {
+      // Edit review
+      $review = $existingReview;
+      $review->fill($request->validated());
+    } else {
+      // Create review
+      $review = $profile->reviews()->create(array_merge($request->validated(), ['user_id' => $user->id]));
+    }
+    $profile->synchronizeReviews();
+
+    // Return response
+    return response()->json([
+      'status' => 'success',
+      'review' => $review,
+    ]);
+  }
+
+  /**
+   * Method to add review to profile
+   *
+   * @param Profile $profile
+   *
+   * @return JsonResponse
+  */
+  public function deleteReview(Profile $profile): JsonResponse {
+    $user = Auth::user();
+
+    // Check if user has review on this profile
+   $review = $profile->reviews()->userId($user->id)->first();
+
+   if (!$review) {
+     return response()->json(['error' => 'You don\'t have review on the profile'], 403);
+   }
+
+   $review->delete();
+
+   $profile->synchronizeReviews();
+
+   return response()->json([
+     'status' => 'success'
+   ]);
+  }
+
+  /**
+   * Method to add view
+   *
+   * @param AddViewRequest $request
+   * @param Profile $profile
+   *
+   * @return JsonResponse
+  */
+  public function addView(AddViewRequest $request, Profile $profile): JsonResponse {
+    $user = Auth::user();
+
+    if ($user->id == $profile->user_id) {
+      return response()->json(['error' => 'You can\'t view own profile'], 403);
+    }
+
+    $view = ProfileView::make($profile, $user, $request->ip(), $request->input('opened', false));
+
+    $profile->synchronizeViews();
+
+    return response()->json([
+      'status' => 'success',
+      'view' => $view,
+    ]);
   }
 }

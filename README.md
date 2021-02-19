@@ -92,6 +92,45 @@
     </td>
     <td>Form for specifying specialities</td>
 </tr>
+<tr>
+    <td>Review</td>
+    <td>{
+            id: Int,
+            headline: String,
+            text: String,
+            rating: Int,
+        }
+    </td>
+    <td>Model that represents review</td>
+</tr>
+<tr>
+    <td>CreateReviewForm</td>
+    <td>{
+            headline: String,
+            text: String,
+            rating: Int,
+        }
+    </td>
+    <td>Form for creating review</td>
+</tr>
+<tr>
+    <td>CreateViewForm</td>
+    <td>{
+            opened: Boolean|null,
+        }
+    </td>
+    <td>Form to register view</td>
+</tr>
+<tr>
+    <td>View</td>
+    <td>{
+            user_id: Int,
+            ip_addr: Float,
+            opened: Boolean,
+        }
+    </td>
+    <td>Model represents the view of profile</td>
+</tr>
 </tbody>
 </table>
 
@@ -622,3 +661,74 @@
     </tbody>
     </table>
 </div>
+
+## Reviews and views
+<p>
+    Each review has headline, text and rating.
+    One user can have a review per profile, 
+    not including its own profile. Same is applying
+    for views.
+</p>
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/user/profiles/{profile}/reviews
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            CreateReviewForm
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                review: Review|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profiles/{profile}/reviews
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profiles/{profile}/views
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>CreateViewForm</td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                view: View|null,
+            }
+        </td>
+    </tr>
+    </tbody>
+    </table>

@@ -54,6 +54,9 @@ class CreateProfilesTable extends Migration
         ->index();
 
       $table->unsignedInteger('views_count')->default(0);
+      $table->unsignedInteger('open_count')->default(0);
+      $table->unsignedInteger('reviews_count')->default(0);
+      $table->float('rating')->default(0);
       $table->unsignedInteger('phone_display_count')->default(0);
 
       $table->softDeletes();

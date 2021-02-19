@@ -65,7 +65,7 @@ class ProfileTest extends TestCase
     Notification::fake();
 
     // Create user
-    $user = factory(User::class)->create();
+    $user = $this->createUser();
 
     // Create categories
     $categories = factory(Category::class, 10)->create();
@@ -125,7 +125,7 @@ class ProfileTest extends TestCase
     Notification::fake();
 
     // Create user and categories
-    $user = factory(User::class)->create();
+    $user = $this->createUser();
     factory(Category::class, 10)->create();
 
     Auth::login($user);
@@ -162,6 +162,63 @@ class ProfileTest extends TestCase
     // Delete user and categories
     $user->forceDelete();
     Category::query()->forceDelete();
+  }
+
+  /**
+   * Method to test creating, deleting reviews
+   * And creating views
+   *
+   * @return void
+  */
+  public function testStatistics() {
+    // Create user and profile
+    $userOwner = $this->createUser();
+    $userGuest = $this->createUser();
+    $profile = $this->createProfile($userOwner);
+
+    Auth::login($userGuest);
+
+    // Send request to remove review
+    $this->post(route('api.profile.reviews.delete', ['profile' => $profile->id]))
+      ->assertStatus(403);
+
+    $form = ['headline' => Str::random(), 'text' => Str::random(64), 'rating' => 3];
+
+    // Send request to create review from same user
+    Auth::login($userOwner);
+    var_dump($this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
+      ->content());
+    $this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
+      ->assertStatus(403);
+
+    // Send request to create review from another user
+    Auth::login($userGuest);
+    $this->post(route('api.profile.reviews.delete', ['profile' => $profile->id]), $form)
+      ->assertOk();
+
+    // Send request to remove review
+    $this->delete(route('api.profile.reviews.delete', ['profile' => $profile->id]))
+      ->assertOk();
+
+    // Create view as guest
+    $form = ['opened' => false];
+    $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
+      ->assertOk();
+    $form = ['opened' => true];
+    $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
+      ->assertOk();
+
+    $this->assertEquals(1, $profile->views()->count());
+
+    // Create view as owner
+    Auth::login($userOwner);
+    $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
+      ->assertStatus(403);
+    $this->assertEquals(1, $profile->views()->count());
+
+    // Delete user
+    $userOwner->forceDelete();
+    $userGuest->forceDelete();
   }
 
   /**

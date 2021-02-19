@@ -11,3 +11,9 @@ $factory->define(\App\Models\User\Profile::class, function (Faker $faker) {
     'phone_verified' => $faker->boolean,
   ];
 });
+
+$factory->define(\App\Models\User\ProfileSpeciality::class, function (Faker $faker) {
+  return [
+    'price' => $faker->numberBetween(10, 100),
+  ];
+});
