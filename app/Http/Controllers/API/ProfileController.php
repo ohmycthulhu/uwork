@@ -75,6 +75,25 @@ class ProfileController extends Controller
   }
 
   /**
+   * Method to get my profile
+   *
+   * @return JsonResponse
+  */
+  public function get(): JsonResponse
+  {
+    // Get user
+    $user = Auth::user();
+
+    // Get user's profile
+    $profile = $user->profile()->first();
+
+    // Return profile
+    return response()->json([
+      'profile' => $profile
+    ], $profile ? 200 : 404);
+  }
+
+  /**
    * Method to change profile information
    *
    * @param EditProfileRequest $request
@@ -205,6 +224,25 @@ class ProfileController extends Controller
    return response()->json([
      'status' => 'success'
    ]);
+  }
+
+  /**
+   * Method to get reviews
+   *
+   * @return JsonResponse
+  */
+  public function getReviews(): JsonResponse {
+    $user = Auth::user();
+    $profile = $user->profile()->first();
+
+    $reviews = null;
+    if ($profile) {
+      $reviews = $profile->reviews()->paginate(15);
+    }
+
+    return response()->json([
+      'reviews' => $reviews
+    ], $profile ? 200 : 404);
   }
 
   /**

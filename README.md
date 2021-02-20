@@ -131,6 +131,19 @@
     </td>
     <td>Model represents the view of profile</td>
 </tr>
+<tr>
+    <td>Pagination&lt;T&gt;</td>
+    <td>{
+            data: T[],
+            current_page: Int,
+            last_page: Int,
+            total: Int,
+            per_page: Int,
+            next_page_url: String|null,
+        }
+    </td>
+    <td>General model for paginating output</td>
+</tr>
 </tbody>
 </table>
 
@@ -610,6 +623,21 @@
             /api/user/profiles
         </td>
         <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                profile: Profile|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profiles
+        </td>
+        <td>
             POST
         </td>
         <td>
@@ -677,6 +705,20 @@
         <th>Response</th>
     </thead>
     <tbody>
+    <tr>
+        <td>
+            /api/user/profiles/{profile}/reviews
+        </td>
+        <td>
+            GET
+        </td>
+        <td></td>
+        <td>
+            {
+                reviews: Pagination&lt;Review&gt;|null,
+            }
+        </td>
+    </tr>
     <tr>
         <td>
             /api/user/profiles/{profile}/reviews

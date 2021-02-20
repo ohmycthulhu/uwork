@@ -109,6 +109,11 @@ class ProfileTest extends TestCase
       $this->assertFileExists(storage_path("app/public/{$p->picture}"));
     }
 
+    // Check get method
+    $this->assertEquals($p->id, $this->get(route('api.profile.get'))
+      ->assertOk()
+      ->json('profile.id'));
+
     // Delete user
     $user->forceDelete();
 
@@ -186,15 +191,17 @@ class ProfileTest extends TestCase
 
     // Send request to create review from same user
     Auth::login($userOwner);
-    var_dump($this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
-      ->content());
+
     $this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
       ->assertStatus(403);
 
     // Send request to create review from another user
     Auth::login($userGuest);
-    $this->post(route('api.profile.reviews.delete', ['profile' => $profile->id]), $form)
+    $this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
       ->assertOk();
+
+    $this->get(route('api.profile.reviews.get'))
+      ->assertStatus(404);
 
     // Send request to remove review
     $this->delete(route('api.profile.reviews.delete', ['profile' => $profile->id]))
@@ -215,6 +222,9 @@ class ProfileTest extends TestCase
     $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
       ->assertStatus(403);
     $this->assertEquals(1, $profile->views()->count());
+
+    $this->get(route('api.profile.reviews.get'))
+      ->assertOk();
 
     // Delete user
     $userOwner->forceDelete();

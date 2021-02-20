@@ -91,8 +91,10 @@ Route::group([
       'as' => 'api.profile.'
     ], function ($router) {
       $router->post('/', 'API\\ProfileController@create')->name('create');
+      $router->get('/', 'API\\ProfileController@get')->name('get');
       $router->post('/update', 'API\\ProfileController@update')->name('update');
 
+      $router->get('/reviews', 'API\\ProfileController@getReviews')->name('reviews.get');
       $router->post('/{profile}/reviews', 'API\\ProfileController@createReview')
         ->name('reviews.create');
       $router->delete('/{profile}/reviews', 'API\\ProfileController@deleteReview')
