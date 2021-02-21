@@ -53,6 +53,12 @@ class CreateProfilesTable extends Migration
         ->default(false)
         ->index();
 
+      $table->dateTime('confirmed_at')
+        ->nullable();
+
+      $table->boolean('failed_audition')
+        ->default(false);
+
       $table->unsignedInteger('views_count')->default(0);
       $table->unsignedInteger('open_count')->default(0);
       $table->unsignedInteger('reviews_count')->default(0);

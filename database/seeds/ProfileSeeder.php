@@ -15,8 +15,12 @@ class ProfileSeeder extends Seeder
         $categories = \App\Models\Categories\Category::all();
 
         foreach ($users as $user) {
+          $p = factory(\App\Models\User\Profile::class)
+            ->make()
+            ->toArray();
+          unset($p['is_approved']);
           $profile = $user->profile()->first() ??
-            $user->profile()->create(factory(\App\Models\User\Profile::class)->make()->toArray());
+            $user->profile()->create($p);
 
           foreach ($categories->shuffle()->slice(0, 3) as $category) {
             $profile->addSpeciality($category->id, rand(100, 5000) / 10);

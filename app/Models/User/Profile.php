@@ -27,6 +27,13 @@ class Profile extends Model implements HasMedia
   ];
 
   // Hidden fields
+  protected $hidden = [
+    'reviewed_at',
+  ];
+
+  protected $appends = [
+    'is_approved',
+  ];
 
   /**
    * Methods
@@ -191,8 +198,29 @@ class Profile extends Model implements HasMedia
     return $query->where('is_hidden', !$visible);
   }
 
+  /**
+   * Scope publicity
+   *
+   * @param Builder $query
+   *
+   * @return Builder
+  */
+  public function scopePublic(Builder $query): Builder {
+    return $query->whereNotNull('verified_at')
+      ->where('failed_audition', false)
+      ->visible();
+  }
 
   /**
    * Attributes
    */
+
+  /**
+   * Attribute to check the status
+   *
+   * @return bool
+  */
+  public function getIsApprovedAttribute(): bool {
+    return !!$this->verified_at && !$this->failed_audition;
+  }
 }
