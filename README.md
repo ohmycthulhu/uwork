@@ -5,6 +5,7 @@
 </p>
 
 ### Used notation in Documentation
+
 <p>
     There are several types,
     that are used in specifications and they are listed below:
@@ -198,6 +199,7 @@
 </table>
 
 ## Locations
+
 <div>
     Information about location is divided into 3 groups:
     <ul>
@@ -487,6 +489,7 @@
 </div>
 
 ## Users controller
+
 <div>
 <p>
     All routes are protected by authentication middleware,
@@ -598,6 +601,7 @@
 </div>
 
 ## Profiles
+
 <div>
 <p>
     Set of routes for managing user's profiles.
@@ -691,6 +695,7 @@
 </div>
 
 ## Reviews and views
+
 <p>
     Each review has headline, text and rating.
     One user can have a review per profile, 
@@ -773,4 +778,40 @@
         </td>
     </tr>
     </tbody>
-    </table>
+</table>
+
+## Search
+
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/profiles
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+            {
+                keyword: string|null,
+                category_id: int|null,
+                region_id: int|null,
+                city_id: int|null,
+                district_id: int|null,
+                per_page: int|null
+            }
+        </td>
+        <td>
+            {
+                result: Pagination&lt;Profile&gt;,
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>

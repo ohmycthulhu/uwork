@@ -16,9 +16,9 @@ class ProfileSpeciality extends Model
     'category_id', 'price',
   ];
 
-  protected $hidden = [
-    'category_path'
-  ];
+//  protected $hidden = [
+//    'category_path'
+//  ];
 
   /**
    * Relations

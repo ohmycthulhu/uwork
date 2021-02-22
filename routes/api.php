@@ -105,6 +105,13 @@ Route::group([
   });
 });
 
+Route::group([
+  'prefix' => 'profiles'
+], function (\Illuminate\Routing\Router $router) {
+  $router->get('/', 'API\\SearchController@search')
+    ->name('api.profiles.search');
+});
+
 
 /*
  * File routes

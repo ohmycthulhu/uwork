@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Categories\Category;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
 use App\Models\User;
@@ -209,6 +210,70 @@ class Profile extends Model implements HasMedia
     return $query->whereNotNull('verified_at')
       ->where('failed_audition', false)
       ->visible();
+  }
+
+  /**
+   * Scope region
+   *
+   * @param Builder $query
+   * @param int $regionId
+   *
+   * @return Builder
+  */
+  public function scopeRegion(Builder $query, int $regionId): Builder {
+    return $query->where('region_id', $regionId);
+  }
+
+  /**
+   * Scope city
+   *
+   * @param Builder $query
+   * @param int $cityId
+   *
+   * @return Builder
+  */
+  public function scopeCity(Builder $query, int $cityId): Builder {
+    return $query->where('city_id', $cityId);
+  }
+
+  /**
+   * Scope district
+   *
+   * @param Builder $query
+   * @param int $districtId
+   *
+   * @return Builder
+  */
+  public function scopeDistrict(Builder $query, int $districtId): Builder {
+    return $query->where('district_id', $districtId);
+  }
+
+  /**
+   * Scope by exact category
+   *
+   * @param Builder $query
+   * @param Category $category
+   *
+   * @return Builder
+  */
+  public function scopeExactCategory(Builder $query, Category $category): Builder {
+    return $query->whereHas('specialities', function ($q) use ($category) {
+      return $q->categoryId($category->id);
+    });
+  }
+
+  /**
+   * Scope flexibly by category
+   *
+   * @param Builder $query
+   * @param int $categoryId
+   *
+   * @return Builder
+  */
+  public function scopeCategory(Builder $query, int $categoryId): Builder {
+    return $query->wherehas('specialities', function ($q) use ($categoryId) {
+      return $q->category($categoryId);
+    });
   }
 
   /**
