@@ -87,7 +87,7 @@ Route::group([
     $router->put('/passwords', 'API\\UserController@changePassword')->name('api.user.update.password');
 
     $router->group([
-      'prefix' => '/profiles',
+      'prefix' => '/profile',
       'as' => 'api.profile.'
     ], function ($router) {
       $router->post('/', 'API\\ProfileController@create')->name('create');
@@ -95,13 +95,27 @@ Route::group([
       $router->post('/update', 'API\\ProfileController@update')->name('update');
 
       $router->get('/reviews', 'API\\ProfileController@getReviews')->name('reviews.get');
-      $router->post('/{profile}/reviews', 'API\\ProfileController@createReview')
-        ->name('reviews.create');
-      $router->delete('/{profile}/reviews', 'API\\ProfileController@deleteReview')
-        ->name('reviews.delete');
-      $router->post('/{profile}/views', 'API\\ProfileController@addView')
-        ->name('views.create');
     });
+  });
+});
+
+Route::group([
+  'as' => 'api.profiles.',
+  'prefix' => '/profiles'
+], function ($router) {
+  $router->get('/{id}', 'API\\ProfileController@getById')
+    ->name('id');
+  $router->post('/{profile}/views', 'API\\ProfileController@addView')
+    ->name('views.create');
+
+  $router->group([
+    'prefix' => '/profiles',
+    'as' => 'reviews.'
+  ], function ($router) {
+    $router->post('/{profile}/reviews', 'API\\ProfileController@createReview')
+      ->name('create');
+    $router->delete('/{profile}/reviews', 'API\\ProfileController@deleteReview')
+      ->name('delete');
   });
 });
 

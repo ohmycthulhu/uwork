@@ -184,7 +184,7 @@ class ProfileTest extends TestCase
     Auth::login($userGuest);
 
     // Send request to remove review
-    $this->post(route('api.profile.reviews.delete', ['profile' => $profile->id]))
+    $this->post(route('api.profiles.reviews.delete', ['profile' => $profile->id]))
       ->assertStatus(403);
 
     $form = ['headline' => Str::random(), 'text' => Str::random(64), 'rating' => 3];
@@ -192,34 +192,34 @@ class ProfileTest extends TestCase
     // Send request to create review from same user
     Auth::login($userOwner);
 
-    $this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
+    $this->post(route('api.profiles.reviews.create', ['profile' => $profile->id]), $form)
       ->assertStatus(403);
 
     // Send request to create review from another user
     Auth::login($userGuest);
-    $this->post(route('api.profile.reviews.create', ['profile' => $profile->id]), $form)
+    $this->post(route('api.profiles.reviews.create', ['profile' => $profile->id]), $form)
       ->assertOk();
 
     $this->get(route('api.profile.reviews.get'))
       ->assertStatus(404);
 
     // Send request to remove review
-    $this->delete(route('api.profile.reviews.delete', ['profile' => $profile->id]))
+    $this->delete(route('api.profiles.reviews.delete', ['profile' => $profile->id]))
       ->assertOk();
 
     // Create view as guest
     $form = ['opened' => false];
-    $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
+    $this->post(route('api.profiles.views.create', ['profile' => $profile->id]), $form)
       ->assertOk();
     $form = ['opened' => true];
-    $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
+    $this->post(route('api.profiles.views.create', ['profile' => $profile->id]), $form)
       ->assertOk();
 
     $this->assertEquals(1, $profile->views()->count());
 
     // Create view as owner
     Auth::login($userOwner);
-    $this->post(route('api.profile.views.create', ['profile' => $profile->id]), $form)
+    $this->post(route('api.profiles.views.create', ['profile' => $profile->id]), $form)
       ->assertStatus(403);
     $this->assertEquals(1, $profile->views()->count());
 

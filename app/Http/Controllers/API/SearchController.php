@@ -9,6 +9,7 @@ use App\Models\User\Profile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
@@ -49,6 +50,10 @@ class SearchController extends Controller
         $query = $this->setCategoryConstraint($query, $categoryId);
       }
 
+      if ($user = Auth::user()) {
+        $query->notUser($user);
+      }
+
       // Add constraint by region, city and district
       $this->setLocationConstraints(
         $query,
@@ -79,7 +84,7 @@ class SearchController extends Controller
         ->first();
 
       if ($category) {
-        $query->exactCategory($category);
+        $query->category($category->id);
       } else {
         $query->whereNull('id'); // Make query fail
       }

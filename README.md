@@ -4,7 +4,20 @@
  This is the API for working with uwork service. 
 </p>
 
-### Used notation in Documentation
+### Table of contents
+
+1. [Notation](#used-notation-in-documentation)
+2. [Categories](#categories)
+3. [Locations](#locations)
+4. [Authentication](#authentication-and-authorization)
+5. [User controller](#users-controller)
+6. [Profiles](#profiles)
+7. [Reviews and views](#reviews-and-views)
+8. [ Search. ](#se)
+
+<a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
+
+## Used notation
 
 <p>
     There are several types,
@@ -148,6 +161,9 @@
 </tbody>
 </table>
 
+
+<a id="categories" name="categories"></a>
+
 ## Categories
 
 <p>
@@ -197,6 +213,8 @@
 </tr>
 </tbody>
 </table>
+
+<a id="locations" name="locations"></a>
 
 ## Locations
 
@@ -302,6 +320,8 @@
     </tbody>
     </table>
 </div>
+
+<a id="authentication-and-authorization" name="authentication-and-authorization"></a>
 
 ## Authentication and authorization
 
@@ -488,12 +508,21 @@
     </table>
 </div>
 
+<a id="users-controller" name="users-controller"></a>
+
 ## Users controller
 
 <div>
 <p>
     All routes are protected by authentication middleware,
     so in each request you should add authorization header.
+</p>
+<p>
+    User can change basic information (names) by using sending PUT
+    request. For changing email, phone and password, you should
+    provide current password. If user tries to change phone,
+    phone should be verified before changing. After verification,
+    changes are applied.
 </p>
 <hr />
 <p>
@@ -507,6 +536,22 @@
         <th>Response</th>
     </thead>
     <tbody>
+    <tr>
+        <td>
+            /api/user
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                user: User|null
+            }
+        </td>
+    </tr>
     <tr>
         <td>
             /api/user
@@ -600,6 +645,8 @@
     </table>
 </div>
 
+<a id="profiles" name="profiles"></a>
+
 ## Profiles
 
 <div>
@@ -608,6 +655,13 @@
     All routes should be accessed with authorization token.
     The user can have only one profile. If you try to create another,
     server will return 403 error.
+</p>
+<p>
+    For creating profiles, /api/user/profiles are used.
+    Once profile is created, it can't be deleted manually.
+    Each user can have one profile with multiple specialities.
+    Specialities contain information about price of work and
+    category it's referred to. 
 </p>
 <hr>
 <p>
@@ -624,7 +678,7 @@
     <tbody>
     <tr>
         <td>
-            /api/user/profiles
+            /api/user/profile
         </td>
         <td>
             GET
@@ -639,7 +693,23 @@
     </tr>
     <tr>
         <td>
-            /api/user/profiles
+            /api/profiles/{id}
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                profile: Profile|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile
         </td>
         <td>
             POST
@@ -665,7 +735,7 @@
     </tr>
     <tr>
         <td>
-            /api/user/profiles/update
+            /api/user/profile/update
         </td>
         <td>
             POST
@@ -694,6 +764,9 @@
     </table>
 </div>
 
+
+<a id="reviews-and-views" name="reviews-and-views"></a>
+
 ## Reviews and views
 
 <p>
@@ -712,7 +785,7 @@
     <tbody>
     <tr>
         <td>
-            /api/user/profiles/{profile}/reviews
+            /api/user/profile/reviews
         </td>
         <td>
             GET
@@ -762,7 +835,7 @@
     </tr>
     <tr>
         <td>
-            /api/user/profiles/{profile}/views
+            /api/profiles/{profile}/views
         </td>
         <td>
             DELETE
@@ -780,8 +853,34 @@
     </tbody>
 </table>
 
+<a name="search" id="search"></a>
+
 ## Search
 
+<p>
+    These routes provide way to search through profiles on site.
+    results are returned in paginated format. For loading next page data,
+    exact query should be provided (including number of page).
+    There are 3 criteria to search the profile:
+</p>
+<ul>
+    <li>
+        Keyword - first category is searched by keyword, then
+    search are limited by the category. If no category found, returns nothing
+    </li>
+    <li>
+        Category - filters profile by having the speciality within given
+        category
+    </li>
+    <li>
+        Location - consists of region_id, city_id and district_id. 
+        By leaving one empty profile are not being filtered by the field.
+    </li>
+</ul>
+<hr />
+<p>
+    List of routes are listed below:
+</p>
 <table>
     <thead>
         <th>Route</th>
@@ -804,7 +903,8 @@
                 region_id: int|null,
                 city_id: int|null,
                 district_id: int|null,
-                per_page: int|null
+                per_page: int|null,
+                page: int|null
             }
         </td>
         <td>

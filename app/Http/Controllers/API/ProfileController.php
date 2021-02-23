@@ -19,6 +19,23 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
   /**
+   * Object for profile
+   *
+   * @var Profile
+  */
+  protected $profile;
+
+  /**
+   * Create instance of controller
+   *
+   * @param Profile $profile
+  */
+  public function __construct(Profile $profile)
+  {
+    $this->profile = $profile;
+  }
+
+  /**
    * Method to create profile
    *
    * @param CreateProfileRequest $request
@@ -167,6 +184,28 @@ class ProfileController extends Controller
   }
 
   /**
+   * Method to get profile by id
+   *
+   * @param string $id
+   *
+   * @return JsonResponse
+   */
+  public function getById(string $id): JsonResponse {
+    // Get profile by id
+    $profile = $this->profile::find($id);
+
+    if (!$profile) {
+      return response()->json(['error' => 'Profile not found'], 404);
+    }
+
+    $profile->load(['specialities.category', 'media']);
+
+    return response()->json([
+      'profile' => $profile
+    ]);
+  }
+
+  /**
    * Method to add review to profile
    *
    * @param CreateReviewFormRequest $request
@@ -256,7 +295,7 @@ class ProfileController extends Controller
   public function addView(AddViewRequest $request, Profile $profile): JsonResponse {
     $user = Auth::user();
 
-    if ($user->id == $profile->user_id) {
+    if ($user && $user->id == $profile->user_id) {
       return response()->json(['error' => 'You can\'t view own profile'], 403);
     }
 

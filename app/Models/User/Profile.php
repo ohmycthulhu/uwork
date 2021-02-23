@@ -277,6 +277,18 @@ class Profile extends Model implements HasMedia
   }
 
   /**
+   * Scope profiles not belonging to the user
+   *
+   * @param Builder $query
+   * @param User $user
+   *
+   * @return Builder
+  */
+  public function scopeNotUser(Builder $query, User $user): Builder {
+    return $query->where('user_id', '<>', $user->id);
+  }
+
+  /**
    * Attributes
    */
 
