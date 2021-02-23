@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\PhoneVerificationHelper;
+use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ChangeEmailRequest;
 use App\Http\Requests\Profile\ChangeNameRequest;
@@ -94,7 +94,7 @@ class UserController extends Controller
 
     $phone = $request->input('phone');
 
-    $uuid = PhoneVerificationHelper::createSession($user, User::class, $user->id, $phone);
+    $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phone);
 
     return response()->json([
       'user' => $user,

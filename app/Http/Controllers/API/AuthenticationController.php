@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\PhoneVerificationHelper;
-use App\Helpers\ResetPasswordHelper;
+use App\Facades\PhoneVerificationFacade;
+use App\Facades\ResetPasswordFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginFormRequest;
 use App\Http\Requests\PhoneVerificationRequest;
@@ -55,7 +55,7 @@ class AuthenticationController extends Controller
           ->json(['error' => $e->getMessage()], 405);
       }
       // Generate phone verification code and send
-      $uuid = PhoneVerificationHelper::createSession($user, User::class, $user->id, $form['phone']);
+      $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $form['phone']);
 
       // Return user and response
 
@@ -75,13 +75,13 @@ class AuthenticationController extends Controller
     */
     public function verifyPhoneNumber(PhoneVerificationRequest $request, string $uuid): JsonResponse {
       // Pass $uuid to facade and get result
-      if (!PhoneVerificationHelper::checkUUID($uuid)) {
+      if (!PhoneVerificationFacade::checkUUID($uuid)) {
         return response()->json(['error' => 'UUID not exists'], 403);
       }
 
       $code = $request->input('code');
       // If no verification, return error
-      $verification = PhoneVerificationHelper::checkCode($uuid, $code);
+      $verification = PhoneVerificationFacade::checkCode($uuid, $code);
 
       if (!$verification) {
         return response()->json(['error' => 'UUID not exists'], 403);
@@ -132,16 +132,16 @@ class AuthenticationController extends Controller
       }
 
       // If exists, check if phone number is blocked
-      if (PhoneVerificationHelper::isBlocked($phoneNumber)) {
+      if (PhoneVerificationFacade::isBlocked($phoneNumber)) {
         return response()->json([
           'error' => 'Phone number is blocked. Try again in a hour',
         ], 403);
       }
 
       // Adds try to phone number
-      PhoneVerificationHelper::blockPhone($phoneNumber);
+      PhoneVerificationFacade::blockPhone($phoneNumber);
 
-      $uuid = PhoneVerificationHelper::createSession($user, User::class, $user->id, $phoneNumber);
+      $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phoneNumber);
 
       // Send notification and save phone number as temporary blocked
       return response()->json([
@@ -217,7 +217,7 @@ class AuthenticationController extends Controller
         return response()->json(['error' => 'Phone is not confirmed'], 403);
       }
 
-      ResetPasswordHelper::createSession($user, !!$email, !!$phone);
+      ResetPasswordFacade::createSession($user, !!$email, !!$phone);
 
       return response()->json(['status' => 'success']);
     }
@@ -231,7 +231,7 @@ class AuthenticationController extends Controller
      * @return JsonResponse
     */
     public function setPassword(SetPasswordRequest $request, string $uuid): JsonResponse {
-      $userId = ResetPasswordHelper::checkUUID($uuid);
+      $userId = ResetPasswordFacade::checkUUID($uuid);
 
       if (!$userId) {
         return response()->json(['error' => 'UUID is invalid'], 403);
@@ -242,7 +242,7 @@ class AuthenticationController extends Controller
 
       $user->setPassword($password);
 
-      ResetPasswordHelper::removeUuid($uuid);
+      ResetPasswordFacade::removeUuid($uuid);
 
       return response()->json(['status' => 'success']);
     }

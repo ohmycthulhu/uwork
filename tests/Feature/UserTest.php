@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Facades\PhoneVerificationFacade;
 use App\Helpers\PhoneVerificationHelper;
 use App\Models\User;
 use App\Notifications\PasswordResetNotification;
@@ -76,7 +77,7 @@ class UserTest extends TestCase
         return true;
       });
 
-    $cached = Cache::get(PhoneVerificationHelper::getCacheKey($uuid));
+    $cached = Cache::get(PhoneVerificationFacade::getCacheKey($uuid));
 
     $this->assertNotNull($cached);
 

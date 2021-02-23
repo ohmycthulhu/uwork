@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\PhoneVerificationHelper;
+use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\AddViewRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
@@ -61,7 +61,7 @@ class ProfileController extends Controller
     if ($phone === $user->phone) {
       $profile->setPhone($phone, true);
     } else {
-      $uuid = PhoneVerificationHelper::createSession($user, Profile::class, $profile->id, $phone);
+      $uuid = PhoneVerificationFacade::createSession($user, Profile::class, $profile->id, $phone);
     }
 
     $profile->load(['specialities.category']);
@@ -136,7 +136,7 @@ class ProfileController extends Controller
     if ($phone) {
       $shouldBeVerified = $profile->phone !== $phone && $phone !== $user->phone;
       if ($shouldBeVerified) {
-        $verUuid = PhoneVerificationHelper::createSession($user, Profile::class, $profile->id, $phone);
+        $verUuid = PhoneVerificationFacade::createSession($user, Profile::class, $profile->id, $phone);
       } else {
         $profile->phone = $phone;
       }

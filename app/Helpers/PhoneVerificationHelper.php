@@ -22,22 +22,16 @@ class PhoneVerificationHelper
    *
    * @return string
   */
-  public static function createSession(User $user, string $class, int $id, string $phone): string {
+  public function createSession(User $user, string $class, int $id, string $phone): string {
     $uuid = \Illuminate\Support\Str::uuid();
 
     $code = \Illuminate\Support\Str::random(6);
 
-    $data = [
-      'phone' => $phone,
-      'class' => $class,
-      'id' => $id,
-      'code' => $code,
-      'tries' => 3,
-    ];
+    $data = $this->generateData($class, $id, $phone, $code);
 
     Notification::send($user, new VerifyPhoneNotification($code));
 
-    self::setCache($uuid, $data, 10);
+    $this->setCache($uuid, $data, 10);
 
     return $uuid;
   }
@@ -49,7 +43,7 @@ class PhoneVerificationHelper
    *
    * @return bool
   */
-  public static function checkUUID(string $uuid): bool {
+  public function checkUUID(string $uuid): bool {
     return Cache::has(self::getCacheKey($uuid));
   }
 
@@ -62,7 +56,7 @@ class PhoneVerificationHelper
    *
    * @return array|bool
   */
-  public static function checkCode(string $uuid, string $code, bool $deleteOnSuccess = false) {
+  public function checkCode(string $uuid, string $code, bool $deleteOnSuccess = false) {
     if (!self::checkUUID($uuid)) {
       return false;
     }
@@ -98,7 +92,7 @@ class PhoneVerificationHelper
    *
    * @return bool
   */
-  public static function isBlocked(string $phone): bool {
+  public function isBlocked(string $phone): bool {
     return Cache::get("blocked-phone-$phone") >= 3;
   }
 
@@ -107,7 +101,7 @@ class PhoneVerificationHelper
    *
    * @param string $phone
   */
-  public static function blockPhone(string $phone) {
+  public function blockPhone(string $phone) {
     $key = "blocked-phone-$phone";
     if (Cache::has($key)) {
       Cache::increment("blocked-phone-$phone");
@@ -117,6 +111,27 @@ class PhoneVerificationHelper
   }
 
   /**
+   * Method to generate data to save
+   *
+   * @param string $class
+   * @param int $id
+   * @param string $phone
+   * @param string $code
+   *
+   * @return array
+  */
+  protected function generateData(string $class, int $id, string $phone, string $code): array {
+    return [
+      'phone' => $phone,
+      'class' => $class,
+      'id' => $id,
+      'code' => $code,
+      'tries' => 3,
+    ];
+  }
+
+
+  /**
    * Method to set in cache
    *
    * @param string $uuid
@@ -124,17 +139,18 @@ class PhoneVerificationHelper
    * @param int $minutes
    *
   */
-  protected static function setCache(string $uuid, array $data, int $minutes) {
+  protected function setCache(string $uuid, array $data, int $minutes) {
     $expirationTime = now()->addMinutes($minutes);
     \Illuminate\Support\Facades\Cache::put(self::getCacheKey($uuid), $data, $expirationTime);
   }
+
   /**
    * Method to remove from cache
    *
    * @param string $uuid
    *
   */
-  protected static function removeCache(string $uuid) {
+  protected function removeCache(string $uuid) {
     \Illuminate\Support\Facades\Cache::forget(self::getCacheKey($uuid));
   }
 
@@ -145,7 +161,7 @@ class PhoneVerificationHelper
    *
    * @return string
   */
-  public static function getCacheKey(string $uuid): string {
+  public function getCacheKey(string $uuid): string {
     return "phone-verification-$uuid";
   }
 }

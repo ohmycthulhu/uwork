@@ -22,16 +22,14 @@ class ResetPasswordHelper
    *
    * @return string
   */
-  public static function createSession(User $user, bool $withEmail, bool $withPhone): string {
+  public function createSession(User $user, bool $withEmail, bool $withPhone): string {
     $uuid = \Illuminate\Support\Str::uuid();
 
-    $data = [
-      'id' => $user->id,
-    ];
+    $data = $this->generateData($user);
 
     Notification::send($user, new PasswordResetNotification($withEmail, $withPhone, $uuid));
 
-    self::setCache($uuid, $data, 240);
+    $this->setCache($uuid, $data, 240);
 
     return $uuid;
   }
@@ -43,7 +41,7 @@ class ResetPasswordHelper
    *
    * @return ?int
   */
-  public static function checkUUID(string $uuid): ?int {
+  public function checkUUID(string $uuid): ?int {
     $data = Cache::get(self::getCacheKey($uuid), null);
     return $data ? $data['id'] : null;
   }
@@ -56,17 +54,32 @@ class ResetPasswordHelper
    * @param int $minutes
    *
   */
-  protected static function setCache(string $uuid, array $data, int $minutes) {
+  protected function setCache(string $uuid, array $data, int $minutes) {
     $expirationTime = now()->addMinutes($minutes);
     \Illuminate\Support\Facades\Cache::put(self::getCacheKey($uuid), $data, $expirationTime);
   }
+
+  /**
+   * Method to generate data
+   *
+   * @param User $user
+   *
+   * @return array
+  */
+  protected function generateData(User $user): array {
+    return [
+      'id' => $user->id
+    ];
+  }
+
+
   /**
    * Method to remove from cache
    *
    * @param string $uuid
    *
   */
-  public static function removeUuid(string $uuid) {
+  public function removeUuid(string $uuid) {
     \Illuminate\Support\Facades\Cache::forget(self::getCacheKey($uuid));
   }
 
@@ -77,7 +90,7 @@ class ResetPasswordHelper
    *
    * @return string
   */
-  public static function getCacheKey(string $uuid): string {
+  public function getCacheKey(string $uuid): string {
     return "password-reset-$uuid";
   }
 }
