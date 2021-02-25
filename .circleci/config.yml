@@ -1,0 +1,20 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+jobs:
+  build_image:
+    machine: true
+    steps:
+#      - setup_remote_docker
+      - checkout
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin
+
+      - run: docker build -t ohmycthulhu/uwork-api:$(cat version.txt) .
+
+      - run: docker push ohmycthulhu/uwork-api:$(cat version.txt)
+
+workflows:
+  build:
+    jobs:
+      - build_image
