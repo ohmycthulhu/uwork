@@ -56,6 +56,7 @@ RUN mkdir -p /home/devuser/.composer && \
 
 COPY . /var/www/html
 RUN cd /var/www/html && composer install
+RUN test -f .env || cp .env.example .env
 # RUN rm -f public/storage
 
 RUN php artisan key:generate && \
