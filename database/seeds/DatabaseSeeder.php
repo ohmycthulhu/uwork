@@ -11,9 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-      $this->call(UserSeeder::class);
-      $this->call(CategoriesSeeder::class);
-      $this->call(LocationSeeder::class);
-      $this->call(ProfileSeeder::class);
+      if (config('app.env') == 'production') {
+        $this->call(ActualRegionsSeeder::class);
+      } else {
+        $this->call(UserSeeder::class);
+        $this->call(CategoriesSeeder::class);
+        $this->call(LocationSeeder::class);
+        $this->call(ProfileSeeder::class);
+      }
     }
 }

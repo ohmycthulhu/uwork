@@ -2,6 +2,7 @@
 
 namespace App\Models\Location;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ class City extends Model
   use SoftDeletes, HasTranslations;
 
   // Fillable
-  protected $fillable = ['name'];
+  protected $fillable = ['name', 'google_id'];
 
   // Translatable
   public $translatable = ['name'];
@@ -22,14 +23,15 @@ class City extends Model
 
   /**
    * Relations
-  */
+   */
 
   /**
    * Relation to region
    *
    * @return BelongsTo
-  */
-  public function region(): BelongsTo {
+   */
+  public function region(): BelongsTo
+  {
     return $this->belongsTo(Region::class, 'region_id');
   }
 
@@ -37,9 +39,40 @@ class City extends Model
    * Relation to districts
    *
    * @return HasMany
-  */
-  public function districts(): HasMany {
+   */
+  public function districts(): HasMany
+  {
     return $this->hasMany(District::class, 'city_id');
+  }
+
+  /**
+   * Scopes
+   */
+
+  /**
+   * Scope to filter by google id
+   *
+   * @param Builder $query
+   * @param string $id
+   *
+   * @return Builder
+   */
+  public function scopeGoogleId(Builder $query, string $id): Builder
+  {
+    return $query->where('google_id', $id);
+  }
+
+  /**
+   * Scope to filter by name
+   *
+   * @param Builder $query
+   * @param string $name
+   *
+   * @return Builder
+   */
+  public function scopeName(Builder $query, string $name): Builder
+  {
+    return $query->where('name', "like", "%\"$name\"%");
   }
 
   /**
@@ -51,7 +84,8 @@ class City extends Model
    *
    * @return string
    */
-  public function getLinkAttribute(): string {
+  public function getLinkAttribute(): string
+  {
     return route('api.cities.id', ['id' => $this->id]);
   }
 
@@ -60,7 +94,8 @@ class City extends Model
    *
    * @return string
    */
-  public function getLinkDistrictsAttribute(): string {
+  public function getLinkDistrictsAttribute(): string
+  {
     return route('api.cities.id.districts', ['id' => $this->id]);
   }
 }
