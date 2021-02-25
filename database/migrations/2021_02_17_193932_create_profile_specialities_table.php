@@ -24,7 +24,8 @@ class CreateProfileSpecialitiesTable extends Migration
             $table->foreignId('category_id')
               ->references('id')
               ->on('categories')
-              ->cascadeOnDelete();
+              ->cascadeOnDelete()
+              ->cascadeOnUpdate();
 
             $table->float('price')->index();
 

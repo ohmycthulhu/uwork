@@ -28,5 +28,7 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
+        <server name="NEXMO_KEY" value="ajsdh7ahs"/>
+        <server name="NEXMO_SECRET" value="Sud7hsHS5sMA"/>
     </php>
 </phpunit>

@@ -5,10 +5,11 @@ namespace App\Models\Categories;
 use App\Models\Interfaces\Slugable;
 use App\Models\Traits\SlugableTrait;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Spatie\Translatable\HasTranslations;
 
 class Category extends Model implements Slugable
@@ -75,6 +76,18 @@ class Category extends Model implements Slugable
     }
 
     /**
+     * Scope by full name
+     *
+     * @param Builder $query
+     * @param string $name
+     *
+     * @return Builder
+    */
+    public function scopeName(Builder $query, string $name): Builder {
+      return $query->where('name', 'like', "%\"$name\"%");
+    }
+
+  /**
      * Scope only top level categories
      *
      * @param Builder $query
