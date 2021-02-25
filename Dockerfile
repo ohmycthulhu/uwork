@@ -59,8 +59,7 @@ RUN cd /var/www/html && composer install
 # RUN rm -f public/storage
 
 RUN php artisan key:generate && \
-    php artisan jwt:secret -f && \
-    php artisan config:clear
+    php artisan jwt:secret -f
 
 # RUN php artisan storage:link
 
