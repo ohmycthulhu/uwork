@@ -345,6 +345,12 @@
     then send request to /passwords/{uuid} to set new password. 
     UUID is valid for 4 hours and removed after first set.
 </p>
+<p>
+<i>
+    Note: For development purposes, code is verification is disabled.
+    For verifying phone, send any 6 letter code string to verification route.
+</i>
+</p>
 <hr />
 <p>
     Endpoints are listed below:

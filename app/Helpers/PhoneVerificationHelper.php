@@ -12,6 +12,23 @@ use Illuminate\Support\Facades\Notification;
 class PhoneVerificationHelper
 {
   /**
+   * Indicates if verification is being done or ignored
+   *
+   * @var bool
+  */
+  protected $verificationEnabled;
+
+  /**
+   * Creates instance of helper
+   *
+   * @param bool $verificationEnabled
+  */
+  public function __construct(bool $verificationEnabled)
+  {
+    $this->verificationEnabled = $verificationEnabled;
+  }
+
+  /**
    * Method to create new verification session
    * Returns uuid of session
    *
@@ -67,7 +84,7 @@ class PhoneVerificationHelper
       return false;
     }
 
-    if ($data['code'] !== $code) {
+    if ($this->verificationEnabled && $data['code'] !== $code) {
       $triesLeft = $data['tries'] - 1;
       if ($triesLeft > 0) {
         $data['tries'] = $triesLeft;
