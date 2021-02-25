@@ -15,14 +15,15 @@ class VerificationServiceProvider extends ServiceProvider
    */
   public function register()
   {
+    $isNexmoEnabled = !config('nexmo.is_disabled');
     // Register phone verification facade
-    $this->app->bind('phone-verification', function () {
-      return new PhoneVerificationHelper(config('app.code_chek_enabled'));
+    $this->app->bind('phone-verification', function () use ($isNexmoEnabled) {
+      return new PhoneVerificationHelper(config('app.code_chek_enabled'), $isNexmoEnabled);
     });
 
     // Register reset password facade
-    $this->app->bind('reset-password', function () {
-      return new ResetPasswordHelper();
+    $this->app->bind('reset-password', function () use ($isNexmoEnabled) {
+      return new ResetPasswordHelper($isNexmoEnabled);
     });
   }
 

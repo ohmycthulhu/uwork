@@ -1,0 +1,3 @@
+storage/app/public/*
+storage/logs/laravel.log
+vendor

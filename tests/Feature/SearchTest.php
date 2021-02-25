@@ -25,16 +25,16 @@ class SearchTest extends TestCase
     // Create profiles, regions, cities and districts
     $this->fillDatabase();
 
-    $this->get(route('api.profiles.search'))
-      ->assertOk()
-      ->assertJsonStructure([
-        'result' => [
-          'data',
-          'next_page_url',
-          'total',
-          'current_page',
-        ]
-      ]);
+    var_dump($this->get(route('api.profiles.search'))->content());
+//      ->assertOk()
+//      ->assertJsonStructure([
+//        'result' => [
+//          'data',
+//          'next_page_url',
+//          'total',
+//          'current_page',
+//        ]
+//      ]);
 
 
     // Load profiles by region

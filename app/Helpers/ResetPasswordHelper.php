@@ -12,6 +12,25 @@ use Illuminate\Support\Facades\Notification;
 
 class ResetPasswordHelper
 {
+
+  /**
+   * Indicate if Nexmo is enabled
+   *
+   * @var bool
+   */
+  protected $isNexmoEnabled;
+
+  /**
+   * Creates instance of helper
+   *
+   * @param bool $nexmoEnabled
+   */
+  public function __construct(bool $nexmoEnabled)
+  {
+    $this->isNexmoEnabled = $nexmoEnabled;
+  }
+
+
   /**
    * Method to create new verification session
    * Returns uuid of session
@@ -27,7 +46,9 @@ class ResetPasswordHelper
 
     $data = $this->generateData($user);
 
-    Notification::send($user, new PasswordResetNotification($withEmail, $withPhone, $uuid));
+    if ($this->isNexmoEnabled) {
+      Notification::send($user, new PasswordResetNotification($withEmail, $withPhone, $uuid));
+    }
 
     $this->setCache($uuid, $data, 240);
 

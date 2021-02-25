@@ -19,13 +19,22 @@ class PhoneVerificationHelper
   protected $verificationEnabled;
 
   /**
+   * Indicate if Nexmo is enabled
+   *
+   * @var bool
+  */
+  protected $isNexmoEnabled;
+
+  /**
    * Creates instance of helper
    *
    * @param bool $verificationEnabled
+   * @param bool $nexmoEnabled
   */
-  public function __construct(bool $verificationEnabled)
+  public function __construct(bool $verificationEnabled, bool $nexmoEnabled)
   {
     $this->verificationEnabled = $verificationEnabled;
+    $this->isNexmoEnabled = $nexmoEnabled;
   }
 
   /**
@@ -46,7 +55,9 @@ class PhoneVerificationHelper
 
     $data = $this->generateData($class, $id, $phone, $code);
 
-    Notification::send($user, new VerifyPhoneNotification($code));
+    if ($this->isNexmoEnabled) {
+      Notification::send($user, new VerifyPhoneNotification($code));
+    }
 
     $this->setCache($uuid, $data, 10);
 
