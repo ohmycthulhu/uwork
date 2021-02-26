@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5|^8.0",
+        "ext-json": "*",
         "barryvdh/laravel-cors": "^2.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
@@ -16,11 +17,11 @@
         "laravel/framework": "^7.29",
         "laravel/nexmo-notification-channel": "^2.5",
         "laravel/tinker": "^2.5",
+        "predis/predis": "^1.1",
         "spatie/eloquent-sortable": "^3.8",
         "spatie/laravel-medialibrary": "^7.0.0",
         "spatie/laravel-translatable": "*",
-        "tymon/jwt-auth": "^1.0",
-      "ext-json": "*"
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
