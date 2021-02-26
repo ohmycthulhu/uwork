@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
       if (config('app.env') == 'production') {
         $this->call(ActualRegionsSeeder::class);
+        $this->call(CategoriesSeeder::class);
       } else {
         $this->call(UserSeeder::class);
         $this->call(CategoriesSeeder::class);

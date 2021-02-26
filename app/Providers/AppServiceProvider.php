@@ -7,6 +7,7 @@ use App\Models\User\ProfileSpeciality;
 use App\Observers\ProfileSpecialityObserver;
 use App\Observers\SlugableObserver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Schema::defaultStringLength(191);
         //
     }
 
