@@ -72,7 +72,7 @@ class PhoneVerificationHelper
    * @return bool
   */
   public function checkUUID(string $uuid): bool {
-    return Cache::has(self::getCacheKey($uuid));
+    return Cache::has($this->getCacheKey($uuid));
   }
 
   /**
@@ -85,11 +85,11 @@ class PhoneVerificationHelper
    * @return array|bool
   */
   public function checkCode(string $uuid, string $code, bool $deleteOnSuccess = false) {
-    if (!self::checkUUID($uuid)) {
+    if (!$this->checkUUID($uuid)) {
       return false;
     }
 
-    $data = Cache::get(self::getCacheKey($uuid));
+    $data = Cache::get($this->getCacheKey($uuid));
 
     if (!$data) {
       return false;
@@ -99,15 +99,15 @@ class PhoneVerificationHelper
       $triesLeft = $data['tries'] - 1;
       if ($triesLeft > 0) {
         $data['tries'] = $triesLeft;
-        self::setCache($uuid, $data, 10);
+        $this->setCache($uuid, $data, 10);
       } else {
-        self::removeCache($uuid);
+        $this->removeCache($uuid);
       }
       return ['error' => true, 'tries' => $triesLeft];
     }
 
     if ($deleteOnSuccess) {
-      self::removeCache($uuid);
+      $this->removeCache($uuid);
     }
 
     return ['data' => $data];
@@ -169,7 +169,7 @@ class PhoneVerificationHelper
   */
   protected function setCache(string $uuid, array $data, int $minutes) {
     $expirationTime = now()->addMinutes($minutes);
-    \Illuminate\Support\Facades\Cache::put(self::getCacheKey($uuid), $data, $expirationTime);
+    \Illuminate\Support\Facades\Cache::put($this->getCacheKey($uuid), $data, $expirationTime);
   }
 
   /**
@@ -179,7 +179,7 @@ class PhoneVerificationHelper
    *
   */
   protected function removeCache(string $uuid) {
-    \Illuminate\Support\Facades\Cache::forget(self::getCacheKey($uuid));
+    \Illuminate\Support\Facades\Cache::forget($this->getCacheKey($uuid));
   }
 
   /**
