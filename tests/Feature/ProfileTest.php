@@ -241,7 +241,7 @@ class ProfileTest extends TestCase
     $images = [$this->uploadImage()];
     return [
       'about' => 'Some text about me',
-      'phone' => '1231251',
+      'phone' => '89050023456',
       'images' => $images,
       'avatar' => $this->getUploadedFile(),
       'specialities' => $categories->map(function ($id) {
@@ -261,7 +261,7 @@ class ProfileTest extends TestCase
     $images = [$this->uploadImage()];
     return [
       'about' => 'Another text',
-      'phone' => '73512',
+      'phone' => '89050216456',
       'images' => $images,
       'avatar' => $this->getUploadedFile(),
       'remove_specialities' => $categoriesToRemove->toArray(),

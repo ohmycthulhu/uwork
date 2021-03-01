@@ -15,7 +15,7 @@ class EditProfileRequest extends FormRequest
   {
     return [
       'about' => 'nullable|string',
-      'phone' => 'nullable|string',
+      'phone' => 'nullable|string|min:11',
       'remove_specialities' => 'nullable|array',
       'remove_specialities.*' => 'required|exists:App\Models\Categories\Category,id',
       'add_specialities' => 'nullable|array',

@@ -8,13 +8,14 @@
 ### Table of contents
 
 1. [Notation](#used-notation-in-documentation)
-2. [Categories](#categories)
-3. [Locations](#locations)
-4. [Authentication](#authentication-and-authorization)
-5. [User controller](#users-controller)
-6. [Profiles](#profiles)
-7. [Reviews and views](#reviews-and-views)
-8. [ Search. ](#search)
+2. [Phone Format](#phone-format)
+3. [Categories](#categories)
+4. [Locations](#locations)
+5. [Authentication](#authentication-and-authorization)
+6. [User controller](#users-controller)
+7. [Profiles](#profiles)
+8. [Reviews and views](#reviews-and-views)
+9. [Search](#search)
 
 <a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
 
@@ -161,6 +162,18 @@
 </tr>
 </tbody>
 </table>
+
+<a id="phone-format" name="phone-format"></a>
+
+## Phone format
+<p>
+    Phone number should be in the following format:
+    <span>{countryCode}{operatorCode}{number}</span>.
+    No spaces, leading + or trailing zeros are allowed.
+    "89050023456" is considered valid, but "+79050023456",
+    "8 905 002 34 56", "8 (905)002-34-56" are not.
+</p>
+
 
 
 <a id="categories" name="categories"></a>

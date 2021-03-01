@@ -15,7 +15,7 @@ class CreateProfileRequest extends FormRequest
   {
     return [
       'about' => 'required|string',
-      'phone' => 'nullable|string',
+      'phone' => 'nullable|string|min:11',
       'specialities' => 'required|array',
       'specialities.*.category_id' => 'required|exists:App\Models\Categories\Category,id',
       'specialities.*.price' => 'required|numeric',

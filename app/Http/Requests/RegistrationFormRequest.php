@@ -21,7 +21,7 @@ class RegistrationFormRequest extends FormRequest
       'father_name' => 'required|string|min:3|max:60',
       'password' => 'required|string|confirmed',
       'email' => 'required|unique:users|email',
-      'phone' => 'required|unique:users|string|min:6'
+      'phone' => 'required|unique:users|string|min:11'
     ];
   }
 }

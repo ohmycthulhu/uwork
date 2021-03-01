@@ -15,7 +15,7 @@ class ChangePhoneRequest extends FormRequest
   {
     return [
       'password' => 'required',
-      'phone' => 'required',
+      'phone' => 'required|string|min:11',
     ];
   }
 }

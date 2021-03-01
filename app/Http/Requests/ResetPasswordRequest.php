@@ -12,7 +12,7 @@ class ResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-          'phone' => 'required_without_all:email|string',
+          'phone' => 'required_without_all:email|string|min:11',
           'email' => 'required_without_all:phone|string',
         ];
     }

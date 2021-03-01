@@ -259,7 +259,7 @@ class UserTest extends TestCase
     $this->assertEquals('example@email.com', User::query()->find($user->id)->email);
 
     // Send request to change phone
-    $newPhone = '995124612';
+    $newPhone = '99512461251';
     $form = ['phone' => $newPhone, 'password' => $password];
     $verificationUuid = $this->put(route('api.user.update.phone'), $form)
       ->assertOk()
