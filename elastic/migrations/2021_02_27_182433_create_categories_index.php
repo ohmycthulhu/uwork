@@ -13,7 +13,7 @@ final class CreateCategoriesIndex implements MigrationInterface
      */
     public function up(): void
     {
-        Index::create('categories', function (Mapping $mapping, Settings $settings) {
+        Index::createIfNotExists('categories', function (Mapping $mapping, Settings $settings) {
           $mapping->text('name');
           $mapping->keyword('id');
           $mapping->keyword('parent_id');

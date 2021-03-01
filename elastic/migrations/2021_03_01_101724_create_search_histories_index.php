@@ -13,7 +13,7 @@ final class CreateSearchHistoriesIndex implements MigrationInterface
      */
     public function up(): void
     {
-      Index::create('search_histories', function (Mapping $mapping, Settings $settings) {
+      Index::createIfNotExists('search_histories', function (Mapping $mapping, Settings $settings) {
         $mapping->text('text');
         $mapping->keyword('weight');
       });
