@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Payment\Card;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -97,6 +99,15 @@ class User extends Authenticatable implements JWTSubject
   */
   public function favouriteServices(): BelongsToMany {
     return $this->belongsToMany(ProfileSpeciality::class, 'user_favourite_services', 'user_id', 'service_id');
+  }
+
+  /**
+   * Relation to cards
+   *
+   * @return HasMany
+  */
+  public function cards(): HasMany {
+    return $this->hasMany(Card::class, 'user_id');
   }
 
   /**

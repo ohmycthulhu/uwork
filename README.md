@@ -16,6 +16,8 @@
 7. [Profiles](#profiles)
 8. [Reviews and views](#reviews-and-views)
 9. [Search](#search)
+9. [Favourite services](#favourites)
+9. [Cards](#cards)
 
 <a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
 
@@ -143,6 +145,31 @@
             user_id: Int,
             ip_addr: Float,
             opened: Boolean,
+        }
+    </td>
+    <td>Model represents the view of profile</td>
+</tr>
+<tr>
+    <td>Card</td>
+    <td>{
+            id: int,
+            number: String,
+            label: String|null,
+            expiration_month: Int,
+            expiration_year: Int,
+            cvv: Int
+        }
+    </td>
+    <td>Model represents the view of profile</td>
+</tr>
+<tr>
+    <td>ObfuscatedCard</td>
+    <td>{
+            id: int,
+            label: String|null,
+            number_obfuscated: String,
+            expiration_month: Int,
+            expiration_year: Int
         }
     </td>
     <td>Model represents the view of profile</td>
@@ -978,7 +1005,7 @@ can't have favourites.
     <tbody>
     <tr>
         <td>
-            /api/favourites
+            /api/user/favourites
         </td>
         <td>
             GET
@@ -996,7 +1023,7 @@ can't have favourites.
     </tr>
     <tr>
         <td>
-            /api/favourites/{serviceId}
+            /api/user/favourites/{serviceId}
         </td>
         <td>
             POST
@@ -1012,7 +1039,7 @@ can't have favourites.
     </tr>
     <tr>
         <td>
-            /api/favourites/{serviceId}
+            /api/user/favourites/{serviceId}
         </td>
         <td>
             DELETE
@@ -1022,6 +1049,102 @@ can't have favourites.
         <td>
             {
                 status: String
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a id="cards" name="cards"></a>
+
+## Saved cards
+<p>
+Saved cards are available only to authorized users.
+For creating card, user should provide:
+number (as string), expiration month, expiration year, cvv, name on card
+and can provide label for the card. When updating, only expiration date
+and label can be changed. When getting cards, only label, obfuscated
+name and expiration date is shown
+</p>
+<hr />
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/user/cards
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                cards: ObfuscatedCard[]
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/cards
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            Card
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                card: ObfuscatedCard|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/cards/{cardId}
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                label: String|null,
+                expiration_month: Integer|null,
+                expiration_year: Integer|null
+            }
+        </td>
+        <td>
+            {
+                errors: String|null,
+                error: String|null,
+                status: String|null,
+                card: ObfuscatedCard,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/cards/{cardId}
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                status: String|null,
+                card_found: Boolean,
             }
         </td>
     </tr>

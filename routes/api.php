@@ -115,6 +115,28 @@ Route::group([
       $router->delete('/{serviceId}', 'API\\FavouritesController@remove')
         ->name('remove');
     });
+
+    // Cards section
+    $router->group([
+      'prefix' => 'cards',
+      'as' => 'api.user.cards.'
+    ], function ($router) {
+      // Route to create
+      $router->post('/', 'API\\CardsController@create')
+        ->name('create');
+
+      // Route to get
+      $router->get('/', 'API\\CardsController@get')
+        ->name('list');
+
+      // Route to update
+      $router->put('/{cardId}', 'API\\CardsController@update')
+        ->name('update');
+
+      // Route to delete
+      $router->delete('/{cardId}', 'API\\CardsController@delete')
+        ->name('delete');
+    });
   });
 });
 
