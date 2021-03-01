@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Facades\SearchFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileSearchRequest;
 use App\Models\Categories\Category;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Queue;
 
 class SearchController extends Controller
 {
@@ -61,6 +64,10 @@ class SearchController extends Controller
         $request->input('city_id'),
         $request->input('district_id')
       );
+
+      if ($keyword) {
+        SearchFacade::registerSearch($keyword);
+      }
 
       // Return response
       return response()->json([
@@ -125,5 +132,21 @@ class SearchController extends Controller
         $query->district($districtId);
       }
       return $query;
+    }
+
+    /**
+     * Method to get autocomplete suggestions
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+    */
+    public function getAutocomplete(Request $request): JsonResponse {
+      $keyword = $request->input('keyword', 'NULL');
+      $suggestions = SearchFacade::getAutocomplete($keyword);
+
+      return response()->json([
+        'suggestions' => $suggestions,
+      ]);
     }
 }

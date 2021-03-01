@@ -126,6 +126,9 @@ Route::group([
     ->name('api.profiles.search');
 });
 
+Route::get('autocomplete', 'API\\SearchController@getAutocomplete')
+  ->name('api.autocomplete');
+
 
 /*
  * File routes

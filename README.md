@@ -1,3 +1,4 @@
+
 # UWork API
 
 <p>
@@ -13,7 +14,7 @@
 5. [User controller](#users-controller)
 6. [Profiles](#profiles)
 7. [Reviews and views](#reviews-and-views)
-8. [ Search. ](#se)
+8. [ Search. ](#search)
 
 <a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
 
@@ -516,7 +517,7 @@
 
 <a id="users-controller" name="users-controller"></a>
 
-## Users controller
+## User controller
 
 <div>
 <p>
@@ -883,6 +884,11 @@
         By leaving one empty profile are not being filtered by the field.
     </li>
 </ul>
+<p>
+    Autocomplete works the following way: you send request to autocomplete
+    route, providing keyword as query parameter
+    and get list of suggestions.
+</p>
 <hr />
 <p>
     List of routes are listed below:
@@ -915,7 +921,25 @@
         </td>
         <td>
             {
-                result: Pagination&lt;Profile&gt;,
+                result: Pagination&lt;Profile&gt;
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/autocomplete
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+            {
+                keyword: string
+            }
+        </td>
+        <td>
+            {
+                suggestions: string[]
             }
         </td>
     </tr>

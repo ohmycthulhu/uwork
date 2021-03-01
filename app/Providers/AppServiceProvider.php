@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Helpers\SearchHelper;
 use App\Models\Categories\Category;
+use App\Models\Search\SearchHistory;
 use App\Models\User\ProfileSpeciality;
 use App\Observers\ProfileSpecialityObserver;
 use App\Observers\SlugableObserver;
@@ -20,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         //
+      $this->app->bind('search-helper', function () {
+        return new SearchHelper(new SearchHistory);
+      });
     }
 
     /**
