@@ -3,10 +3,14 @@
 namespace App\Models\User;
 
 use App\Models\Categories\Category;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileSpeciality extends Model
 {
@@ -43,6 +47,20 @@ class ProfileSpeciality extends Model
   }
 
   /**
+   * Relation to users by favourite
+   *
+   * @return BelongsToMany
+  */
+  public function favouriteBy(): BelongsToMany {
+    return $this->belongsToMany(
+      User::class,
+      'user_favourite_services',
+      'service_id',
+      'user_id'
+    );
+  }
+
+  /**
    * Scopes
   */
 
@@ -68,5 +86,19 @@ class ProfileSpeciality extends Model
   */
   public function scopeCategory(Builder $query, int $categoryId): Builder {
     return $query->where('category_path', 'LIKE', "%|$categoryId|%");
+  }
+
+  /**
+   * Attribute to check if user already selected this speciality as favourite
+   *
+   * @return bool
+  */
+  public function getIsFavouriteAttribute(): bool {
+    if (!Auth::id()) {
+      return false;
+    }
+    return !!$this->favouriteBy()
+      ->find(Auth::id())
+      ->first();
   }
 }

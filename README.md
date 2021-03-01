@@ -958,3 +958,72 @@
     </tr>
     </tbody>
 </table>
+
+<a id="favourites" name="favourites"></a>
+
+## Favourites
+<p>
+Routes to add services (profile's speciality) as favourite.
+User can't add his own services as favourite. Non authorized users
+can't have favourites.
+</p>
+<hr />
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/favourites
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+            {
+                page: int|null
+            }
+        </td>
+        <td>
+            {
+                services: Services&lt;Profile&gt;
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/favourites/{serviceId}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                status: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/favourites/{serviceId}
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                status: String
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>

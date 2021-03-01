@@ -86,6 +86,7 @@ Route::group([
     $router->put('/phones', 'API\\UserController@changePhone')->name('api.user.update.phone');
     $router->put('/passwords', 'API\\UserController@changePassword')->name('api.user.update.password');
 
+    // Profiles section
     $router->group([
       'prefix' => '/profile',
       'as' => 'api.profile.'
@@ -95,6 +96,24 @@ Route::group([
       $router->post('/update', 'API\\ProfileController@update')->name('update');
 
       $router->get('/reviews', 'API\\ProfileController@getReviews')->name('reviews.get');
+    });
+
+    // Favourites section
+    $router->group([
+      'prefix' =>'/favourites',
+      'as' => 'api.fav.'
+    ], function ($router) {
+      // Route to get list of favourites
+      $router->get('/', 'API\\FavouritesController@get')
+        ->name('list');
+
+      // Route to add service as favourite
+      $router->post('/{serviceId}', 'API\\FavouritesController@add')
+        ->name('add');
+
+      // Route to remove service from services
+      $router->delete('/{serviceId}', 'API\\FavouritesController@remove')
+        ->name('remove');
     });
   });
 });
