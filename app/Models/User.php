@@ -38,6 +38,27 @@ class User extends Authenticatable implements JWTSubject
     'password', 'phone', 'email',
   ];
 
+  protected $appends = [
+    'notification_settings'
+  ];
+
+  /**
+   * Available settings
+   *
+   * @var array
+   */
+  protected $availableSettings = [
+    'service_change_email' => [
+      'default' => true,
+    ],
+    'new_service_email' => [
+      'default' => true,
+    ],
+    'important_events_sms' => [
+      'default' => true,
+    ]
+  ];
+
   /**
    * Method to verify phone number
    *
@@ -76,6 +97,26 @@ class User extends Authenticatable implements JWTSubject
     $this->password = Hash::make($password);
     $this->save();
 
+    return $this;
+  }
+
+  /**
+   * Method to set setting
+   *
+   * @param string $key
+   * @param bool $value
+   *
+   * @return $this
+  */
+  public function setSetting(string $key, bool $value): User {
+    if (isset($this->availableSettings[$key])) {
+      $settings = json_decode($this->settings, true) ?? [];
+
+      $settings[$key] = $value;
+
+      $this->settings = json_encode($settings);
+
+    }
     return $this;
   }
 
@@ -148,6 +189,46 @@ class User extends Authenticatable implements JWTSubject
   */
   public function scopeEmail(Builder $query, string $email): Builder {
     return $query->where('email', $email);
+  }
+
+  /**
+   * Scope by setting
+   *
+   * @param Builder $query
+   * @param string $key
+   * @param bool $value
+   *
+   * @return Builder
+  */
+  public function scopeSetting(Builder $query, string $key, bool $value): Builder {
+    $setting = $this->availableSettings[$key] ?? null;
+    if ($setting) {
+      $default = $setting['default'];
+      $query->where(function (Builder $q) use ($default, $key, $value) {
+        if ($default == $value) {
+          $s = $value ? 'false' : 'true';
+          $q->where('settings', 'not like', "%\"$key\":$s%");
+        } else {
+          $s = $value ? 'true' : 'false';
+          $q->where('settings', 'like', "%\"$key\":$s%");
+        }
+      });
+    }
+    return $query;
+  }
+
+  /**
+   * Attribute to parse settings
+   *
+   * @return array
+  */
+  public function getNotificationSettingsAttribute(): array {
+    $settings = json_decode($this->settings, true) ?? [];
+    $result = [];
+    foreach ($this->availableSettings as $key => $info) {
+      $result[$key] = isset($settings[$key]) ? !!$settings[$key] : $info['default'];
+    }
+    return $result;
   }
 
   /**

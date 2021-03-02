@@ -102,7 +102,8 @@
             id: Int,
             first_name: String,
             last_name: String,
-            father_name: String
+            father_name: String,
+            notification_settings: Dictionary&lt;String, Boolen&gt;
         }
     </td>
     <td>User model</td>
@@ -220,6 +221,14 @@
         }
     </td>
     <td>General model for paginating output</td>
+</tr>
+<tr>
+    <td>Dictionary&lt;T1, T2&gt;</td>
+    <td>{
+        [T1]: T2, ...
+        }
+    </td>
+    <td>Dictionary data structure</td>
 </tr>
 </tbody>
 </table>
@@ -606,6 +615,37 @@
     phone should be verified before changing. After verification,
     changes are applied.
 </p>
+<p>
+  Settings can be changed with /api/user/settings route. You should
+  provide settings as associative array, where keys are names of 
+  settings and values are boolean values. (e.g. ['key1' => true])
+</p>
+<hr />
+<p>
+  List of available settings:
+</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>service_change_email</td>
+<td>E-mail уведомления об изменениях статусов заказов</td>
+</tr>
+<tr>
+<td>new_service_email</td>
+<td>E-mail уведомления о новых заказов</td>
+</tr>
+<tr>
+<td>important_events_sms</td>
+<td>SMS уведомления о важных событих</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <p>
     List of available routes
@@ -719,6 +759,25 @@
             {
                 errors: String[]|null,
                 error: String|null,
+                user: User|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/settings
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                settings: Dictionary&lt;String, Bool&gt;
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
                 user: User|null,
             }
         </td>

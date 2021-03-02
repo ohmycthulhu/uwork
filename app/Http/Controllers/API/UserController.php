@@ -8,6 +8,7 @@ use App\Http\Requests\Profile\ChangeEmailRequest;
 use App\Http\Requests\Profile\ChangeNameRequest;
 use App\Http\Requests\Profile\ChangePasswordRequest;
 use App\Http\Requests\Profile\ChangePhoneRequest;
+use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -114,5 +115,26 @@ class UserController extends Controller
   */
   protected function checkPassword(User $user, string $password): bool {
     return Auth::validate(['phone' => $user->phone, 'password' => $password]);
+  }
+
+  /**
+   * Method to update settings
+   *
+   * @param UpdateSettingsRequest $request
+   *
+   * @return JsonResponse
+  */
+  public function updateSettings(UpdateSettingsRequest $request): JsonResponse {
+    $user = Auth::user();
+    $settings = $request->input('settings', []);
+    foreach ($settings as $setting => $value) {
+      $user->setSetting($setting, !!$value);
+    }
+    $user->save();
+
+    return response()->json([
+      'status' => 'success',
+      'user' => $user,
+    ]);
   }
 }

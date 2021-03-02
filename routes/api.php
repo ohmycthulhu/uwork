@@ -14,10 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
-});
-
 /**
  * Categories routes
  */
@@ -79,23 +75,35 @@ Route::group([
   $router->group([
     'prefix' => '/user'
   ], function (Illuminate\Routing\Router $router) {
-    $router->get('/', 'API\\AuthenticationController@user')->name('api.user');
+    $router->get('/', 'API\\AuthenticationController@user')
+      ->name('api.user');
 
-    $router->put('/', 'API\\UserController@changeProfile')->name('api.user.update.profile');
-    $router->put('/emails', 'API\\UserController@changeEmail')->name('api.user.update.email');
-    $router->put('/phones', 'API\\UserController@changePhone')->name('api.user.update.phone');
-    $router->put('/passwords', 'API\\UserController@changePassword')->name('api.user.update.password');
+    $router->put('/', 'API\\UserController@changeProfile')
+      ->name('api.user.update.profile');
+    $router->put('/emails', 'API\\UserController@changeEmail')
+      ->name('api.user.update.email');
+    $router->put('/phones', 'API\\UserController@changePhone')
+      ->name('api.user.update.phone');
+    $router->put('/passwords', 'API\\UserController@changePassword')
+      ->name('api.user.update.password');
+
+    $router->put('/settings', 'API\\UserController@updateSettings')
+      ->name('api.user.settings');
 
     // Profiles section
     $router->group([
       'prefix' => '/profile',
       'as' => 'api.profile.'
     ], function (Illuminate\Routing\Router $router) {
-      $router->post('/', 'API\\ProfileController@create')->name('create');
-      $router->get('/', 'API\\ProfileController@get')->name('get');
-      $router->post('/update', 'API\\ProfileController@update')->name('update');
+      $router->post('/', 'API\\ProfileController@create')
+        ->name('create');
+      $router->get('/', 'API\\ProfileController@get')
+        ->name('get');
+      $router->post('/update', 'API\\ProfileController@update')
+        ->name('update');
 
-      $router->get('/reviews', 'API\\ProfileController@getReviews')->name('reviews.get');
+      $router->get('/reviews', 'API\\ProfileController@getReviews')
+        ->name('reviews.get');
 
       $router->group([
         'prefix' => '/specialities',
