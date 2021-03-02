@@ -18,6 +18,7 @@
 10. [Search](#search)
 11. [Favourite services](#favourites)
 12. [Cards](#cards)
+13. [Messages](#messages)
 
 <p>
   For using API endpoints, all requests should have "API-TOKEN" header
@@ -205,6 +206,33 @@
             number_obfuscated: String,
             expiration_month: Int,
             expiration_year: Int
+        }
+    </td>
+    <td>Model represents the view of profile</td>
+</tr>
+<tr>
+    <td>Chat</td>
+    <td>{
+            id: int,
+            initiator: User,
+            acceptor: User,
+            initiator_id: Int,
+            acceptor_id: Int,
+            last_message_time: Datetime|null
+        }
+    </td>
+    <td>Grouping entity for messages</td>
+</tr>
+<tr>
+    <td>Message</td>
+    <td>{
+            id: int,
+            text: String|null,
+            attachment: String|null,
+            user: User,
+            user_id: Int,
+            chat: Chat,
+            chat_id: Int,
         }
     </td>
     <td>Model represents the view of profile</td>
@@ -1343,6 +1371,115 @@ name and expiration date is shown
             {
                 status: String|null,
                 card_found: Boolean,
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a id="messages" name="messages"></a>
+
+## Messages
+
+<p>
+Routes for using messenger system. Only authenticated users can use these
+routes. User can't send message to itself. Chats are created automatically,
+but can be deleted manually.
+</p>
+<hr />
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/chats
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                chats: Chat[]
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/chats/{userId}
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                messages: Paginate&lt;Message&gt;String[]|null,
+                error: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/chats/{userId}/search
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+          {
+            keyword: String
+          }
+        </td>
+        <td>
+            {
+                messages: Paginate&lt;Message&gt;String[]|null,
+                error: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/chats/{userId}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                text: String|null
+                attachment: File|null
+            }
+        </td>
+        <td>
+            {
+                errors: String|null,
+                error: String|null,
+                status: String|null,
+                message: Message|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/chats/{userId}
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                status: String|null,
+                deleted: Boolean,
             }
         </td>
     </tr>

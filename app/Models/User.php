@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Messenger\Chat;
 use App\Models\Payment\Card;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
@@ -149,6 +150,15 @@ class User extends Authenticatable implements JWTSubject
   */
   public function cards(): HasMany {
     return $this->hasMany(Card::class, 'user_id');
+  }
+
+  /**
+   * Relation to messages
+   *
+   * @return Builder
+   * */
+  public function chats(): Builder {
+    return Chat::query()->user($this);
   }
 
   /**

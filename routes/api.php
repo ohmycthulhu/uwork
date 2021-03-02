@@ -169,10 +169,35 @@ Route::group([
   });
 });
 
+// Messenger
+Route::group([
+  'as' => 'api.chats.',
+  'prefix' => '/chats',
+  'middleware' => 'auth:api',
+], function (\Illuminate\Routing\Router $router) {
+  $router->get('/', 'API\\MessengerController@getChats')
+    ->name('list');
+
+  $router->get('/{user}', 'API\\MessengerController@getMessages')
+    ->name('get');
+
+  $router->post('/{user}', 'API\\MessengerController@sendMessage')
+    ->name('create');
+
+  $router->delete('/{user}', 'API\\MessengerController@deleteChat')
+    ->name('delete');
+
+  $router->get('/{user}/search', 'API\\MessengerController@search')
+    ->name('search');
+});
+
+// Other profiles
 Route::group([
   'as' => 'api.profiles.',
   'prefix' => '/profiles'
 ], function (Illuminate\Routing\Router $router) {
+  $router->get('/', 'API\\SearchController@search')
+    ->name('search');
   $router->get('/{id}', 'API\\ProfileController@getById')
     ->name('id');
   $router->post('/{profile}/views', 'API\\ProfileController@addView')
@@ -189,16 +214,8 @@ Route::group([
   });
 });
 
-Route::group([
-  'prefix' => 'profiles'
-], function (\Illuminate\Routing\Router $router) {
-  $router->get('/', 'API\\SearchController@search')
-    ->name('api.profiles.search');
-});
-
 Route::get('autocomplete', 'API\\SearchController@getAutocomplete')
   ->name('api.autocomplete');
-
 
 /*
  * File routes
