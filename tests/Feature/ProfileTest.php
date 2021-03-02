@@ -37,7 +37,7 @@ class ProfileTest extends TestCase
 
     // Attach profile specialities
     foreach ($categories as $category) {
-      $profile->addSpeciality($category->id, rand(10, 100) / 10.0);
+      $profile->addSpeciality($category->id, rand(10, 100) / 10.0, Str::random());
     }
 
     $this->assertDatabaseCount('profile_specialities', $categories->count());
@@ -245,7 +245,7 @@ class ProfileTest extends TestCase
       'images' => $images,
       'avatar' => $this->getUploadedFile(),
       'specialities' => $categories->map(function ($id) {
-        return ['category_id' => $id, 'price' => rand(100, 200) / 10];
+        return ['category_id' => $id, 'price' => rand(100, 200) / 10, 'name' => Str::random()];
       })->toArray(),
     ];
   }
@@ -264,10 +264,10 @@ class ProfileTest extends TestCase
       'phone' => '89050216456',
       'images' => $images,
       'avatar' => $this->getUploadedFile(),
-      'remove_specialities' => $categoriesToRemove->toArray(),
-      'add_specialities' => $categoriesToAdd->map(function ($id) {
-        return ['category_id' => $id, 'price' => rand(100, 200) / 10];
-      })->toArray(),
+//      'remove_specialities' => $categoriesToRemove->toArray(),
+//      'add_specialities' => $categoriesToAdd->map(function ($id) {
+//        return ['category_id' => $id, 'price' => rand(100, 200) / 10, 'name' => Str::random()];
+//      })->toArray(),
     ];
   }
 

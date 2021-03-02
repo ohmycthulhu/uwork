@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
       } else {
         $this->call(UserSeeder::class);
         $this->call(CategoriesSeeder::class);
-        $this->call(LocationSeeder::class);
+        $this->call(ActualRegionsSeeder::class);
+//        $this->call(LocationSeeder::class);
         $this->call(ProfileSeeder::class);
       }
     }

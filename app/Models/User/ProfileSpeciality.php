@@ -17,12 +17,37 @@ class ProfileSpeciality extends Model
 
   // Fillable
   protected $fillable = [
-    'category_id', 'price',
+    'category_id', 'price', 'name',
   ];
 
 //  protected $hidden = [
 //    'category_path'
 //  ];
+
+  protected $with = [
+    'category'
+  ];
+
+  /**
+   * Method to update speciality
+   *
+   * @param ?float $price
+   * @param ?string $name
+   *
+   * @return $this
+  */
+  public function updateInfo(?float $price, ?string $name): ProfileSpeciality {
+    if ($price) {
+      $this->price = $price;
+    }
+    if ($name) {
+      $this->name = $name;
+    }
+    if ($this->isDirty()) {
+      $this->save();
+    }
+    return $this;
+  }
 
   /**
    * Relations
@@ -63,6 +88,20 @@ class ProfileSpeciality extends Model
   /**
    * Scopes
   */
+
+  /**
+   * Scope by exact speciality
+   *
+   * @param Builder $query
+   * @param string $name
+   * @param int $categoryId
+   *
+   * @return Builder
+  */
+  public function scopeExact(Builder $query, string $name, int $categoryId): Builder {
+    return $this->where('name', 'like', $name)
+      ->where('category_id', $categoryId);
+  }
 
   /**
    * Scope by category id

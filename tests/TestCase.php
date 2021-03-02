@@ -154,4 +154,27 @@ abstract class TestCase extends BaseTestCase
     City::query()->forceDelete();
     District::query()->forceDelete();
   }
+
+  /**
+   * Method to send the request step-by-step
+   *
+   * @param string $route
+   * @param array $finalForm
+   * @param array $requiredFields
+  */
+  protected function sendPartialRequests(string $route, array $finalForm, array $requiredFields) {
+    for ($i = 0; $i < sizeof($finalForm); $i++) {
+      $form = array_slice($finalForm, 0, $i);
+      $keys = array_keys($form);
+      // If there is not a single field in required, which is not presented in form, then break
+      if (!array_filter($requiredFields, function ($field) use ($keys) {
+        return !in_array($field, $keys);
+      })) {
+        break;
+      }
+
+      $this->post($route, $form)
+        ->assertStatus(403);
+    }
+  }
 }

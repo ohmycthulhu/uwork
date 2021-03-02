@@ -75,10 +75,10 @@ Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
  */
 Route::group([
   'middleware' => 'auth:api'
-], function ($router) {
+], function (Illuminate\Routing\Router $router) {
   $router->group([
     'prefix' => '/user'
-  ], function ($router) {
+  ], function (Illuminate\Routing\Router $router) {
     $router->get('/', 'API\\AuthenticationController@user')->name('api.user');
 
     $router->put('/', 'API\\UserController@changeProfile')->name('api.user.update.profile');
@@ -90,19 +90,40 @@ Route::group([
     $router->group([
       'prefix' => '/profile',
       'as' => 'api.profile.'
-    ], function ($router) {
+    ], function (Illuminate\Routing\Router $router) {
       $router->post('/', 'API\\ProfileController@create')->name('create');
       $router->get('/', 'API\\ProfileController@get')->name('get');
       $router->post('/update', 'API\\ProfileController@update')->name('update');
 
       $router->get('/reviews', 'API\\ProfileController@getReviews')->name('reviews.get');
+
+      $router->group([
+        'prefix' => '/specialities',
+        'as' => 'specialities.'
+      ], function (Illuminate\Routing\Router $router) {
+        // Create specialities
+        $router->post('/', 'API\\Profile\\SpecialitiesController@create')
+          ->name('create');
+
+        // Get specialities
+        $router->get('/', 'API\\Profile\\SpecialitiesController@get')
+          ->name('list');
+
+        // Update specialities
+        $router->put('/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
+          ->name('update');
+
+        // Delete specialities
+        $router->delete('/{specialityId}', 'API\\Profile\\SpecialitiesController@delete')
+          ->name('delete');
+      });
     });
 
     // Favourites section
     $router->group([
       'prefix' =>'/favourites',
       'as' => 'api.fav.'
-    ], function ($router) {
+    ], function (Illuminate\Routing\Router $router) {
       // Route to get list of favourites
       $router->get('/', 'API\\FavouritesController@get')
         ->name('list');
@@ -120,7 +141,7 @@ Route::group([
     $router->group([
       'prefix' => 'cards',
       'as' => 'api.user.cards.'
-    ], function ($router) {
+    ], function (Illuminate\Routing\Router $router) {
       // Route to create
       $router->post('/', 'API\\CardsController@create')
         ->name('create');
@@ -143,7 +164,7 @@ Route::group([
 Route::group([
   'as' => 'api.profiles.',
   'prefix' => '/profiles'
-], function ($router) {
+], function (Illuminate\Routing\Router $router) {
   $router->get('/{id}', 'API\\ProfileController@getById')
     ->name('id');
   $router->post('/{profile}/views', 'API\\ProfileController@addView')
@@ -152,7 +173,7 @@ Route::group([
   $router->group([
     'prefix' => '/profiles',
     'as' => 'reviews.'
-  ], function ($router) {
+  ], function (Illuminate\Routing\Router $router) {
     $router->post('/{profile}/reviews', 'API\\ProfileController@createReview')
       ->name('create');
     $router->delete('/{profile}/reviews', 'API\\ProfileController@deleteReview')

@@ -27,6 +27,8 @@ class CreateProfileSpecialitiesTable extends Migration
               ->cascadeOnDelete()
               ->cascadeOnUpdate();
 
+            $table->string('name')->index();
+
             $table->float('price')->index();
 
             $table->string('category_path')

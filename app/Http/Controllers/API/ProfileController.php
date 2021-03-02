@@ -61,7 +61,7 @@ class ProfileController extends Controller
 
     // Attach specialities
     foreach ($specialities as $speciality) {
-      $profile->addSpeciality($speciality['category_id'], $speciality['price']);
+      $profile->addSpeciality($speciality['category_id'], $speciality['price'], $speciality['name']);
     }
 
     // Attach images
@@ -161,17 +161,17 @@ class ProfileController extends Controller
 
     $profile->save();
 
-    // Remove specialities, that needs to be removed
-    $specialitiesToRemove = $request->input('remove_specialities', []);
-    foreach ($specialitiesToRemove as $speciality) {
-      $profile->removeSpeciality($speciality);
-    }
-
-    // Add specialities, that needs to be added
-    $specialitiesToAdd = $request->input('add_specialities', []);
-    foreach ($specialitiesToAdd as $speciality) {
-      $profile->addSpeciality($speciality['category_id'], $speciality['price']);
-    }
+//    // Remove specialities, that needs to be removed
+//    $specialitiesToRemove = $request->input('remove_specialities', []);
+//    foreach ($specialitiesToRemove as $speciality) {
+//      $profile->removeSpeciality($speciality);
+//    }
+//
+//    // Add specialities, that needs to be added
+//    $specialitiesToAdd = $request->input('add_specialities', []);
+//    foreach ($specialitiesToAdd as $speciality) {
+//      $profile->addSpeciality($speciality['category_id'], $speciality['price']);
+//    }
 
     $profile->load(['media', 'specialities']);
 

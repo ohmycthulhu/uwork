@@ -94,13 +94,14 @@ class Profile extends Model implements HasMedia
    *
    * @param int $categoryId
    * @param float $price
+   * @param string $name
    *
    * @return Model
    */
-  public function addSpeciality(int $categoryId, float $price): Model
+  public function addSpeciality(int $categoryId, float $price, string $name): Model
   {
     return $this->specialities()
-      ->create(['category_id' => $categoryId, 'price' => $price]);
+      ->create(['category_id' => $categoryId, 'price' => $price, 'name' => $name]);
   }
 
   /**

@@ -19,6 +19,7 @@ class CreateProfileRequest extends FormRequest
       'specialities' => 'required|array',
       'specialities.*.category_id' => 'required|exists:App\Models\Categories\Category,id',
       'specialities.*.price' => 'required|numeric',
+      'specialities.*.name' => 'required|string',
       'images' => 'nullable|array',
       'images.*' => 'required|exists:App\Models\Media\Image,id',
       'avatar' => 'nullable|file',

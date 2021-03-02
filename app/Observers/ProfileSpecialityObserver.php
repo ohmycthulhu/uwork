@@ -29,9 +29,9 @@ class ProfileSpecialityObserver
      */
     public function updating(ProfileSpeciality $profileSpeciality)
     {
-      if (!$profileSpeciality->isDirty('category_id')) {
+      if ($profileSpeciality->isDirty('category_id')) {
         $profileSpeciality->category_path = $this->calculateCategoryPath($profileSpeciality->category_id);
-        $profileSpeciality->save();
+//        $profileSpeciality->save();
       }
     }
 

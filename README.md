@@ -1,4 +1,3 @@
-
 # UWork API
 
 <p>
@@ -12,12 +11,13 @@
 3. [Categories](#categories)
 4. [Locations](#locations)
 5. [Authentication](#authentication-and-authorization)
-6. [User controller](#users-controller)
+6. [User controller](#user-controller)
 7. [Profiles](#profiles)
-8. [Reviews and views](#reviews-and-views)
-9. [Search](#search)
-9. [Favourite services](#favourites)
-9. [Cards](#cards)
+8. [Specialities](#specialities)
+9. [Reviews and views](#reviews-and-views)
+10. [Search](#search)
+11. [Favourite services](#favourites)
+12. [Cards](#cards)
 
 <a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
 
@@ -102,10 +102,38 @@
     <td>User model</td>
 </tr>
 <tr>
+    <td>Profile</td>
+    <td>{
+      about: String,
+      phone: String,
+      picture: String|null,
+      reviews_count: Number,
+      rating: Number,
+      views_count: Number,
+      open_count: Number,
+      is_approved: Boolean,
+      specialities: Speciality[]
+    }
+    </td>
+    <td>Entity of speciality</td>
+</tr>
+<tr>
+    <td>Speciality</td>
+    <td>{
+            category: Category,
+            category_id: Int,
+            price: Float,
+            name: String,
+        }
+    </td>
+    <td>Entity of speciality</td>
+</tr>
+<tr>
     <td>SpecialityForm</td>
     <td>{
             category_id: Int,
             price: Float,
+            name: String,
         }
     </td>
     <td>Form for specifying specialities</td>
@@ -193,6 +221,7 @@
 <a id="phone-format" name="phone-format"></a>
 
 ## Phone format
+
 <p>
     Phone number should be in the following format:
     <span>{countryCode}{operatorCode}{number}</span>.
@@ -555,7 +584,7 @@
     </table>
 </div>
 
-<a id="users-controller" name="users-controller"></a>
+<a id="user-controller" name="user-controller"></a>
 
 ## User controller
 
@@ -792,9 +821,7 @@
                 about: String|null,
                 phone: String|null,
                 avatar: File|null,
-                images: Int[]|null,
-                remove_specialities: Int[]|null
-                add_specialities: SpecialityForm[]|null
+                images: Int[]|null
             }
         </td>
         <td>
@@ -810,6 +837,110 @@
     </tbody>
     </table>
 </div>
+
+<a id="specialities" name="specialities"></a>
+
+## Specialities
+
+<p>
+Routes used to manage specialities of the current user.
+Information about other user's specialities is returned from profile
+API. This section used to work only with the current user.
+</p>
+<p>
+Before using these routes, ensure user has created profile.
+Otherwise all routes will return 403 error. Once created,
+speciality can change name and price, but not category.
+</p>
+
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/user/profile/specialities
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                specialities: Specialities[]|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+              category_id: Number,
+              price: Number,
+              name: String,
+            }
+        </td>
+        <td>
+            {
+              errors: String[]|null,
+              error: String|null,
+              status: String|null,
+              speciality: Speciality|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/{specialityId}
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                price: Number|null,
+                name: String|null,
+            }
+        </td>
+        <td>
+            {
+              errors: String[]|null,
+              error: String|null,
+              status: String|null,
+              speciality: Speciality|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/{specialityId}
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                status: String|null,
+                deleted: Bool|null,
+            }
+        </td>
+    </tr>
+    </tbody>
+    </table>
 
 
 <a id="reviews-and-views" name="reviews-and-views"></a>
@@ -989,6 +1120,7 @@
 <a id="favourites" name="favourites"></a>
 
 ## Favourites
+
 <p>
 Routes to add services (profile's speciality) as favourite.
 User can't add his own services as favourite. Non authorized users
@@ -1058,6 +1190,7 @@ can't have favourites.
 <a id="cards" name="cards"></a>
 
 ## Saved cards
+
 <p>
 Saved cards are available only to authorized users.
 For creating card, user should provide:
