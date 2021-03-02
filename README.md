@@ -19,6 +19,12 @@
 11. [Favourite services](#favourites)
 12. [Cards](#cards)
 
+<p>
+  For using API endpoints, all requests should have "API-TOKEN" header
+  set to currently using token. Without it, all requests will return
+  403 error.
+</p>
+
 <a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
 
 ## Used notation

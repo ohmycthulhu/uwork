@@ -30,5 +30,6 @@
         <server name="TELESCOPE_ENABLED" value="false"/>
         <server name="NEXMO_KEY" value="ajsdh7ahs"/>
         <server name="NEXMO_SECRET" value="Sud7hsHS5sMA"/>
+        <server name="API_RESTRICTION_TOKEN" value=""/>
     </php>
 </phpunit>

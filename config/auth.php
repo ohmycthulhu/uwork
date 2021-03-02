@@ -109,4 +109,12 @@ return [
 
     'password_timeout' => 10800,
 
+    /*
+     * API restrictions
+    */
+    'api' => [
+      'token' => env('API_RESTRICTION_TOKEN', ''),
+      'public' => !env('API_RESTRICTION_TOKEN'),
+    ]
+
 ];
