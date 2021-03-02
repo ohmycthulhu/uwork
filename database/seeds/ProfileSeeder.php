@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ProfileSeeder extends Seeder
 {
@@ -23,7 +24,7 @@ class ProfileSeeder extends Seeder
             $user->profile()->create($p);
 
           foreach ($categories->shuffle()->slice(0, 3) as $category) {
-            $profile->addSpeciality($category->id, rand(100, 5000) / 10);
+            $profile->addSpeciality($category->id, rand(100, 5000) / 10, Str::random());
           }
 
           foreach ($users->shuffle()->take(3) as $u) {
