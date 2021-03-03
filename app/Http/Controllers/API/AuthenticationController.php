@@ -217,9 +217,9 @@ class AuthenticationController extends Controller
         return response()->json(['error' => 'Phone is not confirmed'], 403);
       }
 
-      ResetPasswordFacade::createSession($user, !!$email, !!$phone);
+      $uuid = ResetPasswordFacade::createSession($user, !!$email, !!$phone);
 
-      return response()->json(['status' => 'success']);
+      return response()->json(['status' => 'success', 'uuid' => $uuid]);
     }
 
     /**

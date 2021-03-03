@@ -42,7 +42,7 @@ class ResetPasswordHelper
    * @return string
   */
   public function createSession(User $user, bool $withEmail, bool $withPhone): string {
-    $uuid = \Illuminate\Support\Str::uuid();
+    $uuid = \Illuminate\Support\Str::random(5);
 
     $data = $this->generateData($user);
 

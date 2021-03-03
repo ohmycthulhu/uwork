@@ -477,7 +477,7 @@
     and get new UUID for verification.
 </p>
 <p>
-    For resetting password, you first send post request to /reset,
+    For resetting password, you first send post request to /passwords,
     then send request to /passwords/{uuid} to set new password. 
     UUID is valid for 4 hours and removed after first set.
 </p>
@@ -605,7 +605,8 @@
             {
                 errors: String[]|null,
                 error: String|null,
-                status: String|null
+                status: String|null,
+                uuid: String|null,
             }
         </td>
     </tr>
