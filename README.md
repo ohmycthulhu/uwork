@@ -1070,6 +1070,20 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
+            /api/user/profile/{profileId}/reviews
+        </td>
+        <td>
+            GET
+        </td>
+        <td></td>
+        <td>
+            {
+                reviews: Pagination&lt;Review&gt;|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/user/profiles/{profile}/reviews
         </td>
         <td>
