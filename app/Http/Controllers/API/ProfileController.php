@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ChangeImageDataRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
 use App\Http\Requests\Profile\EditProfileRequest;
 use App\Models\Media\Image;
 use App\Models\User\Profile;
+use App\Models\User\ProfileSpeciality;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,13 +23,22 @@ class ProfileController extends Controller
   protected $profile;
 
   /**
+   * Object for images
+   *
+   * @var Image
+  */
+  protected $image;
+
+  /**
    * Create instance of controller
    *
    * @param Profile $profile
+   * @param Image $image
   */
-  public function __construct(Profile $profile)
+  public function __construct(Profile $profile, Image $image)
   {
     $this->profile = $profile;
+    $this->image = $image;
   }
 
   /**
@@ -197,6 +208,45 @@ class ProfileController extends Controller
 
     return response()->json([
       'profile' => $profile
+    ]);
+  }
+
+  /**
+   * Assigns image to the speciality
+   *
+   * @param ChangeImageDataRequest $request
+   * @param int $imageId
+   *
+   * @return JsonResponse
+  */
+  public function setImageSpeciality(ChangeImageDataRequest $request, int $imageId): JsonResponse {
+    // Get profile
+    $profile = Auth::user()->profile()->first();
+
+    if (!$profile) {
+      return response()->json([
+        'error' => 'You don\'t have a profile'
+      ], 403);
+    }
+
+    // Get image
+    $image = $this->image::query()->media(Profile::class, $profile->id)->find($imageId);
+
+    if (!$image) {
+      return response()->json([
+        'error' => 'Image not found'
+      ], 404);
+    }
+
+    // Set image type
+    $image->setAdditionalModel(
+      ProfileSpeciality::class,
+      $request->input('speciality_id'),
+    );
+
+    // Return response
+    return response()->json([
+      'image' => $image,
     ]);
   }
 }

@@ -110,6 +110,21 @@
     <td>User model</td>
 </tr>
 <tr>
+    <td>Image&lt;T1, T2&gt;</td>
+    <td>{
+            id: Int,
+            path: String,
+            model: T1,
+            model_type: String,
+            model_id: Int,
+            model_additional: T2|null
+            model_additional_type: string
+            model_additional_id: Int
+        }
+    </td>
+    <td>User model</td>
+</tr>
+<tr>
     <td>Profile</td>
     <td>{
       about: String,
@@ -120,7 +135,8 @@
       views_count: Number,
       open_count: Number,
       is_approved: Boolean,
-      specialities: Speciality[]
+      specialities: Speciality[],
+      media: Image[]
     }
     </td>
     <td>Entity of speciality</td>
@@ -132,6 +148,7 @@
             category_id: Int,
             price: Float,
             name: String,
+            media: Image[],
         }
     </td>
     <td>Entity of speciality</td>
@@ -183,7 +200,7 @@
             opened: Boolean,
         }
     </td>
-    <td>Model represents the view of profile</td>
+    <td>View element</td>
 </tr>
 <tr>
     <td>Card</td>
@@ -196,7 +213,7 @@
             cvv: Int
         }
     </td>
-    <td>Model represents the view of profile</td>
+    <td>Model represents the view of card</td>
 </tr>
 <tr>
     <td>ObfuscatedCard</td>
@@ -208,7 +225,7 @@
             expiration_year: Int
         }
     </td>
-    <td>Model represents the view of profile</td>
+    <td>Model of card, but with hidden number</td>
 </tr>
 <tr>
     <td>Chat</td>
@@ -235,7 +252,7 @@
             chat_id: Int,
         }
     </td>
-    <td>Model represents the view of profile</td>
+    <td>Model represents the view of message</td>
 </tr>
 <tr>
     <td>Pagination&lt;T&gt;</td>
@@ -832,6 +849,12 @@
     Specialities contain information about price of work and
     category it's referred to. 
 </p>
+<p>
+  Images can be assigned to the certain specialities. To do that,
+  send request to /api/profile/images/{imageId} with specifying
+  speciality id. If you want image to not refer to any speciality,
+  send request with speciality_id=null
+</p>
 <hr>
 <p>
     Set of available routes are listed below 
@@ -924,6 +947,27 @@
                 status: String|null,
                 profile: User|null,
                 verification_uuid: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/images/{imageId}
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                speciality_id: Int|null,
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                image: Image|null,
             }
         </td>
     </tr>

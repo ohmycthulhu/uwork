@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Categories\Category;
+use App\Models\Media\Image;
 use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -16,12 +16,14 @@ use Tests\TestCase;
 class ProfileTest extends TestCase
 {
   use RefreshDatabase;
+
   /**
    * Method to test database
    *
    * @return void
-  */
-  public function testDatabase() {
+   */
+  public function testDatabase()
+  {
     // Create user
     $user = factory(User::class)->create();
 
@@ -51,7 +53,9 @@ class ProfileTest extends TestCase
     $user->forceDelete();
 
     // Delete categories
-    $categories->each(function ($c) { $c->forceDelete(); });
+    $categories->each(function ($c) {
+      $c->forceDelete();
+    });
 
     $this->assertDatabaseCount('profiles', 0);
   }
@@ -60,8 +64,9 @@ class ProfileTest extends TestCase
    * Test profile creation
    *
    * @return void
-  */
-  public function testCreation() {
+   */
+  public function testCreation()
+  {
     Notification::fake();
 
     // Create user
@@ -118,15 +123,18 @@ class ProfileTest extends TestCase
     $user->forceDelete();
 
     // Delete categories
-    $categories->each(function ($c) { $c->forceDelete(); });
+    $categories->each(function ($c) {
+      $c->forceDelete();
+    });
   }
 
   /**
    * Method to test updating profiles
    *
    * @return void
-  */
-  public function testUpdating() {
+   */
+  public function testUpdating()
+  {
     Notification::fake();
 
     // Create user and categories
@@ -143,7 +151,7 @@ class ProfileTest extends TestCase
       ->assertStatus(403);
 
     // Create profile
-    $user->profile()->create(factory(User\Profile::class)->make()->toArray());
+    $this->createProfile($user);
 
     // Try updating profile
     $verificationUuid = $this->post(route('api.profile.update'), $form)
@@ -163,6 +171,16 @@ class ProfileTest extends TestCase
       return true;
     });
 
+    /* Try to change image type */
+    $image = $profile->media()->inRandomOrder()->first();
+    $speciality = $profile->specialities()->inRandomOrder()->first();
+
+    $this->put(route('api.profile.images.update', ['imageId' => $image->id]), ['speciality_id' => $speciality->id])
+      ->assertOk();
+
+    $image = Image::find($image->id);
+    $this->assertEquals(User\ProfileSpeciality::class, $image->model_additional_type);
+    $this->assertEquals($speciality->id, $image->model_additional_id);
 
     // Delete user and categories
     $user->forceDelete();
@@ -174,8 +192,9 @@ class ProfileTest extends TestCase
    * And creating views
    *
    * @return void
-  */
-  public function testStatistics() {
+   */
+  public function testStatistics()
+  {
     // Create user and profile
     $userOwner = $this->createUser();
     $userGuest = $this->createUser();
@@ -235,8 +254,9 @@ class ProfileTest extends TestCase
    * Get creation form
    *
    * @return array
-  */
-  protected function getCreationForm(): array {
+   */
+  protected function getCreationForm(): array
+  {
     $categories = Category::query()->inRandomOrder()->take(3)->pluck('id');
     $images = [$this->uploadImage()];
     return [
@@ -254,8 +274,9 @@ class ProfileTest extends TestCase
    * Method to generate update form
    *
    * @return array
-  */
-  protected function getUpdateForm(): array {
+   */
+  protected function getUpdateForm(): array
+  {
     $categoriesToRemove = Category::query()->inRandomOrder()->take(3)->pluck('id');
     $categoriesToAdd = Category::query()->inRandomOrder()->take(3)->pluck('id');
     $images = [$this->uploadImage()];
@@ -275,9 +296,10 @@ class ProfileTest extends TestCase
    * Method to get uploaded file
    *
    * @return UploadedFile
-  */
-  protected function getUploadedFile(): UploadedFile {
-    $name = Str::random().".jpg";
+   */
+  protected function getUploadedFile(): UploadedFile
+  {
+    $name = Str::random() . ".jpg";
 
     return new UploadedFile(storage_path('test/image.jpg'), $name, 'image/jpeg', null, true);
   }
@@ -286,8 +308,9 @@ class ProfileTest extends TestCase
    * Upload image
    *
    * @return int
-  */
-  protected function uploadImage(): int {
+   */
+  protected function uploadImage(): int
+  {
     $form = [
       'image' => $this->getUploadedFile(),
     ];

@@ -3,12 +3,14 @@
 namespace App\Models\Media;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\Models\Media;
 
 class Image extends Media
 {
   protected $table = 'media';
+
   /**
    * Method to attach empty elements to model
    *
@@ -27,6 +29,30 @@ class Image extends Media
     $query->update(['model_type' => $modelType, 'model_id' => $modelId]);
 
     return $query->get();
+  }
+
+  /**
+   * Sets additional model
+   *
+   * @param string $modelType
+   * @param int $modelId
+   *
+   * @return $this
+  */
+  public function setAdditionalModel(string $modelType, int $modelId): Image {
+    $this->model_additional_type = $modelType;
+    $this->model_additional_id = $modelId;
+    $this->save();
+    return $this;
+  }
+
+  /**
+   * Relation to additional model
+   *
+   * @return MorphTo
+   */
+  public function modelAdditional(): MorphTo {
+    return $this->morphTo();
   }
 
   /**
@@ -53,5 +79,19 @@ class Image extends Media
   {
     return $query->where('model_type', '')
       ->where('model_id', 0);
+  }
+
+  /**
+   * Scope by media information
+   *
+   * @param Builder $query
+   * @param string $type
+   * @param int $id
+   *
+   * @return Builder
+  */
+  public function scopeMedia(Builder $query, string $type, int $id): Builder {
+    return $query->where('model_type', $type)
+      ->where('id', $id);
   }
 }

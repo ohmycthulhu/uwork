@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\Categories\Category;
+use App\Models\Media\Image;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -181,6 +183,15 @@ class Profile extends Model implements HasMedia
   */
   public function views(): HasMany {
     return $this->hasMany(ProfileView::class, 'profile_id');
+  }
+
+  /**
+   * Override media relation
+   *
+   * @return MorphMany
+  */
+  public function media(): MorphMany {
+    return $this->morphMany(Image::class, 'model');
   }
 
   /**

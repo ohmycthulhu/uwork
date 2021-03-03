@@ -3,12 +3,14 @@
 namespace App\Models\User;
 
 use App\Models\Categories\Category;
+use App\Models\Media\Image;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,6 +71,15 @@ class ProfileSpeciality extends Model
   */
   public function category(): BelongsTo {
     return $this->belongsTo(Category::class, 'category_id');
+  }
+
+  /**
+   * Relation to media images
+   *
+   * @return MorphMany
+  */
+  public function media(): MorphMany {
+    return $this->morphMany(Image::class, 'modelAdditional');
   }
 
   /**

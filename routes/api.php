@@ -101,6 +101,8 @@ Route::group([
         ->name('get');
       $router->post('/update', 'API\\ProfileController@update')
         ->name('update');
+      $router->put('/images/{imageId}', 'API\\ProfileController@setImageSpeciality')
+        ->name('images.update');
 
       $router->get('/reviews', 'API\\Profile\\ReviewsController@get')
         ->name('reviews.get');
@@ -204,14 +206,14 @@ Route::group([
     ->name('views.create');
 
   $router->group([
-    'prefix' => '/profiles',
+    'prefix' => '/{profile}',
     'as' => 'reviews.'
   ], function (Illuminate\Routing\Router $router) {
-    $router->get('/{profile}/reviews', 'API\\Profile\\ReviewsController@getById')
+    $router->get('/reviews', 'API\\Profile\\ReviewsController@getById')
       ->name('create');
-    $router->post('/{profile}/reviews', 'API\\Profile\\ReviewsController@create')
+    $router->post('/reviews', 'API\\Profile\\ReviewsController@create')
       ->name('create');
-    $router->delete('/{profile}/reviews', 'API\\Profile\\ReviewsController@delete')
+    $router->delete('/reviews', 'API\\Profile\\ReviewsController@delete')
       ->name('delete');
   });
 });
