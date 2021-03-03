@@ -38,6 +38,12 @@ class Profile extends Model implements HasMedia
     'is_approved',
   ];
 
+  protected $reviewRatingTypes = [
+    'rating_time',
+    'rating_quality',
+    'rating_price',
+  ];
+
   /**
    * Methods
    */
@@ -51,7 +57,20 @@ class Profile extends Model implements HasMedia
     $reviewsCount = $this->reviews()->count();
     if ($reviewsCount != $this->reviews_count) {
       $this->reviews_count = $reviewsCount;
-      $this->rating = $reviewsCount > 0 ? ($this->reviews()->sum('rating') / $reviewsCount) : 0;
+      // Calculate each rating
+      $ratingTypes = $this->reviewRatingTypes;
+      foreach ($ratingTypes as $index => $type) {
+        $this->{$type} = $reviewsCount > 0 ? ($this->reviews()->sum($type) / $reviewsCount) : 0;
+      }
+
+      // Update overall rating
+      if ($reviewsCount > 0) {
+        $ratProd = array_reduce($ratingTypes, function ($acc, $type) { return $acc * $this->{$type} / 5; }, 1);
+        $ratSum = array_reduce($ratingTypes, function ($acc, $type) { return $acc + $this->{$type} / 5 ; }, 0);
+        $this->rating = sizeof($ratingTypes) * $ratProd / $ratSum;
+      } else {
+        $this->rating = 0;
+      }
 
       $this->save();
     }

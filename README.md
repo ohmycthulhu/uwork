@@ -131,7 +131,9 @@
       phone: String,
       picture: String|null,
       reviews_count: Number,
-      rating: Number,
+      rating_quality: Number,
+      rating_price: Number,
+      rating_time: Number,
       views_count: Number,
       open_count: Number,
       is_approved: Boolean,
@@ -169,7 +171,9 @@
             id: Int,
             headline: String,
             text: String,
-            rating: Int,
+            rating_quality: Int,
+            rating_price: Int,
+            rating_time: Int,
         }
     </td>
     <td>Model that represents review</td>
@@ -179,7 +183,9 @@
     <td>{
             headline: String,
             text: String,
-            rating: Int,
+            rating_quality: Int,
+            rating_price: Int,
+            rating_time: Int,
         }
     </td>
     <td>Form for creating review</td>

@@ -16,7 +16,9 @@ class CreateReviewFormRequest extends FormRequest
     return [
       'headline' => 'required|string',
       'text' => 'required|string',
-      'rating' => 'nullable|numeric|min:1|max:5',
+      'rating_quality' => 'required|numeric|min:1|max:5',
+      'rating_time' => 'required|numeric|min:1|max:5',
+      'rating_price' => 'required|numeric|min:1|max:5',
     ];
   }
 }

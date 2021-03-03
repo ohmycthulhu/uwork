@@ -9,6 +9,9 @@ $factory->define(\App\Models\Profile\Review::class, function (Faker $faker) {
     'headline' => $faker->words(5, true),
     'text' => $faker->text,
     'ip_addr' => $faker->ipv4,
+    'rating_quality' => $faker->numberBetween(1, 5),
+    'rating_time' => $faker->numberBetween(1, 5),
+    'rating_price' => $faker->numberBetween(1, 5),
   ];
 });
 

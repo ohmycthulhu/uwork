@@ -14,7 +14,7 @@ class Review extends Model
 
   protected $fillable = [
     'headline', 'text', 'user_id', 'profile_id', 'speciality_id',
-    'ip_addr'
+    'ip_addr', 'rating_quality', 'rating_time', 'rating_price'
   ];
 
   /**

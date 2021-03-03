@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Categories\Category;
 use App\Models\Media\Image;
+use App\Models\Profile\Review;
 use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -206,7 +207,7 @@ class ProfileTest extends TestCase
     $this->post(route('api.profiles.reviews.delete', ['profile' => $profile->id]))
       ->assertStatus(403);
 
-    $form = ['headline' => Str::random(), 'text' => Str::random(64), 'rating' => 3];
+    $form = factory(Review::class)->make()->toArray();
 
     // Send request to create review from same user
     Auth::login($userOwner);
