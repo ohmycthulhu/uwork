@@ -14,7 +14,7 @@ class District extends Model
 
   protected $fillable = ['name'];
 
-  protected $visible = ['id', 'name', 'city', 'city_idz'];
+  protected $visible = ['id', 'name', 'city', 'city_id'];
 
   public $translatable = ['name'];
 

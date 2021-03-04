@@ -94,4 +94,13 @@ class Image extends Media
     return $query->where('model_type', $type)
       ->where('id', $id);
   }
+
+  /**
+   * Gets url attribute
+   *
+   * @return string
+  */
+  public function getUrlAttribute(): string {
+    return $this->getUrl();
+  }
 }

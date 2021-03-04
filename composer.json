@@ -19,8 +19,10 @@
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
         "laravel/framework": "^7.29",
         "laravel/nexmo-notification-channel": "^2.5",
+        "laravel/nova": "*",
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.5",
+        "optimistdigital/nova-translatable": "^1.7",
         "spatie/eloquent-sortable": "^3.8",
         "spatie/laravel-medialibrary": "^7.0.0",
         "spatie/laravel-translatable": "*",
@@ -70,5 +72,11 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./nova"
+        }
+    ]
 }

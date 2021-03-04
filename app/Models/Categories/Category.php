@@ -33,6 +33,8 @@ class Category extends Model implements Slugable
 
     protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent'];
 
+
+
     /**
      * Method to search similar categories
      *
