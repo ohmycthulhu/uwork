@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Text;
 
 class Category extends Resource
@@ -51,6 +52,8 @@ class Category extends Resource
       Text::make(__('Slug'), 'slug')
         ->translatable()
         ->onlyOnDetail(),
+      Image::make(__('Icon Default'), 'icon_default')->hideFromIndex(),
+      Image::make(__('Icon Selected'), 'icon_selected')->hideFromIndex(),
       BelongsTo::make(__('Category'), 'parent', Category::class),
       HasMany::make(__('Subcategories'), 'children', Category::class),
     ];

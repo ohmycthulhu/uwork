@@ -57,6 +57,8 @@
             name: TString,
             slug: TString,
             id: Int,
+            icon_default: String|null,
+            icon_active: String|null,
             parent_id: Int|null,
             children: Category[],
             parent: Category|null

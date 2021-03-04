@@ -22,7 +22,7 @@ class Category extends Model implements Slugable
     // Route to specific category
     public static $slugRoute = 'api.categories.slug';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'icon_default', 'icon_selected'];
 
     /**
      * Translatable fields
