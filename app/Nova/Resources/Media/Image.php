@@ -25,6 +25,8 @@ class Image extends Resource
    */
   public static $title = 'id';
 
+  public static $displayInNavigation = false;
+
   /**
    * Get the fields displayed by the resource.
    *
