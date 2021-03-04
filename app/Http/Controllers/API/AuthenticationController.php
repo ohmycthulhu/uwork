@@ -161,6 +161,10 @@ class AuthenticationController extends Controller
       // Get params
       $params = $request->validated();
 
+      if (!$this->checkUserExists($request->input('email'), $request->input('phone'))) {
+        return response()->json(['error' => 'User not exists'], 404);
+      }
+
       // Try to log in
       $token = auth()->attempt($params);
 
@@ -245,5 +249,26 @@ class AuthenticationController extends Controller
       ResetPasswordFacade::removeUuid($uuid);
 
       return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * Check if user exists
+     *
+     * @param ?string $email
+     * @param ?string $phone
+     *
+     * @return bool
+    */
+    protected function checkUserExists(?string $email, ?string $phone): bool {
+      $q = $this->user::query();
+
+      if ($email) {
+        $q->email($email);
+      }
+      if ($phone) {
+        $q->phone($phone);
+      }
+
+      return !!$q->first();
     }
 }
