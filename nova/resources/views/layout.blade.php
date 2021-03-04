@@ -94,8 +94,5 @@
     <script>
         Nova.liftOff()
     </script>
-
-
-    <script src="{{ asset('/js/app.js') }}" async></script>
 </body>
 </html>
