@@ -226,3 +226,13 @@ Route::get('autocomplete', 'API\\SearchController@getAutocomplete')
  */
 Route::post('/files', 'API\\FileController@uploadImage')
   ->name('api.files');
+
+/*
+ * Info routes
+ */
+Route::get('/info', 'API\\InfoController@index')
+  ->name('api.info');
+Route::get('/info/about', 'API\\InfoController@about')
+  ->name('api.info.about');
+Route::get('/info/faq', 'API\\InfoController@faq')
+  ->name('api.info.faq');

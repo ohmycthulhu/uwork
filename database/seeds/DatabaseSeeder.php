@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProfileSeeder::class);
         $this->call(AdministratorSeeder::class);
         $this->call(MessengerSeeder::class);
+        $this->call(InfoSeeder::class);
       }
     }
 }

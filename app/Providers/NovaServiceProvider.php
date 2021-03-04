@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use Froala\NovaFroalaField\Froala;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Cards\Help;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
+use OptimistDigital\NovaSettings\NovaSettings;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -17,6 +20,15 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function boot()
     {
         parent::boot();
+        NovaSettings::addSettingsFields([
+          Froala::make(__('About Us'), 'about_us')
+            ->translatable(),
+
+          Text::make(__('Phone'), 'phone'),
+
+          Text::make(__('Mobile Application')." Android", 'app_android'),
+          Text::make(__('Mobile Application')." iOS", 'app_ios'),
+        ]);
     }
 
     /**
@@ -75,9 +87,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      *
      * @return array
      */
-    public function tools()
+    public function tools(): array
     {
-        return [];
+        return [
+          new NovaSettings(),
+        ];
     }
 
     /**

@@ -8,17 +8,18 @@
 
 1. [Notation](#used-notation-in-documentation)
 2. [Phone Format](#phone-format)
-3. [Categories](#categories)
-4. [Locations](#locations)
-5. [Authentication](#authentication-and-authorization)
-6. [User controller](#user-controller)
-7. [Profiles](#profiles)
-8. [Specialities](#specialities)
-9. [Reviews and views](#reviews-and-views)
-10. [Search](#search)
-11. [Favourite services](#favourites)
-12. [Cards](#cards)
-13. [Messages](#messages)
+3. [Information](#information)
+4. [Categories](#categories)
+5. [Locations](#locations)
+6. [Authentication](#authentication-and-authorization)
+7. [User controller](#user-controller)
+8. [Profiles](#profiles)
+9. [Specialities](#specialities)
+10. [Reviews and views](#reviews-and-views)
+11. [Search](#search)
+12. [Favourite services](#favourites)
+13. [Cards](#cards)
+14. [Messages](#messages)
 
 <p>
   For using API endpoints, all requests should have "API-TOKEN" header
@@ -65,6 +66,17 @@
         }
     </td>
     <td>Entity representing some category</td>
+</tr>
+<tr>
+    <td>FAQ</td>
+    <td>{
+            id: Int,
+            question: TString,
+            answer: TString,
+            order: Int
+        }
+    </td>
+    <td>Element of FAQ section</td>
 </tr>
 <tr>
     <td>Region</td>
@@ -298,7 +310,73 @@
     "8 905 002 34 56", "8 (905)002-34-56" are not.
 </p>
 
+<a id="information" name="information"></a>
 
+## Information
+
+<p>
+  Information about phone number, links to mobile applications,
+  items in FAQ section and text in "About us"
+</p>
+<table>
+<thead>
+<th>Route</th>
+<th>Method</th>
+<th>Description</th>
+<th>Response</th>
+</thead>
+<tbody>
+<tr>
+    <td>
+        /api/info
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+        Returns general information
+    </td>
+    <td>
+        {
+          phone: String|null,
+          apps: {android: String|null, ios: String|null}
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/info/about
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+      Returns multilingual text for about us section 
+    </td>
+    <td>
+        {
+            about_us: TString
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/info/faq
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+      Returns items in FAQ section
+    </td>
+    <td>
+        {
+            faq: FAQ[]
+        }
+    </td>
+</tr>
+</tbody>
+</table>
 
 <a id="categories" name="categories"></a>
 
