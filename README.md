@@ -62,10 +62,16 @@
             icon_active: String|null,
             parent_id: Int|null,
             children: Category[],
-            parent: Category|null
+            parent: Category|null,
+            is_baseline: bool,
+            is_shown: bool
         }
     </td>
-    <td>Entity representing some category</td>
+  <td>
+    Entity representing some category. If is_baseline is true,
+    categories' children won't be returned, but on search this category
+    can be returned as parent.
+  </td>
 </tr>
 <tr>
     <td>FAQ</td>
@@ -424,6 +430,22 @@
         {
             categories: Category|null,
             error: String|null
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/categories/search
+    </td>
+    <td>
+        GET, {keyword: string}
+    </td>
+    <td>
+      Performs search by category, including hidden ones
+    </td>
+    <td>
+        {
+            categories: Category|null,
         }
     </td>
 </tr>

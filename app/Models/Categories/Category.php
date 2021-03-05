@@ -31,9 +31,9 @@ class Category extends Model implements Slugable
       'name', 'slug'
     ];
 
-    protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent'];
+    protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_baseline', 'is_shown'];
 
-
+    protected $appends = ['is_shown'];
 
     /**
      * Method to search similar categories
@@ -66,7 +66,12 @@ class Category extends Model implements Slugable
      * @return HasMany
     */
     public function children(): HasMany {
-      return $this->hasMany(Category::class, 'parent_id');
+      $relation = $this->hasMany(Category::class, 'parent_id');
+      if ($this->is_baseline) {
+        // Set impossible condition to prevent loading children
+        $relation->whereNull('id');
+      }
+      return $relation;
     }
 
     /*
@@ -142,5 +147,19 @@ class Category extends Model implements Slugable
         'parent_id' => $this->parent_id,
         'name' => $this->name,
       ];
+    }
+
+    /**
+     * Attribute to show if category should be shown
+     * It is calculated depending on is_baseline field of parent
+     *
+     * @return boolean
+    */
+    public function getIsShownAttribute(): bool {
+      if ($this->parent_id && !$this->parent) {
+        $this->load('parent');
+      }
+
+      return !$this->parent || !$this->parent->is_baseline;
     }
 }

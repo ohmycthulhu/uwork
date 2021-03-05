@@ -149,4 +149,19 @@ class SearchController extends Controller
         'suggestions' => $suggestions,
       ]);
     }
+
+    /**
+     * Method search category
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+    */
+    public function searchCategories(Request $request): JsonResponse {
+      $keyword = $request->input('keyword', '');
+      $categories = $this->category::search("*$keyword*")->take(10)->get()->load('parent');
+      return response()->json([
+        'categories' => $categories
+      ]);
+    }
 }

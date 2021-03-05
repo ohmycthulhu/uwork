@@ -6,6 +6,7 @@ use App\Nova\Filters\CategoriesFilter;
 use App\Nova\Resource;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -55,6 +56,7 @@ class Category extends Resource
       Image::make(__('Icon Default'), 'icon_default')->hideFromIndex(),
       Image::make(__('Icon Selected'), 'icon_selected')->hideFromIndex(),
       BelongsTo::make(__('Category'), 'parent', Category::class),
+      Boolean::make(__('Baseline'), 'is_baseline'),
       HasMany::make(__('Subcategories'), 'children', Category::class),
     ];
   }

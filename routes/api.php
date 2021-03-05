@@ -24,6 +24,9 @@ Route::group([
   $router->get('/', 'API\\CategoriesController@index')
     ->name('api.categories.all');
 
+  $router->get('/search', 'API\\SearchController@searchCategories')
+    ->name('api.categories.search');
+
   // Get category information
   $router->get('/{slug}', 'API\\CategoriesController@bySlug')
     ->name('api.categories.slug');
