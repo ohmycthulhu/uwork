@@ -32,6 +32,10 @@ class CreateMessagesTable extends Migration
               ->cascadeOnUpdate()
               ->cascadeOnDelete();
 
+            $table->dateTime('read_at')
+              ->nullable()
+              ->index();
+
             $table->softDeletes();
             $table->timestamps();
         });

@@ -186,6 +186,9 @@ Route::group([
   $router->get('/{user}', 'API\\MessengerController@getMessages')
     ->name('get');
 
+  $router->put('/{user}', 'API\\MessengerController@markRead')
+    ->name('read');
+
   $router->post('/{user}', 'API\\MessengerController@sendMessage')
     ->name('create');
 

@@ -44,9 +44,11 @@ class MessengerController extends Controller
    * @return JsonResponse
   */
   public function getChats(): JsonResponse {
-    $chats = $this->chat::user(Auth::user())->get();
+    $chats = $this->chat::user(Auth::user())
+      ->withCount('unreadMessages')
+      ->get();
     return response()->json([
-      'chats' => $chats
+      'chats' => $chats,
     ]);
   }
 
@@ -69,7 +71,11 @@ class MessengerController extends Controller
     }
 
     // Manage the chat
-    $chat = $this->chat::query()->user($currentUser)->user($user)->withTrashed()->first();
+    $chat = $this->chat::query()
+      ->user($currentUser)
+      ->user($user)
+      ->withTrashed()
+      ->first();
 
     if (!$chat) {
       $chat = $this->chat::make($currentUser, $user);
@@ -96,7 +102,9 @@ class MessengerController extends Controller
    */
   public function deleteChat(User $user): JsonResponse
   {
-    $chat = $this->chat::user($user)->user(Auth::user())->first();
+    $chat = $this->chat::user($user)
+      ->user(Auth::user())
+      ->first();
     if ($chat) {
       $chat->delete();
     }
@@ -115,7 +123,10 @@ class MessengerController extends Controller
    */
   public function getMessages(User $user): JsonResponse
   {
-    $chat = $this->chat::user($user)->user(Auth::user())->first();
+    $chat = $this->chat::user($user)
+      ->user(Auth::user())
+      ->withCount('unreadMessages')
+      ->first();
 
     if (!$chat) {
       return response()->json([
@@ -126,6 +137,7 @@ class MessengerController extends Controller
 
     return response()->json([
       'messages' => $messages,
+      'chat' => $chat,
     ]);
   }
 
@@ -154,6 +166,32 @@ class MessengerController extends Controller
     return response()->json([
       'messages' => $messages,
       'keyword' => "*".$request->input('keyword', '')."*"
+    ]);
+  }
+
+  /**
+   * Mark chat as read
+   *
+   * @param User $user
+   *
+   * @return JsonResponse
+  */
+  public function markRead(User $user): JsonResponse
+  {
+    $currentUser = Auth::user();
+    $chat = $this->chat::user($user)
+      ->user($currentUser)
+      ->first();
+    if (!$chat) {
+      return response()->json([
+        'error' => 'Chat not found'
+      ], 404);
+    }
+    $count = $chat->markAsRead($currentUser);
+    return response()->json([
+      'status' => 'success',
+      'count' => !!$count,
+      'chat' => $chat,
     ]);
   }
 }

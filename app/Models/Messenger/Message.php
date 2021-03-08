@@ -14,7 +14,7 @@ class Message extends Model
   use Searchable;
 
   protected $fillable = [
-    'text', 'attachment', 'user_id',
+    'text', 'attachment', 'user_id', 'read_at',
   ];
 
   public function toSearchableArray(): array
@@ -60,5 +60,18 @@ class Message extends Model
   */
   public function scopeChat(Builder $query, Chat $chat): Builder {
     return $query->where('chat_id', $chat->id);
+  }
+
+  /**
+   * Scope by unread
+   *
+   * @param Builder $query
+   * @param User $receiver
+   *
+   * @return Builder
+  */
+  public function scopeUnread(Builder $query, User $receiver): Builder {
+    return $query->where('user_id', '<>', $receiver->id)
+      ->whereNull('read_at');
   }
 }

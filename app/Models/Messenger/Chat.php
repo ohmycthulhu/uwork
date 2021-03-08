@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Chat extends Model
@@ -29,6 +30,18 @@ class Chat extends Model
     {
       parent::boot();
       self::addGlobalScope(new OrderScope('last_message_time', 'desc'));
+    }
+
+    /**
+     * Function to mark messages as read
+     *
+     * @param User $user
+     *
+     * @return int
+    */
+    public function markAsRead(User $user): int {
+      $query = $this->messages()->unread($user);
+      return $query->update(['read_at' => date('Y-m-d H:i:s')]);
     }
 
     /**
@@ -115,6 +128,16 @@ class Chat extends Model
     */
     public function acceptor(): BelongsTo {
       return $this->belongsTo(User::class, 'acceptor_id');
+    }
+
+    /**
+     * Relation to unread messages
+     *
+     * @return HasMany
+    */
+    public function unreadMessages(): HasMany {
+      return $this->messages()
+        ->unread(Auth::user());
     }
 
     /**

@@ -262,6 +262,7 @@
             initiator_id: Int,
             acceptor_id: Int,
             last_message_time: Datetime|null
+            unread_messages_count: Int|null
         }
     </td>
     <td>Grouping entity for messages</td>
@@ -276,6 +277,7 @@
             user_id: Int,
             chat: Chat,
             chat_id: Int,
+            read_at: Datetime|null,
         }
     </td>
     <td>Model represents the view of message</td>
@@ -1553,6 +1555,9 @@ Routes for using messenger system. Only authenticated users can use these
 routes. User can't send message to itself. Chats are created automatically,
 but can be deleted manually.
 </p>
+<p>
+To mark all messages as read, send PUT request to /api/chats/{userId}
+</p>
 <hr />
 <table>
     <thead>
@@ -1631,6 +1636,25 @@ but can be deleted manually.
                 error: String|null,
                 status: String|null,
                 message: Message|null,
+                chat: Chat|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/chats/{userId}
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                status: String|null,
+                count: Int|null,
+                chat: Chat|null,
             }
         </td>
     </tr>
