@@ -59,17 +59,17 @@ class User extends Authenticatable implements JWTSubject
       'default' => true,
     ]
   ];
-
-  /**
-   * Method to verify phone number
-   *
-   * @return $this
-  */
-  public function verifyPhone(): User {
-    $this->phone_verified = true;
-    $this->save();
-    return $this;
-  }
+//
+//  /**
+//   * Method to verify phone number
+//   *
+//   * @return $this
+//  */
+//  public function verifyPhone(): User {
+//    $this->phone_verified = true;
+//    $this->save();
+//    return $this;
+//  }
 
   /**
    * Set phone
@@ -81,7 +81,7 @@ class User extends Authenticatable implements JWTSubject
   */
   public function setPhone(string $phone, bool $verified = false): User {
     $this->phone = $phone;
-    $this->phone_verified = $verified;
+//    $this->phone_verified = $verified;
     $this->save();
 
     return $this;
@@ -173,9 +173,9 @@ class User extends Authenticatable implements JWTSubject
    *
    * @return Builder
   */
-  public function scopeVerified(Builder $query, bool $verified = true): Builder {
-    return $query->where('phone_verified', $verified);
-  }
+//  public function scopeVerified(Builder $query, bool $verified = true): Builder {
+//    return $query->where('phone_verified', $verified);
+//  }
 
   /**
    * Scope by phone

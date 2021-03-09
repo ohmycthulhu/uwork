@@ -24,7 +24,6 @@ $factory->define(User::class, function (Faker $faker) {
         'father_name' => $faker->firstName,
         'email' => $faker->unique()->safeEmail,
         'phone' => $faker->unique()->phoneNumber,
-        'phone_verified' => true,
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
     ];
 });

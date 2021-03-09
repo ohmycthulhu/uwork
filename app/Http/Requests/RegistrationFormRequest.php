@@ -20,8 +20,8 @@ class RegistrationFormRequest extends FormRequest
       'last_name' => 'required|string|min:3|max:60',
       'father_name' => 'required|string|min:3|max:60',
       'password' => 'required|string|confirmed',
-      'email' => 'required|unique:users|email',
-      'phone' => 'required|unique:users|string|min:11'
+      'email' => 'nullable|unique:users|email',
+      'verification_uuid' => 'required|string|min:11'
     ];
   }
 }

@@ -56,12 +56,15 @@ Route::get('/cities/{id}/districts', 'API\\LocationController@cityDistricts')
 /*
  * Authentication methods
  */
+// Route to set phone number
+Route::post('/phones', 'API\\AuthenticationController@promptPhone')
+  ->name('api.phones');
 Route::post('/register', 'API\\AuthenticationController@register')
   ->name('api.register');
 Route::post('/verify/{uuid}', 'API\\AuthenticationController@verifyPhoneNumber')
   ->name('api.verify');
-Route::post('/resend/{phone}', 'API\\AuthenticationController@resendVerification')
-  ->name('api.resend');
+//Route::post('/resend/{phone}', 'API\\AuthenticationController@resendVerification')
+//  ->name('api.resend');
 Route::post('/login', 'API\\AuthenticationController@login')
   ->name('api.login');
 Route::post('/passwords', 'API\\AuthenticationController@resetPassword')

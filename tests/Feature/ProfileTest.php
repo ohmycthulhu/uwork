@@ -109,7 +109,6 @@ class ProfileTest extends TestCase
     // Check profile phone and phone verification
     $p = User\Profile::query()->find($profile['id']);
     $this->assertEquals($form['phone'], $p->phone);
-    $this->assertTrue(!!$p->phone_verified);
     $this->assertEquals(1, $p->media()->count());
     if ($p->picture) {
       $this->assertFileExists(storage_path("app/public/{$p->picture}"));

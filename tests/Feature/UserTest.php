@@ -11,8 +11,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Void_;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -44,6 +46,43 @@ class UserTest extends TestCase
   }
 
   /**
+   * Test phone verification
+   *
+   * @return void
+  */
+  public function testVerification () {
+    Notification::fake();
+
+    $phone = "994512318822";
+
+    // Send request without phone
+    $this->post(route('api.phones'))
+      ->assertStatus(403);
+
+    // Send request to set phone
+    $verUuid = $this->post(route('api.phones'), compact('phone'))
+      ->assertOk()
+      ->json('verification_uuid');
+
+    $verCode = Cache::get(PhoneVerificationFacade::getCacheKey($verUuid))['code'];
+
+    // Send request with existing phone
+    $verUuid2 = $this->post(route('api.phones'), compact('phone'))
+      ->assertOk()
+      ->json('verification_uuid');
+
+    $verCode2 = Cache::get(PhoneVerificationFacade::getCacheKey($verUuid2))['code'];
+
+    // Send wrong verification code
+    $this->post(route('api.verify', ['uuid' => $verUuid]), ['code' => $verCode])
+      ->assertOk();
+
+    // Resend code
+    $this->post(route('api.verify', ['uuid' => $verUuid2]), ['code' => $verCode2])
+      ->assertOk();
+  }
+
+  /**
    * Test registration
    *
    * @return void
@@ -52,73 +91,59 @@ class UserTest extends TestCase
   {
     Notification::fake();
 
-    $form = $this->userForm();
+    // Send request to set mobile phone
+    $phone = "994512318822";
 
-    for ($i = 0; $i < sizeof($form) - 1; $i++) {
-      $this->post(route('api.register'), array_slice($form, 0, $i))
-        ->assertStatus(403);
-    }
-
-    $uuid = $this->post(route('api.register'), $form)
+    $uuid = $this->post(route('api.phones'), ['phone' => $phone])
       ->assertOk()
       ->json('verification_uuid');
 
-    $this->assertNotNull($uuid);
+    // Send similar request with the same phone
 
-    $user = User::first();
+    $uuid2 = $this->post(route('api.phones'), ['phone' => $phone])
+      ->assertOk()
+      ->json('verification_uuid');
 
-    Notification::assertSentTo($user, VerifyPhoneNotification::class,
-      function ($notification) use ($user) {
-        $data = $notification->toArray($user);
+    // Verify mobile phones
+    $code1 = Cache::get(PhoneVerificationFacade::getCacheKey($uuid))['code'];
+    $code2 = Cache::get(PhoneVerificationFacade::getCacheKey($uuid2))['code'];
 
-        $this->assertArrayHasKey('code', $data);
-        $this->assertNotNull($data['code']);
-
-        return true;
-      });
-
-    $cached = Cache::get(PhoneVerificationFacade::getCacheKey($uuid));
-
-    $this->assertNotNull($cached);
-
-    $code = $cached['code'];
-
-    // Test code verification
-    $this->post(route('api.verify', ['uuid' => $uuid]))
-      ->assertStatus(403);
-    $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code])
+    $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code1])
       ->assertOk();
-    $user = User::first();
-    $this->assertEquals(true, $user->phone_verified);
+    $this->post(route('api.verify', ['uuid' => $uuid2]), ['code' => $code2]);
 
-    // Test code reset
-    $form = $this->userForm();
+    // Send partial requests
+    // Send request to register with the first code
+    $form = $this->userForm($uuid);
+    $this->sendPartialRequests(route('api.register'), $form, array_keys($form));
+    $userId = $this->post(route('api.register'), $form)
+      ->assertOk()
+      ->json('user.id');
+
+    // Verify if user was created
+    $this->assertNotNull(User::find($userId));
+    $this->assertEquals($phone, User::find($userId)->phone);
+
+    // Repeat request but with another code
+    $form = $this->userForm($uuid2);
     $this->post(route('api.register'), $form)
-      ->assertOk();
-
-    $phone = $form['phone'];
-
-    for ($i = 0; $i < 3; $i++) {
-      $this->post(route('api.resend', ['phone' => $phone]))
-        ->assertOk();
-    }
-    $this->post(route('api.resend', ['phone' => $phone]))
       ->assertStatus(403);
 
-    User::query()->forceDelete();
+    User::find($userId)->forceDelete();
   }
 
   /**
    * Get user form
    *
+   * @param string $uuid
+   *
    * @return array
   */
-  protected function userForm() {
+  protected function userForm(string $uuid): array {
     $model = factory(User::class)->make();
     $password = Str::random();
     return array_merge($model->toArray(), [
-      'phone' => $model->phone,
-      'email' => $model->email,
+      'verification_uuid' => $uuid,
       'password' => $password,
       'password_confirmation' => $password,
     ]);
@@ -132,21 +157,16 @@ class UserTest extends TestCase
   public function testLogin() {
     $password = Str::random();
     $user = factory(User::class)
-      ->create(['phone_verified' => false, 'password' => Hash::make($password)]);
+      ->create(['password' => Hash::make($password)]);
 
     $this->get(route('api.user'))
       ->assertStatus(401);
-
-    $this->post(route('api.login'), ['email' => $user->email, 'password' => $password])
-      ->assertStatus(403);
 
     $this->post(route('api.login'), ['email' => $user->email])
       ->assertStatus(403);
 
     $this->post(route('api.login'), ['phone' => $user->phone])
       ->assertStatus(403);
-
-    $user->verifyPhone();
 
     $token = $this->post(route('api.login'), ['phone' => $user->phone, 'password' => $password])
       ->assertOk()
@@ -173,13 +193,9 @@ class UserTest extends TestCase
     Notification::fake();
     // Create user
     $user = factory(User::class)
-      ->create(['phone_verified' => false]);
+      ->create();
 
-    // Send request to reset non-existing user
-    $this->post(route('api.reset'), ['phone' => $user->phone])
-      ->assertStatus(403);
-
-    $user->verifyPhone();
+//    $user->verifyPhone();
 
     // Send request to reset password
     $this->post(route('api.reset'), ['phone' => $user->phone])
@@ -278,7 +294,6 @@ class UserTest extends TestCase
 
       $u = User::query()->find($user->id);
       $this->assertEquals($newPhone, $u->phone);
-      $this->assertTrue(!!$u->phone_verified);
 
       return true;
     });

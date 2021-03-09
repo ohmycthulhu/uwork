@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Facades\PhoneVerificationFacade;
 use App\Facades\ResetPasswordFacade;
+use App\Helpers\PhoneVerificationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginFormRequest;
 use App\Http\Requests\PhoneVerificationRequest;
+use App\Http\Requests\RegisterPhoneRequest;
 use App\Http\Requests\RegistrationFormRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SetPasswordRequest;
@@ -35,6 +37,25 @@ class AuthenticationController extends Controller
     }
 
     /**
+     * Method to ask for phone verification
+     *
+     * @param RegisterPhoneRequest $request
+     *
+     * @return JsonResponse
+    */
+    public function promptPhone(RegisterPhoneRequest $request): JsonResponse {
+      $phone = $request->input('phone');
+
+      // Generate verification uuid
+      $uuid = PhoneVerificationFacade::createSession(null, null, null, $phone);
+
+      // Return uuid
+      return response()->json([
+        'verification_uuid' => $uuid,
+      ]);
+    }
+
+    /**
      * Registers new user
      *
      * @param RegistrationFormRequest $request
@@ -45,7 +66,21 @@ class AuthenticationController extends Controller
       // Try to create user
       $form = $request->validated();
 
+      $verUuid = $form['verification_uuid'];
+      $phone = PhoneVerificationFacade::getVerifiedPhone($verUuid);
+
+      if (!$phone) {
+        return response()->json(['error' => 'Phone is not verified'], 403);
+      } else {
+        PhoneVerificationFacade::removeVerifiedPhone($verUuid);
+      }
+
+      if ($this->user::phone($phone)->first()) {
+        return response()->json(['error' => 'Phone is already occupied'], 403);
+      }
+
       $form['password'] = Hash::make($form['password']);
+      $form['phone'] = $phone;
 
       try {
         $user = $this->user::create($form);
@@ -54,14 +89,10 @@ class AuthenticationController extends Controller
         return response()
           ->json(['error' => $e->getMessage()], 405);
       }
-      // Generate phone verification code and send
-      $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $form['phone']);
 
       // Return user and response
-
       return response()->json([
         'user' => $user,
-        'verification_uuid' => $uuid,
       ]);
     }
 
@@ -100,11 +131,17 @@ class AuthenticationController extends Controller
       $modelId = $verification['data']['id'];
       $modelClass = $verification['data']['class'];
       $phone = $verification['data']['phone'];
-      $model = $modelClass::query()->find($modelId);
+      $model = null;
+      if ($modelClass) {
+        $model = $modelClass::query()->find($modelId);
 
-      if ($model && !($model->phone === $phone && $model->phone_verified)) {
-        $model->setPhone($phone, true);
+        if ($model && $model->phone !== $phone) {
+          $model->setPhone($phone, true);
+        }
       }
+
+      $flag = $modelClass ? PhoneVerificationHelper::DELETE_ON_SUCCESS : PhoneVerificationHelper::SAVE_ON_SUCCESS;
+      PhoneVerificationFacade::checkCode($uuid, $code, $flag);
 
       return response()->json([
         'status' => 'success',
@@ -173,12 +210,6 @@ class AuthenticationController extends Controller
       }
 
       $user = Auth::user();
-      // Check if phone is verified
-      if (!$user->phone_verified) {
-        // If not verified, log out and return error
-        return response()->json(['error' => 'Phone is not verified'], 403);
-      }
-
 
       // Return token and user info
       return response()->json([
@@ -216,10 +247,6 @@ class AuthenticationController extends Controller
         $query->phone($phone);
       }
       $user = $query->first();
-
-      if (!$user->phone_verified) {
-        return response()->json(['error' => 'Phone is not confirmed'], 403);
-      }
 
       $uuid = ResetPasswordFacade::createSession($user, !!$email, !!$phone);
 

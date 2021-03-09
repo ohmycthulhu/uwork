@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\UseCase;
 
+use App\Facades\PhoneVerificationFacade;
 use App\Models\Categories\Category;
 use App\Models\User;
 use App\Models\User\Profile;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -83,26 +85,16 @@ class BasicUseCaseTest extends TestCase
     protected function createAccount(): string {
       $userForm = factory(User::class)->make();
       $form = $userForm->toArray();
+      $phone = $userForm->phone;
       $form['email'] = $userForm->email;
-      $form['phone'] = $userForm->phone;
+//      $form['phone'] = $userForm->phone;
+      $form['verification_uuid'] = $this->verifyPhone($phone);
       $form['password'] = Str::random();
       $form['password_confirmation'] = $form['password'];
 
       $response = $this->post(route('api.register'), $form)
         ->assertOk()
         ->json();
-
-      $user = User::find($response['user']['id']);
-      $uuid = $response['verification_uuid'];
-
-      Notification::assertSentTo($user, VerifyPhoneNotification::class, function ($n) use ($uuid, $user) {
-        $code = $n->toArray($user)['code'];
-
-        $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code])
-          ->assertOk();
-
-        return true;
-      });
 
       $token = $this->post(route('api.login'), $form)
         ->assertOk()
@@ -111,5 +103,22 @@ class BasicUseCaseTest extends TestCase
       Auth::logout();
 
       return $token;
+    }
+
+    /**
+     * Verify phone number
+     *
+     * @param string $phone
+     *
+     * @return string
+    */
+    protected function verifyPhone(string $phone): string {
+      $uuid = $this->post(route('api.phones'), ['phone' => $phone])
+        ->assertOk()
+        ->json('verification_uuid');
+      $code = Cache::get(PhoneVerificationFacade::getCacheKey($uuid))['code'];
+      $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code])
+        ->assertOk();
+      return $uuid;
     }
 }

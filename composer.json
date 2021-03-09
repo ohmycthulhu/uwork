@@ -23,6 +23,7 @@
         "laravel/nova": "*",
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.5",
+        "nexmo/client": "^2.4",
         "optimistdigital/nova-settings": "^3.1",
         "optimistdigital/nova-translatable": "^1.7",
         "spatie/eloquent-sortable": "^3.8",

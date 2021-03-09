@@ -6,20 +6,21 @@
 
 ### Table of contents
 
-1. [Notation](#used-notation-in-documentation)
-2. [Phone Format](#phone-format)
-3. [Information](#information)
-4. [Categories](#categories)
-5. [Locations](#locations)
-6. [Authentication](#authentication-and-authorization)
-7. [User controller](#user-controller)
-8. [Profiles](#profiles)
-9. [Specialities](#specialities)
-10. [Reviews and views](#reviews-and-views)
-11. [Search](#search)
-12. [Favourite services](#favourites)
-13. [Cards](#cards)
-14. [Messages](#messages)
+1.  [Notation](#used-notation-in-documentation)
+2.  [Phone Format](#phone-format)
+3.  [Information](#information)
+4.  [Categories](#categories)
+5.  [Locations](#locations)
+6.  [Registration](#registration)
+7.  [Authentication](#authentication-and-authorization)
+8.  [User controller](#user-controller)
+9.  [Profiles](#profiles)
+10. [Specialities](#specialities)
+11. [Reviews and views](#reviews-and-views)
+12. [Search](#search)
+13. [Favourite services](#favourites)
+14. [Cards](#cards)
+15. [Messages](#messages)
 
 <p>
   For using API endpoints, all requests should have "API-TOKEN" header
@@ -142,7 +143,7 @@
             model_additional_id: Int
         }
     </td>
-    <td>User model</td>
+    <td>Image model</td>
 </tr>
 <tr>
     <td>Profile</td>
@@ -561,6 +562,81 @@
     </table>
 </div>
 
+<a id="registration" name="registration"></a>
+
+## Registration
+<div>
+<p>
+Registration is performed in 3 steps:
+</p>
+<ul>
+<li>
+  User inputs phone number. Request is sent to /api/phones. 
+  In response, client gets <i>verification_uuid</i> and verification code is sent to
+  phone number.
+</li>
+<li>
+  Client sends verification code to verification route (/api/verify/{uuid}) and gets
+  status. If status is okay, then phone number is verified.
+</li>
+<li>
+  To finish registration, client sends all other information,
+  including verification uuid, to /api/register. If phone is verified and other 
+  constraints are met, user will be created and you will be able to login.
+</li>
+</ul>
+<p>
+<i>
+    Note: For development purposes, code is verification is disabled.
+    For verifying phone, send any 6 letter code string to verification route.
+</i>
+</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Method</th>
+<th>Description</th>
+<th>Request</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/api/phones</td>
+<td>POST</td>
+<td>Ask for verification</td>
+<td>{phone: String}</td>
+<td>{status: String|null,
+    errors: String[]|null, error: String, verification_uuid: String|null}
+</td>
+</tr>
+<tr>
+<td>/api/verify/{uuid}</td>
+<td>POST</td>
+<td>Finishes registration</td>
+<td>{code: String}</td>
+<td>{status: String|null, errors: String[]|null, error: String}</td>
+</tr>
+<tr>
+<td>/api/register</td>
+<td>POST</td>
+<td>Finishes registration</td>
+<td>{
+  first_name: String,
+  last_name: String,
+  father_name: String,
+  email: String|null,
+  verification_uuid: String,
+  password: String,
+  password_confirmation: String
+}</td>
+<td>{user: User|null, errors: String[]|null, error: String}</td>
+</tr>
+</tbody>
+</table>
+</div>
+
 <a id="authentication-and-authorization" name="authentication-and-authorization"></a>
 
 ## Authentication and authorization
@@ -574,8 +650,6 @@
     In authentication, there can be used either email or phone,
     and password. Before login, user should verify phone number.
     After registration, 6 letter code is being sent to inputted number.
-    User can resend code, but only 3 times in an hour.
-    After that, API will return error while trying to reset code.
     For verifying code, you should know also UUID of verification.
     UUID is valid for 10 minutes. After that, you should resend code
     and get new UUID for verification.
@@ -605,32 +679,6 @@
     <tbody>
     <tr>
         <td>
-            /api/register
-        </td>
-        <td>
-            POST
-        </td>
-        <td>
-            {
-                first_name: String,
-                last_name: String,
-                father_name: String,
-                email: String,
-                phone: String,
-                password: String,
-                password_confirmation: String
-            }
-        </td>
-        <td>
-            {
-                errors: String[]|null,
-                user: User|null,
-                verification_uuid: String|null
-            }
-        </td>
-    </tr>
-    <tr>
-        <td>
             /api/verify/{uuid}
         </td>
         <td>
@@ -649,24 +697,6 @@
                 verification_uuid: String|null,
                 status: String|null,
                 user: User|null,
-            }
-        </td>
-    </tr>
-    <tr>
-        <td>
-            /api/resend/{phone}
-        </td>
-        <td>
-            POST
-        </td>
-        <td>
-        </td>
-        <td>
-            {
-                error: String|null,
-                verification_uuid: String|null,
-                status: String|null,
-                uuid: String|null,
             }
         </td>
     </tr>
