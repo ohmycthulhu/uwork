@@ -30,7 +30,8 @@ class CreateCategoriesTable extends Migration
       $table->string('icon_selected')
         ->nullable();
 
-      $table->boolean('is_baseline')
+      $table->boolean('is_hidden')
+        ->index()
         ->default(false);
 
       $table->softDeletes();

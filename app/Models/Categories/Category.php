@@ -31,7 +31,7 @@ class Category extends Model implements Slugable
       'name', 'slug'
     ];
 
-    protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_baseline', 'is_shown'];
+    protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_hidden', 'is_shown'];
 
     protected $appends = ['is_shown'];
 
@@ -66,12 +66,7 @@ class Category extends Model implements Slugable
      * @return HasMany
     */
     public function children(): HasMany {
-      $relation = $this->hasMany(Category::class, 'parent_id');
-      if ($this->is_baseline) {
-        // Set impossible condition to prevent loading children
-        $relation->whereNull('id');
-      }
-      return $relation;
+      return $this->hasMany(Category::class, 'parent_id')->visible();
     }
 
     /*
@@ -136,6 +131,17 @@ class Category extends Model implements Slugable
     }
 
     /**
+     * Scope to get only visible
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+    */
+    public function scopeVisible(Builder $query): Builder {
+      return $query->where('is_hidden', false);
+    }
+
+    /**
      * Get array of searchable columns
      *
      * @return array
@@ -151,15 +157,11 @@ class Category extends Model implements Slugable
 
     /**
      * Attribute to show if category should be shown
-     * It is calculated depending on is_baseline field of parent
+     * It is calculated depending on is_hidden field
      *
      * @return boolean
     */
     public function getIsShownAttribute(): bool {
-      if ($this->parent_id && !$this->parent) {
-        $this->load('parent');
-      }
-
-      return !$this->parent || !$this->parent->is_baseline;
+      return !$this->is_hidden;
     }
 }
