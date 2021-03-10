@@ -616,7 +616,7 @@ Registration is performed in 3 steps:
 <td>POST</td>
 <td>Finishes registration</td>
 <td>{code: String}</td>
-<td>{status: String|null, errors: String[]|null, error: String}</td>
+<td>{status: String|null, user: User|null, errors: String[]|null, error: String}</td>
 </tr>
 <tr>
 <td>/api/register</td>
@@ -677,29 +677,6 @@ Registration is performed in 3 steps:
         <th>Response</th>
     </thead>
     <tbody>
-    <tr>
-        <td>
-            /api/verify/{uuid}
-        </td>
-        <td>
-            POST
-        </td>
-        <td>
-            {
-                code: String
-            }
-        </td>
-        <td>
-            {
-                errors: String[]|null,
-                error: String|null,
-                tries_left: Number|null,
-                verification_uuid: String|null,
-                status: String|null,
-                user: User|null,
-            }
-        </td>
-    </tr>
     <tr>
         <td>
             /api/login

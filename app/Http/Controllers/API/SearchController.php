@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileSearchRequest;
 use App\Models\Categories\Category;
 use App\Models\User\Profile;
+use App\Models\User\ProfileSpeciality;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,17 +19,20 @@ class SearchController extends Controller
 {
     protected $category;
     protected $profile;
+    protected $speciality;
 
     /**
      * Creates class instance
      *
      * @param Profile $profile
      * @param Category $category
+     * @param ProfileSpeciality $speciality
     */
-    public function __construct(Profile $profile, Category $category)
+    public function __construct(Profile $profile, Category $category, ProfileSpeciality $speciality)
     {
       $this->profile = $profile;
       $this->category = $category;
+      $this->speciality = $speciality;
     }
 
     /**
@@ -39,31 +43,30 @@ class SearchController extends Controller
      * @return JsonResponse
     */
     public function search(ProfileSearchRequest $request): JsonResponse {
+      $page = $request->input('page', 1);
       // Create query
-      $query = $this->profile::query()
-        ->with(['specialities.category', 'user']);
+      $keyword = $request->input('keyword');
+      // Get similar categories
+      $categories = $keyword ?
+        $this->category::searchByName($keyword)->map(function ($c) { return $c->id; })->toArray() : null;
+      $categoryId = $request->input('category_id');
 
-      // Add constraint by keyword, if exists
-      if ($keyword = $request->input('keyword')) {
-        $query = $this->setKeywordConstraint($query, $keyword);
-      }
-
-      // Add constraint by category_id, if exists
-      if ($categoryId = $request->input('category_id')) {
-        $query = $this->setCategoryConstraint($query, $categoryId);
-      }
-
-      if ($user = Auth::user()) {
-        $query->notUser($user);
-      }
-
-      // Add constraint by region, city and district
-      $this->setLocationConstraints(
-        $query,
+      $specQuery = $this->speciality::completeSearch(
+        $categoryId,
+        $categories,
         $request->input('region_id'),
         $request->input('city_id'),
-        $request->input('district_id')
+        $request->input('district_id'),
+        Auth::id(),
+        $page,
+        100,
       );
+
+      $profileIds = $specQuery->models()->map(function ($s) { return $s->profile_id; })->unique();
+
+      $query = $this->profile::query()
+        ->whereIn('id', $profileIds)
+        ->with(['specialities.category', 'user']);
 
       if ($keyword) {
         SearchFacade::registerSearch($keyword);
@@ -71,9 +74,12 @@ class SearchController extends Controller
 
       // Return response
       return response()->json([
-        'result' => $query->paginate(
-          $request->input('per_page', 12)
-        )
+        'result' => [
+          'data' => $query->get(),
+          'total' => $specQuery->count(),
+          'current_page' => $page,
+          'next_page_url' => route('api.profiles.search', array_merge($request->all(), ['page' => $page + 1]))
+        ]
       ]);
     }
 

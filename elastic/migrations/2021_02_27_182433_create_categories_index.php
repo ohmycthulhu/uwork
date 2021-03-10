@@ -13,8 +13,9 @@ final class CreateCategoriesIndex implements MigrationInterface
      */
     public function up(): void
     {
+      $this->down();
         Index::createIfNotExists('categories', function (Mapping $mapping, Settings $settings) {
-          $mapping->text('name');
+          $mapping->wildcard('name');
           $mapping->keyword('id');
           $mapping->keyword('parent_id');
         });

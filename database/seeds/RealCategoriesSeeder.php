@@ -46,15 +46,15 @@ class RealCategoriesSeeder extends Seeder
    * @param ?array $subCategories
    * @param ?Category $parent
    *
-   * @return Category
+   * @return ?Category
   */
-  protected function createCategoryTree(string $name, ?array $subCategories, ?Category $parent = null): Category {
+  protected function createCategoryTree(string $name, ?array $subCategories, ?Category $parent = null): ?Category {
     $isHidden = !$subCategories;
     // Create category
     $category = $this->createCategory($name, $parent, $isHidden);
 
     // Create subcategories for category
-    if ($subCategories) {
+    if ($category && $subCategories) {
       foreach ($subCategories as $subCategory) {
         $this->createCategoryTree(
           $subCategory->name,
@@ -75,9 +75,12 @@ class RealCategoriesSeeder extends Seeder
    * @param ?Category $parent
    * @param bool $isHidden
    *
-   * @return Category
+   * @return ?Category
   */
-  protected function createCategory(string $name, ?Category $parent, bool $isHidden): Category {
+  protected function createCategory(string $name, ?Category $parent, bool $isHidden): ?Category {
+    if ($parent && $parent->name == $name) {
+      return null;
+    }
     $q = $parent ? $parent->children() : Category::query();
 
     $category = (clone $q)->name($name)->first();

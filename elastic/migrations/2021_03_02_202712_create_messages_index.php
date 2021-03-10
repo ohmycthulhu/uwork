@@ -13,6 +13,7 @@ final class CreateMessagesIndex implements MigrationInterface
      */
     public function up(): void
     {
+      $this->down();
         //
       Index::createIfNotExists('messages', function (Mapping $mapping, Settings $settings) {
         $mapping->keyword('id');
