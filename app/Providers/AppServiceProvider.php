@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Helpers\PaymentHelper;
 use App\Helpers\SearchHelper;
 use App\Models\Categories\Category;
 use App\Models\Search\SearchHistory;
+use App\Models\Transactions\Transaction;
 use App\Models\User\ProfileSpeciality;
 use App\Observers\ProfileSpecialityObserver;
 use App\Observers\SlugableObserver;
@@ -24,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         //
       $this->app->bind('search-helper', function () {
         return new SearchHelper(new SearchHistory);
+      });
+
+      $this->app->bind('payment-helper', function () {
+        return new PaymentHelper(new Transaction);
       });
     }
 
