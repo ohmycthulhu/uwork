@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    //
   /**
    * Method to change non-primary user information (e.g. names)
    *
@@ -26,6 +25,7 @@ class UserController extends Controller
   public function changeProfile(ChangeNameRequest $request): JsonResponse {
     $params = $request->validated();
 
+    /* @var ?User $user */
     $user = Auth::user();
 
     $user->fill($params);
@@ -45,6 +45,7 @@ class UserController extends Controller
     $password = $request->input('current_password');
     $newPassword = $request->input('password');
 
+    /* @var ?User $user */
     $user = Auth::user();
 
     if (!$this->checkPassword($user, $password)) {
@@ -64,6 +65,7 @@ class UserController extends Controller
    * @return JsonResponse
   */
   public function changeEmail(ChangeEmailRequest $request): JsonResponse {
+    /* @var ?User $user */
     $user = Auth::user();
     $password = $request->input('password');
 
@@ -71,8 +73,7 @@ class UserController extends Controller
       return response()->json(['error' => 'Password is incorrect'], 403);
     }
 
-    $user->email = $request->input('email');
-    $user->save();
+    $user->setEmail($request->input('email'));
 
     return response()->json(['status' => 'success', 'user' => $user]);
   }
@@ -85,6 +86,7 @@ class UserController extends Controller
    * @return JsonResponse
   */
   public function changePhone(ChangePhoneRequest $request): JsonResponse {
+    /* @var ?User $user */
     $user = Auth::user();
     $password = $request->input('password');
 
@@ -113,7 +115,7 @@ class UserController extends Controller
    * @return bool
   */
   protected function checkPassword(User $user, string $password): bool {
-    return Auth::validate(['phone' => $user->phone, 'password' => $password]);
+    return Auth::validate(['phone' => $user->getPhone(), 'password' => $password]);
   }
 
   /**
@@ -124,6 +126,7 @@ class UserController extends Controller
    * @return JsonResponse
   */
   public function updateSettings(UpdateSettingsRequest $request): JsonResponse {
+    /* @var ?User $user */
     $user = Auth::user();
     $settings = $request->input('settings', []);
     foreach ($settings as $setting => $value) {

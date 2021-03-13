@@ -72,6 +72,17 @@ class User extends Authenticatable implements JWTSubject
 //  }
 
   /**
+   * Sets email address
+   * @param string $email
+   * @return $this
+  */
+  public function setEmail(string $email): User {
+    $this->email = $email;
+    $this->save();
+    return $this;
+  }
+
+  /**
    * Set phone
    *
    * @param string $phone
@@ -84,6 +95,15 @@ class User extends Authenticatable implements JWTSubject
     $this->save();
 
     return $this;
+  }
+
+  /**
+   * Get phone
+   *
+   * @return string
+  */
+  public function getPhone(): string {
+    return $this->phone;
   }
 
   /**

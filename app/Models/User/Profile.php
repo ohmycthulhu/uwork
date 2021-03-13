@@ -22,6 +22,9 @@ use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
+/**
+ * @method static Profile|null find(string $id)
+ */
 class Profile extends Model implements HasMedia
 {
   use SoftDeletes, HasMediaTrait;
@@ -110,6 +113,33 @@ class Profile extends Model implements HasMedia
     $this->phone = $phone;
     $this->phone_verified = $verified;
     $this->save();
+    return $this;
+  }
+
+  /**
+   * Returns current phone
+   *
+   * @return string
+  */
+  public function getPhone(): string {
+    return $this->phone;
+  }
+
+  /**
+   * Method to update profile information
+   *
+   * @param ?string $about
+   *
+   * @return $this
+  */
+  public function setInfo(?string $about): Profile {
+    if ($about) {
+      $this->about = $about;
+    }
+
+    if ($this->isDirty()) {
+      $this->save();
+    }
     return $this;
   }
 

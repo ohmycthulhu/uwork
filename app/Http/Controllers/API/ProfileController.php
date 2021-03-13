@@ -8,6 +8,7 @@ use App\Http\Requests\Profile\ChangeImageDataRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
 use App\Http\Requests\Profile\EditProfileRequest;
 use App\Models\Media\Image;
+use App\Models\User;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Http\JsonResponse;
@@ -34,7 +35,7 @@ class ProfileController extends Controller
    *
    * @param Profile $profile
    * @param Image $image
-  */
+   */
   public function __construct(Profile $profile, Image $image)
   {
     $this->profile = $profile;
@@ -51,6 +52,7 @@ class ProfileController extends Controller
   public function create(CreateProfileRequest $request): JsonResponse
   {
     // Get user
+    /** @var ?User $user */
     $user = Auth::user();
 
     if ($user->profile()->first()) {
@@ -59,9 +61,10 @@ class ProfileController extends Controller
 
     // Get params
     $params = $request->only(['about']);
-    $phone = $request->input('phone', $user->phone);
+    $phone = $request->input('phone', $user->getPhone());
     $specialities = $request->input('specialities', []);
 
+    /* @var Profile $profile */
     // Create profile
     $profile = $user->profile()->create(array_merge($params, ['phone' => $phone]));
 
@@ -72,7 +75,7 @@ class ProfileController extends Controller
 
     // Attach images
     $images = $request->input('images', []);
-    Image::attachMedia(Profile::class, $profile->id, $images);
+    Image::attachMedia(Profile::class, $profile->getKey(), $images);
 
     $avatar = $request->file('avatar');
     if ($avatar) {
@@ -81,10 +84,10 @@ class ProfileController extends Controller
 
     // Send verification code if needed
     $uuid = null;
-    if ($phone === $user->phone) {
+    if ($phone === $user->getPhone()) {
       $profile->setPhone($phone, true);
     } else {
-      $uuid = PhoneVerificationFacade::createSession($user, Profile::class, $profile->id, $phone);
+      $uuid = PhoneVerificationFacade::createSession($user, Profile::class, $profile->getKey(), $phone);
     }
 
     $profile->load(['specialities.category']);
@@ -105,6 +108,7 @@ class ProfileController extends Controller
   public function get(): JsonResponse
   {
     // Get user
+    /* @var ?User $user */
     $user = Auth::user();
 
     // Get user's profile
@@ -125,7 +129,10 @@ class ProfileController extends Controller
   */
   public function update(EditProfileRequest $request): JsonResponse {
     // Get profile by user
+    /* @var ?User $user */
     $user = Auth::user();
+
+    /* @var ?Profile $profile */
     $profile = $user->profile()->first();
 
     // If profile doesn't exists, return error
@@ -150,34 +157,21 @@ class ProfileController extends Controller
     }
 
     // Update about information if presented
-    $about = $request->input('about');
-    if ($about) $profile->about = $about;
+    $profile->setInfo($request->input('about'));
 
     // Update phone, if presented
     $verUuid = null;
     $phone = $request->input('phone');
     if ($phone) {
-      $shouldBeVerified = $profile->phone !== $phone && $phone !== $user->phone;
+      $shouldBeVerified = $profile->getPhone() !== $phone && $phone !== $user->getPhone();
       if ($shouldBeVerified) {
-        $verUuid = PhoneVerificationFacade::createSession($user, Profile::class, $profile->id, $phone);
+        $verUuid = PhoneVerificationFacade::createSession($user, Profile::class, $profile->getKey(), $phone);
       } else {
         $profile->phone = $phone;
       }
     }
 
     $profile->save();
-
-//    // Remove specialities, that needs to be removed
-//    $specialitiesToRemove = $request->input('remove_specialities', []);
-//    foreach ($specialitiesToRemove as $speciality) {
-//      $profile->removeSpeciality($speciality);
-//    }
-//
-//    // Add specialities, that needs to be added
-//    $specialitiesToAdd = $request->input('add_specialities', []);
-//    foreach ($specialitiesToAdd as $speciality) {
-//      $profile->addSpeciality($speciality['category_id'], $speciality['price']);
-//    }
 
     $profile->load(['media', 'specialities']);
 
@@ -221,7 +215,9 @@ class ProfileController extends Controller
   */
   public function setImageSpeciality(ChangeImageDataRequest $request, int $imageId): JsonResponse {
     // Get profile
-    $profile = Auth::user()->profile()->first();
+    /* @var ?User $user */
+    $user = Auth::user();
+    $profile = $user->profile()->first();
 
     if (!$profile) {
       return response()->json([
