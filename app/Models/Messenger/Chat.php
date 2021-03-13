@@ -65,9 +65,9 @@ class Chat extends Model
      * @param ?string $text
      * @param ?UploadedFile $attachment
      *
-     * @return Message
+     * @return Model
     */
-    public function sendMessage(?string $text, ?UploadedFile $attachment): Message {
+    public function sendMessage(?string $text, ?UploadedFile $attachment): Model {
       $attachmentPath = null;
 
       if ($attachment) {

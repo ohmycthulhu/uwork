@@ -20,7 +20,7 @@ class City extends LocationResource
   /**
    * Get the fields displayed by the resource.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
   public function fields(Request $request): array

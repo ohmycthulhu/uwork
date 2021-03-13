@@ -7,7 +7,6 @@ use App\Http\Requests\Profile\AddViewRequest;
 use App\Models\Profile\ProfileView;
 use App\Models\User\Profile;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ViewsController extends Controller

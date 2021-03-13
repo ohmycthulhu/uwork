@@ -5,8 +5,8 @@ namespace App\Helpers;
 use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
 use App\Utils\CacheAccessor;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Nexmo\Client;
 use Nexmo\Client\Credentials\Basic;
 
@@ -77,9 +77,9 @@ class PhoneVerificationHelper
    */
   public function createSession(?User $user, ?string $class, ?int $id, string $phone): string
   {
-    $uuid = \Illuminate\Support\Str::uuid();
+    $uuid = Str::uuid();
 
-    $code = \Illuminate\Support\Str::random(6);
+    $code = Str::random(6);
 
     $data = $this->generateData($class, $id, $phone, $code);
 
@@ -95,7 +95,7 @@ class PhoneVerificationHelper
 
           $client->message()->send([
             'to' => $phone,
-            'from' => 'Vonage APIs',
+            'from' => 'uWork',
             'text' => $message
           ]);
         }

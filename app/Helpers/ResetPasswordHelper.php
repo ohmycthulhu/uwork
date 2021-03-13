@@ -4,12 +4,9 @@ namespace App\Helpers;
 
 use App\Models\User;
 use App\Notifications\PasswordResetNotification;
-use App\Notifications\VerifyPhoneNotification;
 use App\Utils\CacheAccessor;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 class ResetPasswordHelper
 {
@@ -51,7 +48,7 @@ class ResetPasswordHelper
    * @return string
   */
   public function createSession(User $user, bool $withEmail, bool $withPhone): string {
-    $uuid = \Illuminate\Support\Str::random(5);
+    $uuid = Str::random(5);
 
     $data = $this->generateData($user);
 

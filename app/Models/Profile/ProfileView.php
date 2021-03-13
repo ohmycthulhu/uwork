@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProfileView extends Model
 {
-  // Fillables
+  // Fillable
   protected $fillable = [
     'profile_id', 'user_id', 'ip_addr', 'has_open',
   ];

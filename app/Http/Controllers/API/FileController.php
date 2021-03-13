@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Media\Image;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -62,7 +63,7 @@ class FileController extends Controller
         ->makeDirectory($media->id);
       Storage::disk($this->disk)
         ->put("{$media->id}/$fileName", File::get($file));
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       $media->delete();
       return response()->json(['error' => $e->getMessage()], 505);
     }

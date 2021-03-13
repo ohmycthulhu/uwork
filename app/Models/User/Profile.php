@@ -7,6 +7,7 @@ use App\Models\Media\Image;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -117,7 +120,7 @@ class Profile extends Model implements HasMedia
    * @param float $price
    * @param string $name
    *
-   * @return Model
+   * @return Model|\Illuminate\Database\Eloquent\Model
    */
   public function addSpeciality(int $categoryId, float $price, string $name): Model
   {
@@ -152,13 +155,13 @@ class Profile extends Model implements HasMedia
 
     try {
       Storage::disk('public')
-        ->put("avatars/$fileName", \Illuminate\Support\Facades\File::get($image));
-    } catch (\Exception $e) {
-      throw $e;
-    }
+        ->put("avatars/$fileName", File::get($image));
 
-    $this->picture = "avatars/$fileName";
-    $this->save();
+      $this->picture = "avatars/$fileName";
+      $this->save();
+    } catch (Exception $e) {
+      Log::error("Error on saving user avatar - ".$e->getMessage());
+    }
 
     return $this;
   }

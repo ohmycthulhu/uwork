@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
 use App\Models\User\Profile;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -104,7 +105,7 @@ class SpecialitiesController extends Controller
     // Check if speciality exists
     if (!$speciality) {
       return response()->json([
-        'error' => 'Speciality doesn\'t exists',
+        'error' => "'Speciality doesn't exists'",
       ], 403);
     }
 
@@ -142,7 +143,7 @@ class SpecialitiesController extends Controller
     if ($speciality) {
       try {
         $speciality->delete();
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         Log::error("Error on deleting speciality ($specialityId) - {$e->getMessage()}");
       }
     }

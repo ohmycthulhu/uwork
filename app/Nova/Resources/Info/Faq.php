@@ -38,7 +38,7 @@ class Faq extends Resource
 
   public static $group = 'Info';
 
-  public static function indexQuery(NovaRequest $request, $query): Builder
+  public static function indexQuery(NovaRequest $request, Builder $query): Builder
   {
     $query->when(empty($request->get('orderBy')), function(Builder $q) {
       $q->getQuery()->orders = [];
@@ -56,7 +56,7 @@ class Faq extends Resource
   /**
    * Get the fields displayed by the resource.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
   public function fields(Request $request)
@@ -80,7 +80,7 @@ class Faq extends Resource
   /**
    * Get the cards available for the request.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
   public function cards(Request $request)
@@ -91,7 +91,7 @@ class Faq extends Resource
   /**
    * Get the filters available for the resource.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
   public function filters(Request $request)
@@ -102,7 +102,7 @@ class Faq extends Resource
   /**
    * Get the lenses available for the resource.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
   public function lenses(Request $request)
@@ -113,7 +113,7 @@ class Faq extends Resource
   /**
    * Get the actions available for the resource.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
   public function actions(Request $request)

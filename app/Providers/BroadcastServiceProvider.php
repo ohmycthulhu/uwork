@@ -11,6 +11,7 @@ class BroadcastServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
+     * @noinspection PhpIncludeInspection
      */
     public function boot()
     {

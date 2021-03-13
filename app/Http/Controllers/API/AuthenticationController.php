@@ -14,7 +14,6 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SetPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 

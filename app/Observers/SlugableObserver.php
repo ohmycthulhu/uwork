@@ -6,7 +6,6 @@ use App\Mail\NewsCreatedMail;
 use App\Models\Interfaces\Slugable;
 use App\Models\News;
 use App\User;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Slug;
 
@@ -15,7 +14,7 @@ class SlugableObserver
     /**
      * Handle the news "created" event.
      *
-     * @param  \App\Models\Interfaces\Slugable $model
+     * @param Slugable $model
      * @return void
      */
     public function created(Slugable $model)

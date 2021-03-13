@@ -130,7 +130,7 @@ class MessengerController extends Controller
 
     if (!$chat) {
       return response()->json([
-        'error' => 'Chat doesn\'t exist',
+        'error' => "'Chat doesn't exist'",
       ], 403);
     }
     $messages = $chat->messages()->paginate(20);
@@ -155,7 +155,7 @@ class MessengerController extends Controller
 
     if (!$chat) {
       return response()->json([
-        'error' => 'Chat doesn\'t exist',
+        'error' => "'Chat doesn't exist'",
       ], 403);
     }
 

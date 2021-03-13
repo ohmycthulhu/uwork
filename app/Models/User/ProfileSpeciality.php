@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Scout\Searchable;
 
@@ -119,7 +118,7 @@ class ProfileSpeciality extends Model
    */
   public function scopeExact(Builder $query, string $name, int $categoryId): Builder
   {
-    return $this->where('name', 'like', $name)
+    return $query->where('name', 'like', $name)
       ->where('category_id', $categoryId);
   }
 
@@ -206,7 +205,7 @@ class ProfileSpeciality extends Model
    * @param ?int $page
    * @param int $amount
    *
-   * @return \ElasticScoutDriverPlus\Paginator
+   * @return Paginator
    */
   public static function completeSearch(
     ?int $categoryId,

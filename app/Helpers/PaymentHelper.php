@@ -5,6 +5,7 @@ namespace App\Helpers;
 
 use App\Models\Transactions\Transaction;
 use App\Utils\CacheAccessor;
+use Exception;
 use Illuminate\Support\Str;
 
 class PaymentHelper
@@ -154,7 +155,7 @@ class PaymentHelper
     // Try to save information about transaction
     try {
       return Transaction::make($id, $price, $status);
-    } catch (\Exception $exception) {
+    } catch (Exception $exception) {
       return false;
     }
   }
@@ -165,7 +166,8 @@ class PaymentHelper
    * @param float $price
    *
    * @return array
-  */
+   * @noinspection PhpUnusedParameterInspection
+   */
   protected function initializeRemote(float $price): array {
     // In future, send request to Tinkoff API
 
@@ -183,7 +185,8 @@ class PaymentHelper
    * @param string $id
    *
    * @return bool
-  */
+   * @noinspection PhpUnusedParameterInspection
+   */
   protected function cancelRemote(string $id): bool {
     // In future, send request to Tinkoff API
 
@@ -197,7 +200,8 @@ class PaymentHelper
    * @param string $id
    *
    * @return string
-  */
+   * @noinspection PhpUnusedParameterInspection
+   */
   public function checkTransactionState(string $id): string {
     // In future, send request to Tinkoff API
 

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 
 namespace App\Models;
 
@@ -75,11 +75,10 @@ class User extends Authenticatable implements JWTSubject
    * Set phone
    *
    * @param string $phone
-   * @param bool $verified
    *
    * @return $this
   */
-  public function setPhone(string $phone, bool $verified = false): User {
+  public function setPhone(string $phone): User {
     $this->phone = $phone;
 //    $this->phone_verified = $verified;
     $this->save();

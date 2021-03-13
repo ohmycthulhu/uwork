@@ -6,7 +6,6 @@ namespace App\Helpers;
 use App\Models\Search\SearchHistory;
 use App\Utils\CacheAccessor;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * Class to encapsulate all work with search

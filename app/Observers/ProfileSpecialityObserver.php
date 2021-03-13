@@ -10,7 +10,7 @@ class ProfileSpecialityObserver
     /**
      * Handle the profile speciality "created" event.
      *
-     * @param  \App\Models\User\ProfileSpeciality  $profileSpeciality
+     * @param ProfileSpeciality $profileSpeciality
      * @return void
      */
     public function created(ProfileSpeciality $profileSpeciality)
@@ -24,7 +24,7 @@ class ProfileSpecialityObserver
     /**
      * Handle the profile speciality "updated" event.
      *
-     * @param  \App\Models\User\ProfileSpeciality  $profileSpeciality
+     * @param ProfileSpeciality $profileSpeciality
      * @return void
      */
     public function updating(ProfileSpeciality $profileSpeciality)

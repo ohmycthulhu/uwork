@@ -186,7 +186,7 @@ class ProfileController extends Controller
       'status' => 'success',
       'profile' => $profile,
       'verification_uuid' => $verUuid,
-    ], 200);
+    ]);
   }
 
   /**
