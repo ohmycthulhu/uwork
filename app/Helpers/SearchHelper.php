@@ -4,6 +4,7 @@
 namespace App\Helpers;
 
 use App\Models\Search\SearchHistory;
+use App\Utils\CacheAccessor;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -26,6 +27,13 @@ class SearchHelper
   protected $cacheKey;
 
   /**
+   * Cache storage
+   *
+   * @var CacheAccessor
+  */
+  protected $store;
+
+  /**
    * Create instance of helper
    *
    * @param SearchHistory $searchHistory
@@ -34,7 +42,7 @@ class SearchHelper
   public function __construct(SearchHistory $searchHistory, ?string $cacheKey = null)
   {
     $this->searchHistory = $searchHistory;
-    $this->cacheKey = $cacheKey ?? 'search-history-keywords';
+    $this->store = new CacheAccessor($cacheKey ?? "search-history", [], 1440);
   }
 
   /**
@@ -45,9 +53,9 @@ class SearchHelper
    * @return bool
   */
   public function registerSearch(string $text): bool {
-    $keywords = Cache::get($this->cacheKey, []);
+    $keywords = $this->store->get('keywords');
     array_push($keywords, $text);
-    Cache::put($this->cacheKey, $keywords);
+    $this->store->set('keywords', $keywords);
     return false;
   }
 
@@ -99,8 +107,8 @@ class SearchHelper
    * @return int
   */
   public function importKeywords(): int {
-    $keywords = Cache::get($this->cacheKey, []);
-    Cache::forget($this->cacheKey);
+    $keywords = $this->store->get('keywords');
+    $this->store->remove('keywords');
 
     $frequency = $this->getFrequency($keywords);
 

@@ -7,6 +7,7 @@ use App\Helpers\PhoneVerificationHelper;
 use App\Models\User;
 use App\Notifications\PasswordResetNotification;
 use App\Notifications\VerifyPhoneNotification;
+use App\Utils\CacheAccessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -52,6 +53,7 @@ class UserTest extends TestCase
   */
   public function testVerification () {
     Notification::fake();
+    $storeVerifying = new CacheAccessor("phone-verifying");
 
     $phone = "994512318822";
 
@@ -64,14 +66,14 @@ class UserTest extends TestCase
       ->assertOk()
       ->json('verification_uuid');
 
-    $verCode = Cache::get(PhoneVerificationFacade::getCacheKey($verUuid))['code'];
+    $verCode = $storeVerifying->get($verUuid)['code'];
 
     // Send request with existing phone
     $verUuid2 = $this->post(route('api.phones'), compact('phone'))
       ->assertOk()
       ->json('verification_uuid');
 
-    $verCode2 = Cache::get(PhoneVerificationFacade::getCacheKey($verUuid2))['code'];
+    $verCode2 = $storeVerifying->get($verUuid2)['code'];
 
     // Send wrong verification code
     $this->post(route('api.verify', ['uuid' => $verUuid]), ['code' => $verCode])
@@ -90,6 +92,7 @@ class UserTest extends TestCase
   public function testRegistration()
   {
     Notification::fake();
+    $storeVerifying = new CacheAccessor("phone-verifying");
 
     // Send request to set mobile phone
     $phone = "994512318822";
@@ -105,8 +108,8 @@ class UserTest extends TestCase
       ->json('verification_uuid');
 
     // Verify mobile phones
-    $code1 = Cache::get(PhoneVerificationFacade::getCacheKey($uuid))['code'];
-    $code2 = Cache::get(PhoneVerificationFacade::getCacheKey($uuid2))['code'];
+    $code1 = $storeVerifying->get($uuid)['code'];
+    $code2 = $storeVerifying->get($uuid2)['code'];
 
     $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code1])
       ->assertOk();

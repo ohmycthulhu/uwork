@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
+use App\Utils\CacheAccessor;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Nexmo\Client;
@@ -30,6 +31,24 @@ class PhoneVerificationHelper
   protected $isNexmoEnabled;
 
   /**
+   * Store accessor for verification
+   * @var CacheAccessor
+  */
+  protected $storeVerifying;
+
+  /**
+   * Store accessor for already verified numbers
+   * @var CacheAccessor
+  */
+  protected $storeVerified;
+
+  /**
+   * Store accessor for blocked numbers
+   * @var CacheAccessor
+  */
+  protected $storeBlocked;
+
+  /**
    * Creates instance of helper
    *
    * @param bool $verificationEnabled
@@ -39,6 +58,10 @@ class PhoneVerificationHelper
   {
     $this->verificationEnabled = $verificationEnabled;
     $this->isNexmoEnabled = $nexmoEnabled;
+
+    $this->storeVerifying = new CacheAccessor("phone-verifying", null, 10);
+    $this->storeVerified = new CacheAccessor("phone-verified", null, 30);
+    $this->storeBlocked = new CacheAccessor("phone-blocked", 0, 60);
   }
 
   /**
@@ -79,7 +102,7 @@ class PhoneVerificationHelper
       }
     }
 
-    $this->setCache($uuid, $data, 10);
+    $this->storeVerifying->set($uuid, $data);
 
     return $uuid;
   }
@@ -93,7 +116,7 @@ class PhoneVerificationHelper
    */
   public function checkUUID(string $uuid): bool
   {
-    return Cache::has($this->getCacheKey($uuid));
+    return !!$this->storeVerifying->get($uuid);
   }
 
   /**
@@ -111,7 +134,7 @@ class PhoneVerificationHelper
       return false;
     }
 
-    $data = Cache::get($this->getCacheKey($uuid));
+    $data = $this->storeVerifying->get($uuid);
 
     if (!$data) {
       return false;
@@ -121,9 +144,9 @@ class PhoneVerificationHelper
       $triesLeft = $data['tries'] - 1;
       if ($triesLeft > 0) {
         $data['tries'] = $triesLeft;
-        $this->setCache($uuid, $data, 10);
+        $this->storeVerifying->set($uuid, $data);
       } else {
-        $this->removeCache($uuid);
+        $this->storeVerifying->remove($uuid);
       }
       return ['error' => true, 'tries' => $triesLeft];
     }
@@ -134,7 +157,7 @@ class PhoneVerificationHelper
         $this->setPhoneVerified($uuid, $phone);
         break;
       case self::DELETE_ON_SUCCESS:
-        $this->removeCache($uuid);
+        $this->storeVerifying->remove($uuid);
         break;
     }
 
@@ -150,12 +173,11 @@ class PhoneVerificationHelper
    */
   public function isBlocked(string $phone): bool
   {
-    return Cache::get("blocked-phone-$phone") >= 3;
+    return $this->storeBlocked->get($phone) >= 3;
   }
 
   /**
    * Verified phones section
-   *
    */
 
   /**
@@ -167,7 +189,7 @@ class PhoneVerificationHelper
    */
   public function getVerifiedPhone(string $uuid): ?string
   {
-    $stored = Cache::get($this->getVerifiedCacheKey($uuid));
+    $stored = $this->storeVerified->get($uuid);
 
     if (!$stored) {
       return null;
@@ -189,9 +211,7 @@ class PhoneVerificationHelper
     $data = [
       'phone' => $phone
     ];
-    $cacheKey = $this->getVerifiedCacheKey($uuid);
-
-    Cache::put($cacheKey, $data, now()->addMinutes(30));
+    $this->storeVerified->set($uuid, $data);
   }
 
   /**
@@ -203,23 +223,21 @@ class PhoneVerificationHelper
    */
   public function removeVerifiedPhone(string $uuid)
   {
-    $cacheKey = $this->getVerifiedCacheKey($uuid);
-    Cache::forget($cacheKey);
+    $this->storeVerified->remove($uuid);
   }
 
   /**
-   * BLock the phone
+   * Block the phone
    *
    * @param string $phone
    */
   public function blockPhone(string $phone)
   {
-    $key = "blocked-phone-$phone";
-    if (Cache::has($key)) {
-      Cache::increment("blocked-phone-$phone");
-    } else {
-      Cache::put("blocked-phone-$phone", 1, now()->addHour());
-    }
+    $this->storeBlocked
+      ->set(
+        $phone,
+        $this->storeBlocked->get($phone) + 1
+      );
   }
 
   /**
@@ -241,55 +259,5 @@ class PhoneVerificationHelper
       'code' => $code,
       'tries' => 3,
     ];
-  }
-
-
-  /**
-   * Method to set in cache
-   *
-   * @param string $uuid
-   * @param array $data
-   * @param int $minutes
-   *
-   */
-  protected function setCache(string $uuid, array $data, int $minutes)
-  {
-    $expirationTime = now()->addMinutes($minutes);
-    \Illuminate\Support\Facades\Cache::put($this->getCacheKey($uuid), $data, $expirationTime);
-  }
-
-  /**
-   * Method to remove from cache
-   *
-   * @param string $uuid
-   *
-   */
-  protected function removeCache(string $uuid)
-  {
-    \Illuminate\Support\Facades\Cache::forget($this->getCacheKey($uuid));
-  }
-
-  /**
-   * Method to generate cache key name by uuid
-   *
-   * @param string $uuid
-   *
-   * @return string
-   */
-  public function getCacheKey(string $uuid): string
-  {
-    return "phone-verification-$uuid";
-  }
-
-  /**
-   * Method to generate cache key for verified phone
-   *
-   * @param string $uuid
-   *
-   * @return string
-   */
-  public function getVerifiedCacheKey(string $uuid): string
-  {
-    return "phone-verified-$uuid";
   }
 }

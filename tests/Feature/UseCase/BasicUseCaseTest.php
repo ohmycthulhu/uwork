@@ -3,10 +3,12 @@
 namespace Tests\Feature\UseCase;
 
 use App\Facades\PhoneVerificationFacade;
+use App\Helpers\PhoneVerificationHelper;
 use App\Models\Categories\Category;
 use App\Models\User;
 use App\Models\User\Profile;
 use App\Notifications\VerifyPhoneNotification;
+use App\Utils\CacheAccessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -116,7 +118,7 @@ class BasicUseCaseTest extends TestCase
       $uuid = $this->post(route('api.phones'), ['phone' => $phone])
         ->assertOk()
         ->json('verification_uuid');
-      $code = Cache::get(PhoneVerificationFacade::getCacheKey($uuid))['code'];
+      $code = (new CacheAccessor("phone-verifying"))->get($uuid)['code'];
       $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code])
         ->assertOk();
       return $uuid;
