@@ -23,14 +23,9 @@ use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-/**
- * @method static Profile|null find(string $id)
- */
 class Profile extends Model implements HasMedia
 {
-  use SoftDeletes, HasMediaTrait, HasAvatar;
-
-  protected $avatarColumn = 'picture';
+  use SoftDeletes, HasMediaTrait;
 
   // Fillable fields
   protected $fillable = [
