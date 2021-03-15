@@ -245,7 +245,13 @@ class AuthenticationController extends Controller
       if ($phone) {
         $query->phone($phone);
       }
+
+      /* @var ?User $user */
       $user = $query->first();
+
+      if (!$user) {
+        return response()->json(['status' => 'error', 'error' => 'User not found'], 404);
+      }
 
       $uuid = ResetPasswordFacade::createSession($user, !!$email, !!$phone);
 
@@ -268,6 +274,8 @@ class AuthenticationController extends Controller
       }
 
       $password = $request->input('password');
+
+      /* @var ?User $user */
       $user = $this->user::query()->find($userId);
 
       $user->setPassword($password);

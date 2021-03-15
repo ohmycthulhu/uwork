@@ -145,6 +145,7 @@ class UserTest extends TestCase
   protected function userForm(string $uuid): array {
     $model = factory(User::class)->make();
     $password = Str::random();
+
     return array_merge($model->toArray(), [
       'verification_uuid' => $uuid,
       'password' => $password,
@@ -252,9 +253,14 @@ class UserTest extends TestCase
     $this->put(route('api.user.update.profile'), $form)
       ->assertOk();
 
+    $form = ['avatar' => $this->getUploadedFile()];
+    $this->post(route('api.user.update.profile'), $form)
+      ->assertOk();
+
     $user = User::query()->find($user->id);
 
     $this->assertEquals($name, $user->first_name);
+    $this->assertNotNull($user->avatar_url);
 
     $newPassword = Str::random();
     $form = ['current_password' => $newPassword, 'password' => $newPassword, 'password_confirmation' => $newPassword];

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Messenger\Chat;
 use App\Models\Payment\Card;
+use App\Models\Traits\HasAvatar;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,7 +19,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-  use SoftDeletes, Notifiable;
+  use SoftDeletes, Notifiable, HasAvatar;
 
   /**
    * The attributes that are mass assignable.
@@ -30,17 +31,20 @@ class User extends Authenticatable implements JWTSubject
     'email', 'phone', 'password',
   ];
 
+  protected $avatarColumn = 'avatar';
+
   /**
    * The attributes that should be hidden for arrays.
    *
    * @var array
    */
   protected $hidden = [
-    'password', 'phone', 'email',
+    'password', 'phone', 'email', 'avatar',
   ];
 
   protected $appends = [
-    'notification_settings'
+    'notification_settings',
+    'avatar_url',
   ];
 
   /**

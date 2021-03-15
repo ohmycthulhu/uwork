@@ -23,7 +23,7 @@ class EditProfileRequest extends FormRequest
 //      'add_specialities.*.price' => 'required|numeric',
       'images' => 'nullable|array',
       'images.*' => 'required|exists:App\Models\Media\Image,id',
-      'avatar' => 'nullable|file',
+//      'avatar' => 'nullable|file',
     ];
   }
 }

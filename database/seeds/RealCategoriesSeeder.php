@@ -49,7 +49,7 @@ class RealCategoriesSeeder extends Seeder
    * @return ?Category
   */
   protected function createCategoryTree(string $name, ?array $subCategories, ?Category $parent = null): ?Category {
-    $isHidden = !$subCategories;
+    $isHidden = false && !$subCategories;
     // Create category
     $category = $this->createCategory($name, $parent, $isHidden);
 

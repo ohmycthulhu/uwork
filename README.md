@@ -125,7 +125,8 @@
             first_name: String,
             last_name: String,
             father_name: String,
-            notification_settings: Dictionary&lt;String, Boolen&gt;
+            notification_settings: Dictionary&lt;String, Boolen&gt;,
+            avatar_url: String|null
         }
     </td>
     <td>User model</td>
@@ -150,7 +151,6 @@
     <td>{
       about: String,
       phone: String,
-      picture: String|null,
       reviews_count: Number,
       rating_quality: Number,
       rating_price: Number,
@@ -842,13 +842,14 @@ Registration is performed in 3 steps:
             /api/user
         </td>
         <td>
-            PUT
+            PUT, POST
         </td>
         <td>
             {
                 first_name: String,
                 last_name: String,
-                father_name: String
+                father_name: String,
+                avatar: File|null
             }
         </td>
         <td>
@@ -1030,7 +1031,6 @@ Registration is performed in 3 steps:
                 phone: String|null,
                 specialities: SpecialityForm[],
                 images: Int[]|null,
-                avatar: File|null
             }
         </td>
         <td>
@@ -1054,7 +1054,6 @@ Registration is performed in 3 steps:
             {
                 about: String|null,
                 phone: String|null,
-                avatar: File|null,
                 images: Int[]|null
             }
         </td>

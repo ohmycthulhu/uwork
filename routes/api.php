@@ -84,7 +84,7 @@ Route::group([
     $router->get('/', 'API\\AuthenticationController@user')
       ->name('api.user');
 
-    $router->put('/', 'API\\UserController@changeProfile')
+    $router->match(['put', 'post'], '/', 'API\\UserController@changeProfile')
       ->name('api.user.update.profile');
     $router->put('/emails', 'API\\UserController@changeEmail')
       ->name('api.user.update.email');

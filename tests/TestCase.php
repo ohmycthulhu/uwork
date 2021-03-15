@@ -9,8 +9,10 @@ use App\Models\Location\Region;
 use App\Models\User;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -176,5 +178,17 @@ abstract class TestCase extends BaseTestCase
       $this->post($route, $form)
         ->assertStatus(403);
     }
+  }
+
+  /**
+   * Method to get uploaded file
+   *
+   * @return UploadedFile
+   */
+  protected function getUploadedFile(): UploadedFile
+  {
+    $name = Str::random() . ".jpg";
+
+    return new UploadedFile(storage_path('test/image.jpg'), $name, 'image/jpeg', null, true);
   }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ChangeEmailRequest;
-use App\Http\Requests\Profile\ChangeNameRequest;
+use App\Http\Requests\Profile\ChangeUserInfoRequest;
 use App\Http\Requests\Profile\ChangePasswordRequest;
 use App\Http\Requests\Profile\ChangePhoneRequest;
 use App\Http\Requests\UpdateSettingsRequest;
@@ -18,11 +18,11 @@ class UserController extends Controller
   /**
    * Method to change non-primary user information (e.g. names)
    *
-   * @param ChangeNameRequest $request
+   * @param ChangeUserInfoRequest $request
    *
    * @return JsonResponse
   */
-  public function changeProfile(ChangeNameRequest $request): JsonResponse {
+  public function changeProfile(ChangeUserInfoRequest $request): JsonResponse {
     $params = $request->validated();
 
     /* @var ?User $user */
@@ -30,6 +30,10 @@ class UserController extends Controller
 
     $user->fill($params);
     $user->save();
+
+    if ($image = $request->file('avatar')) {
+      $user->setAvatar($image);
+    }
 
     return response()->json(['user' => $user]);
   }

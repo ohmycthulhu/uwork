@@ -4,7 +4,7 @@ namespace App\Http\Requests\Profile;
 
 use App\Http\Requests\FormRequest;
 
-class ChangeNameRequest extends FormRequest
+class ChangeUserInfoRequest extends FormRequest
 {
   /**
    * Get the validation rules that apply to the request.
@@ -17,6 +17,7 @@ class ChangeNameRequest extends FormRequest
       'first_name' => 'nullable|string',
       'last_name' => 'nullable|string',
       'father_name' => 'nullable|string',
+      'avatar' => 'nullable|file',
     ];
   }
 }

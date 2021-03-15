@@ -6,6 +6,7 @@ use App\Models\Categories\Category;
 use App\Models\Media\Image;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
+use App\Models\Traits\HasAvatar;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +28,9 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
  */
 class Profile extends Model implements HasMedia
 {
-  use SoftDeletes, HasMediaTrait;
+  use SoftDeletes, HasMediaTrait, HasAvatar;
+
+  protected $avatarColumn = 'picture';
 
   // Fillable fields
   protected $fillable = [
@@ -170,30 +173,6 @@ class Profile extends Model implements HasMedia
     return $this->specialities()
       ->categoryId($categoryId)
       ->delete();
-  }
-
-  /**
-   * Method to change avatar
-   *
-   * @param UploadedFile $image
-   *
-   * @return $this
-   */
-  public function setAvatar(UploadedFile $image): Profile
-  {
-    $fileName = Str::random() . ".{$image->getClientOriginalExtension()}";
-
-    try {
-      Storage::disk('public')
-        ->put("avatars/$fileName", File::get($image));
-
-      $this->picture = "avatars/$fileName";
-      $this->save();
-    } catch (Exception $e) {
-      Log::error("Error on saving user avatar - ".$e->getMessage());
-    }
-
-    return $this;
   }
 
   /**

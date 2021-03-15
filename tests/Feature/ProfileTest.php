@@ -8,7 +8,7 @@ use App\Models\Profile\Review;
 use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
+//use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -263,7 +263,7 @@ class ProfileTest extends TestCase
       'about' => 'Some text about me',
       'phone' => '89050023456',
       'images' => $images,
-      'avatar' => $this->getUploadedFile(),
+//      'avatar' => $this->getUploadedFile(),
       'specialities' => $categories->map(function ($id) {
         return ['category_id' => $id, 'price' => rand(100, 200) / 10, 'name' => Str::random()];
       })->toArray(),
@@ -277,31 +277,19 @@ class ProfileTest extends TestCase
    */
   protected function getUpdateForm(): array
   {
-    $categoriesToRemove = Category::query()->inRandomOrder()->take(3)->pluck('id');
-    $categoriesToAdd = Category::query()->inRandomOrder()->take(3)->pluck('id');
+//    $categoriesToRemove = Category::query()->inRandomOrder()->take(3)->pluck('id');
+//    $categoriesToAdd = Category::query()->inRandomOrder()->take(3)->pluck('id');
     $images = [$this->uploadImage()];
     return [
       'about' => 'Another text',
       'phone' => '89050216456',
       'images' => $images,
-      'avatar' => $this->getUploadedFile(),
+//      'avatar' => $this->getUploadedFile(),
 //      'remove_specialities' => $categoriesToRemove->toArray(),
 //      'add_specialities' => $categoriesToAdd->map(function ($id) {
 //        return ['category_id' => $id, 'price' => rand(100, 200) / 10, 'name' => Str::random()];
 //      })->toArray(),
     ];
-  }
-
-  /**
-   * Method to get uploaded file
-   *
-   * @return UploadedFile
-   */
-  protected function getUploadedFile(): UploadedFile
-  {
-    $name = Str::random() . ".jpg";
-
-    return new UploadedFile(storage_path('test/image.jpg'), $name, 'image/jpeg', null, true);
   }
 
   /**

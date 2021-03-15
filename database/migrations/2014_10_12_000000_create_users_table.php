@@ -26,6 +26,8 @@ class CreateUsersTable extends Migration
       // Settings section
       $table->text('settings')->nullable();
 
+      $table->string('avatar')->nullable();
+
       $table->softDeletes();
       $table->timestamps();
     });

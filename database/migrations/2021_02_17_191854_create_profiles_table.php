@@ -27,7 +27,7 @@ class CreateProfilesTable extends Migration
       $table->boolean('phone_verified')->default(false);
 
       // Profile picture
-      $table->string('picture')->nullable();
+//      $table->string('picture')->nullable();
 
       // Location
       $table->foreignId('region_id')
