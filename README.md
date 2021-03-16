@@ -1366,6 +1366,27 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
+            /api/profiles/random
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+            {
+                category_id: int|null
+            }
+        </td>
+        <td>
+            {
+                status: string|null,
+                error: string|null,
+                profiles: Profile[]|null,
+                category: Category|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/autocomplete
         </td>
         <td>

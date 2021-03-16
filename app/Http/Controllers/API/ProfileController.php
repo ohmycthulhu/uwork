@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ChangeImageDataRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
 use App\Http\Requests\Profile\EditProfileRequest;
+use App\Http\Requests\Profile\RandomProfilesRequest;
+use App\Models\Categories\Category;
 use App\Models\Media\Image;
 use App\Models\User;
 use App\Models\User\Profile;
@@ -24,6 +26,13 @@ class ProfileController extends Controller
   protected $profile;
 
   /**
+   * Object for category
+   *
+   * @var Category
+  */
+  protected $category;
+
+  /**
    * Object for images
    *
    * @var Image
@@ -35,10 +44,12 @@ class ProfileController extends Controller
    *
    * @param Profile $profile
    * @param Image $image
+   * @param Category $category
    */
-  public function __construct(Profile $profile, Image $image)
+  public function __construct(Profile $profile, Image $image, Category $category)
   {
     $this->profile = $profile;
+    $this->category = $category;
     $this->image = $image;
   }
 
@@ -202,6 +213,38 @@ class ProfileController extends Controller
 
     return response()->json([
       'profile' => $profile
+    ]);
+  }
+
+  /**
+   * Method to get random profiles
+   *
+   * @param RandomProfilesRequest $request
+   *
+   * @return JsonResponse
+  */
+  public function getRandom(RandomProfilesRequest $request): JsonResponse {
+    $categoryId = $request->input('category_id');
+    $category = $categoryId ? $this->category::find($categoryId) : null;
+
+    if ($categoryId && !$category) {
+      return response()->json(['status' => 'error', 'error' => 'Category not found'], 404);
+    }
+
+    $profileIds = ProfileSpeciality::query()
+      ->where('cat_path', "s%f{$categoryId}c%e")
+      ->groupBy('profile_id')
+      ->inRandomOrder()
+      ->pluck('profile_id');
+
+    $profiles = $this->profile::query()
+      ->whereIn('id', $profileIds)
+      ->with(['region', 'district', 'city', 'user', 'speciality']);
+
+    return response()->json([
+      'status' => 'success',
+      'profiles' => $profiles,
+      'category' => $category,
     ]);
   }
 

@@ -209,6 +209,8 @@ Route::group([
 ], function (Illuminate\Routing\Router $router) {
   $router->get('/', 'API\\SearchController@search')
     ->name('search');
+  $router->get('/random', 'API\\ProfileController@getRandom')
+    ->name('random');
   $router->get('/{id}', 'API\\ProfileController@getById')
     ->name('id');
   $router->post('/{profile}/views', 'API\\Profile\\ViewsController@add')

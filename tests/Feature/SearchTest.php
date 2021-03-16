@@ -115,5 +115,33 @@ class SearchTest extends TestCase
       $spec = array_map(function ($s) {return $s['category_path'];}, $profile['specialities']);
       $this->assertStringContainsString("|{$category->id}|", join(',',$spec));
     }
+    $this->clearDatabase();
+  }
+
+  public function testRandom () {
+    // Fill database
+    $this->fillDatabase();
+
+    // Send empty request to random
+    $this->get(route('api.profiles.random'))
+      ->assertOk();
+
+    // Send request with non-existing category id
+    $categoryId = rand(10000, 20000);
+    var_dump($this->get(route('api.profiles.random'), ['category_id' => $categoryId])->content());
+    $this->get(route('api.profiles.random', ['category_id' => $categoryId]))
+      ->assertStatus(404)
+      ->assertJsonStructure(['status', 'error']);
+
+    // Send request with every category
+    $categories = Category::query()->get();
+    foreach ($categories as $category) {
+      $this->get(route('api.profiles.random', ['category_id' => $category->id]))
+        ->assertOk()
+        ->assertJsonStructure(['profiles', 'category']);
+    }
+
+    // Clear database
+    $this->clearDatabase();
   }
 }
