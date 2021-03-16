@@ -198,7 +198,7 @@ class ProfileController extends Controller
       return response()->json(['error' => 'Profile not found'], 404);
     }
 
-    $profile->load(['specialities.category', 'media']);
+    $profile->load(['specialities.category', 'media', 'user', 'region', 'city', 'district']);
 
     return response()->json([
       'profile' => $profile
