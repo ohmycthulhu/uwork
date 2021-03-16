@@ -3,6 +3,9 @@
 namespace App\Models\User;
 
 use App\Models\Categories\Category;
+use App\Models\Location\City;
+use App\Models\Location\District;
+use App\Models\Location\Region;
 use App\Models\Media\Image;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
@@ -218,6 +221,33 @@ class Profile extends Model implements HasMedia
   */
   public function media(): MorphMany {
     return $this->morphMany(Image::class, 'model');
+  }
+
+  /**
+   * Location Region
+   *
+   * @return BelongsTo
+  */
+  public function region(): BelongsTo {
+    return $this->belongsTo(Region::class, 'region_id');
+  }
+
+  /**
+   * Location City
+   *
+   * @return BelongsTo
+  */
+  public function city(): BelongsTo {
+    return $this->belongsTo(City::class, 'city_id');
+  }
+
+  /**
+   * Location District
+   *
+   * @return BelongsTo
+  */
+  public function district(): BelongsTo {
+    return $this->belongsTo(District::class, 'district_id');
   }
 
   /**
