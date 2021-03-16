@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Collection getAutocomplete(string $text)
  * @method static void optimizeStorage()
  * @method static int importKeywords()
+ * @method static string calculateCategoryPath(int $categoryId)
 */
 class SearchFacade extends Facade
 {

@@ -49,7 +49,7 @@ class SearchController extends Controller
         $this->category::searchByName($keyword)->map(function ($c) { return $c->id; })->toArray() : null;
       $categoryId = $request->input('category_id');
 
-      $specQuery = $this->speciality::completeSearch(
+      $specQuery = $this->profile::completeSearch(
         $categoryId,
         $categories,
         $request->input('region_id'),
@@ -57,14 +57,11 @@ class SearchController extends Controller
         $request->input('district_id'),
         Auth::id(),
         $page,
-        100,
+        15
       );
 
-      $profileIds = $specQuery->models()->map(function ($s) { return $s->profile_id; })->unique();
-
-      $query = $this->profile::query()
-        ->whereIn('id', $profileIds)
-        ->with(['specialities.category', 'user']);
+      $profiles = $specQuery->models();
+      $profiles->load(['specialities.category', 'user']);
 
       if ($keyword) {
         SearchFacade::registerSearch($keyword);
@@ -73,7 +70,7 @@ class SearchController extends Controller
       // Return response
       return response()->json([
         'result' => [
-          'data' => $query->get(),
+          'data' => $profiles,
           'total' => $specQuery->count(),
           'current_page' => $page,
           'next_page_url' => route('api.profiles.search', array_merge($request->all(), ['page' => $page + 1]))

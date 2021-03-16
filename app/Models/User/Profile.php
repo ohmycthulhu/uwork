@@ -2,33 +2,30 @@
 
 namespace App\Models\User;
 
+use App\Facades\SearchFacade;
 use App\Models\Categories\Category;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
 use App\Models\Media\Image;
+use App\Models\Model;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
-use App\Models\Traits\HasAvatar;
 use App\Models\User;
-use Exception;
+use ElasticScoutDriverPlus\CustomSearch;
+use ElasticScoutDriverPlus\Paginator;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class Profile extends Model implements HasMedia
 {
-  use SoftDeletes, HasMediaTrait;
+  use SoftDeletes, HasMediaTrait, Searchable, CustomSearch;
 
   // Fillable fields
   protected $fillable = [
@@ -59,8 +56,9 @@ class Profile extends Model implements HasMedia
    * Method to synchronize rating and reviews count
    *
    * @return $this
-  */
-  public function synchronizeReviews(): Profile {
+   */
+  public function synchronizeReviews(): Profile
+  {
     $reviewsCount = $this->reviews()->count();
     if ($reviewsCount != $this->reviews_count) {
       $this->reviews_count = $reviewsCount;
@@ -72,8 +70,12 @@ class Profile extends Model implements HasMedia
 
       // Update overall rating
       if ($reviewsCount > 0) {
-        $ratProd = array_reduce($ratingTypes, function ($acc, $type) { return $acc * $this->{$type} / 5; }, 1);
-        $ratSum = array_reduce($ratingTypes, function ($acc, $type) { return $acc + $this->{$type} / 5 ; }, 0);
+        $ratProd = array_reduce($ratingTypes, function ($acc, $type) {
+          return $acc * $this->{$type} / 5;
+        }, 1);
+        $ratSum = array_reduce($ratingTypes, function ($acc, $type) {
+          return $acc + $this->{$type} / 5;
+        }, 0);
         $this->rating = sizeof($ratingTypes) * $ratProd / $ratSum;
       } else {
         $this->rating = 0;
@@ -89,8 +91,9 @@ class Profile extends Model implements HasMedia
    * Method to synchronize views
    *
    * @return $this
-  */
-  public function synchronizeViews(): Profile {
+   */
+  public function synchronizeViews(): Profile
+  {
     $viewsCount = $this->views()->count();
     $openCount = $this->views()->open()->count();
     if ($viewsCount != $this->views_count || $openCount != $this->open_count) {
@@ -121,8 +124,9 @@ class Profile extends Model implements HasMedia
    * Returns current phone
    *
    * @return string
-  */
-  public function getPhone(): string {
+   */
+  public function getPhone(): string
+  {
     return $this->phone;
   }
 
@@ -132,8 +136,9 @@ class Profile extends Model implements HasMedia
    * @param ?string $about
    *
    * @return $this
-  */
-  public function setInfo(?string $about): Profile {
+   */
+  public function setInfo(?string $about): Profile
+  {
     if ($about) {
       $this->about = $about;
     }
@@ -200,8 +205,9 @@ class Profile extends Model implements HasMedia
    * Relation to reviews
    *
    * @return HasMany
-  */
-  public function reviews(): HasMany {
+   */
+  public function reviews(): HasMany
+  {
     return $this->hasMany(Review::class, 'profile_id');
   }
 
@@ -209,8 +215,9 @@ class Profile extends Model implements HasMedia
    * Relation to views
    *
    * @return HasMany
-  */
-  public function views(): HasMany {
+   */
+  public function views(): HasMany
+  {
     return $this->hasMany(ProfileView::class, 'profile_id');
   }
 
@@ -218,8 +225,9 @@ class Profile extends Model implements HasMedia
    * Override media relation
    *
    * @return MorphMany
-  */
-  public function media(): MorphMany {
+   */
+  public function media(): MorphMany
+  {
     return $this->morphMany(Image::class, 'model');
   }
 
@@ -273,8 +281,9 @@ class Profile extends Model implements HasMedia
    * @param Builder $query
    *
    * @return Builder
-  */
-  public function scopePublic(Builder $query): Builder {
+   */
+  public function scopePublic(Builder $query): Builder
+  {
     return $query->whereNotNull('verified_at')
       ->where('failed_audition', false)
       ->visible();
@@ -287,8 +296,9 @@ class Profile extends Model implements HasMedia
    * @param int $regionId
    *
    * @return Builder
-  */
-  public function scopeRegion(Builder $query, int $regionId): Builder {
+   */
+  public function scopeRegion(Builder $query, int $regionId): Builder
+  {
     return $query->where('region_id', $regionId);
   }
 
@@ -299,8 +309,9 @@ class Profile extends Model implements HasMedia
    * @param int $cityId
    *
    * @return Builder
-  */
-  public function scopeCity(Builder $query, int $cityId): Builder {
+   */
+  public function scopeCity(Builder $query, int $cityId): Builder
+  {
     return $query->where('city_id', $cityId);
   }
 
@@ -311,8 +322,9 @@ class Profile extends Model implements HasMedia
    * @param int $districtId
    *
    * @return Builder
-  */
-  public function scopeDistrict(Builder $query, int $districtId): Builder {
+   */
+  public function scopeDistrict(Builder $query, int $districtId): Builder
+  {
     return $query->where('district_id', $districtId);
   }
 
@@ -323,8 +335,9 @@ class Profile extends Model implements HasMedia
    * @param Category $category
    *
    * @return Builder
-  */
-  public function scopeExactCategory(Builder $query, Category $category): Builder {
+   */
+  public function scopeExactCategory(Builder $query, Category $category): Builder
+  {
     return $query->whereHas('specialities', function ($q) use ($category) {
       return $q->categoryId($category->id);
     });
@@ -337,8 +350,9 @@ class Profile extends Model implements HasMedia
    * @param int $categoryId
    *
    * @return Builder
-  */
-  public function scopeCategory(Builder $query, int $categoryId): Builder {
+   */
+  public function scopeCategory(Builder $query, int $categoryId): Builder
+  {
     return $query->wherehas('specialities', function ($q) use ($categoryId) {
       return $q->category($categoryId);
     });
@@ -351,8 +365,9 @@ class Profile extends Model implements HasMedia
    * @param User $user
    *
    * @return Builder
-  */
-  public function scopeNotUser(Builder $query, User $user): Builder {
+   */
+  public function scopeNotUser(Builder $query, User $user): Builder
+  {
     return $query->where('user_id', '<>', $user->id);
   }
 
@@ -364,8 +379,105 @@ class Profile extends Model implements HasMedia
    * Attribute to check the status
    *
    * @return bool
-  */
-  public function getIsApprovedAttribute(): bool {
+   */
+  public function getIsApprovedAttribute(): bool
+  {
     return !!$this->verified_at && !$this->failed_audition;
+  }
+
+  /**
+   * Search section
+   *
+   */
+
+  /**
+   * Converts model to indices
+   *
+   * @return array
+   */
+  public function toSearchableArray(): array
+  {
+    $specialitiesInfo = $this->specialities()
+      ->get()
+      ->map(function (ProfileSpeciality $speciality) {
+        return [
+          'price' => $speciality->price,
+          'catPath' => SearchFacade::calculateCategoryPath($speciality->category_id),
+        ];
+      })->toArray();
+    return [
+      'id' => $this->id,
+      'regionId' => $this->region_id,
+      'cityId' => $this->city_id,
+      'districtId' => $this->district_id,
+      'userId' => $this->user_id,
+      'specialities' => $specialitiesInfo,
+    ];
+  }
+
+  /**
+   * Performs advanced search
+   *
+   * @param ?int $categoryId
+   * @param ?int[] $categories
+   * @param ?int $regionId ,
+   * @param ?int $cityId ,
+   * @param ?int $districtId ,
+   * @param ?int $userId ,
+   * @param ?int $page
+   * @param int $amount
+   *
+   * @return Paginator
+   */
+  public static function completeSearch(
+    ?int $categoryId,
+    ?array $categories,
+    ?int $regionId,
+    ?int $cityId,
+    ?int $districtId,
+    ?int $userId,
+    ?int $page = 1,
+    int $amount = 5
+  ): Paginator
+  {
+    $query = static::boolSearch();
+
+    $locations = [];
+    /* Prepare location constraints */
+    if ($regionId) {
+      $locations["regionId"] = $regionId;
+    }
+    if ($cityId) {
+      $locations["cityId"] = $cityId;
+    }
+    if ($districtId) {
+      $locations["districtId"] = $districtId;
+    }
+    if ($locations) {
+      $query->must(["match" => $locations]);
+    }
+
+    /* Prepare category filter */
+    if ($categoryId) {
+      $strictCategory = ["wildcard" => ["specialities.catPath" => "s*c{$categoryId}c*e"]];
+      $query->must($strictCategory);
+    }
+
+    foreach (($categories ?? []) as $cat) {
+      $query->should(["wildcard" => ["specialities.catPath" => "s*c{$cat}c*e"]]);
+    }
+
+    if ($userId) {
+      $userConstraints = ["user_id" => $userId];
+      $query->mustNot($userConstraints);
+    }
+
+    if (!$locations && !$categories && !$categoryId) {
+      $query->mustNot(['match' => ['id' => ""]]);
+    }
+
+    /* Perform search */
+    return $query
+      ->paginate($amount, 'page', $page);
   }
 }

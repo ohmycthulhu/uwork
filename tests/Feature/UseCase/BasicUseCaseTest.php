@@ -68,9 +68,9 @@ class BasicUseCaseTest extends TestCase
      * @return Profile
     */
     protected function searchRandomProfile(): Profile {
-      $category = Category::query()->inRandomOrder()->first();
+//      $category = Category::query()->inRandomOrder()->first();
 
-      $data = $this->get(route('api.profiles.search', ['category_id' => $category->id]))
+      $data = $this->get(route('api.profiles.search'))
         ->assertOk()
         ->json('result.data');
 

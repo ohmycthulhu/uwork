@@ -3,6 +3,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Categories\Category;
 use App\Models\Search\SearchHistory;
 use App\Utils\CacheAccessor;
 use Illuminate\Support\Collection;
@@ -139,5 +140,29 @@ class SearchHelper
       $result[$element] = ($result[$element] ?? 0) + 1;
     }
     return $result;
+  }
+
+  /**
+   * Method to calculate category path
+   *
+   * @param int $categoryId
+   *
+   * @return string
+   */
+  public function calculateCategoryPath(int $categoryId): string {
+    /* @var ?Category $category */
+    $category = Category::query()->find($categoryId);
+    if (!$category) {
+      return '';
+    }
+    $lastCategoryId = $categoryId;
+    $result = '';
+    do {
+      $result = "f{$lastCategoryId}c{$result}";
+      $category = $category->parent()->first();
+      $lastCategoryId = $category ? $category->id : null;
+    } while ($lastCategoryId);
+
+    return "s{$result}e";
   }
 }
