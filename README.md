@@ -1231,7 +1231,7 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
-            /api/user/profile/{profileId}/reviews
+            /api/profiles/{profileId}/reviews
         </td>
         <td>
             GET
@@ -1245,7 +1245,7 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
-            /api/user/profiles/{profile}/reviews
+            /api/profiles/{profile}/reviews
         </td>
         <td>
             POST
@@ -1264,7 +1264,7 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
-            /api/user/profiles/{profile}/reviews
+            /api/profiles/{profile}/reviews
         </td>
         <td>
             DELETE
@@ -1284,7 +1284,7 @@ speciality can change name and price, but not category.
             /api/profiles/{profile}/views
         </td>
         <td>
-            DELETE
+            POST
         </td>
         <td>CreateViewForm</td>
         <td>
