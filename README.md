@@ -1373,7 +1373,8 @@ speciality can change name and price, but not category.
         </td>
         <td>
             {
-                category_id: int|null
+                category_id: int|null,
+                amount: int|null,
             }
         </td>
         <td>

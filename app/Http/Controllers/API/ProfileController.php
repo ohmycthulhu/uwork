@@ -224,6 +224,7 @@ class ProfileController extends Controller
    * @return JsonResponse
   */
   public function getRandom(RandomProfilesRequest $request): JsonResponse {
+    $amount = $request->input('amount', 10);
     $categoryId = $request->input('category_id');
     $category = $categoryId ? $this->category::find($categoryId) : null;
 
@@ -231,9 +232,13 @@ class ProfileController extends Controller
       return response()->json(['status' => 'error', 'error' => 'Category not found'], 404);
     }
 
-    $profileIds = ProfileSpeciality::query()
-      ->where('cat_path', "s%f{$categoryId}c%e")
-      ->groupBy('profile_id')
+    $query = ProfileSpeciality::query();
+
+    if ($categoryId) {
+      $query->category($categoryId);
+    }
+    $profileIds = $query->groupBy('profile_id')
+      ->limit($amount)
       ->inRandomOrder()
       ->pluck('profile_id');
 

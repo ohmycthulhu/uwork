@@ -81,7 +81,9 @@ class ReviewsController extends Controller
 
     $reviews = null;
     if ($profile) {
-      $reviews = $profile->reviews()->paginate(15);
+      $reviews = $profile->reviews()
+        ->with(['user', 'speciality'])
+        ->paginate(15);
     }
 
     return response()->json([

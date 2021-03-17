@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User\Profile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -20,6 +21,7 @@ class ProfileSeeder extends Seeder
             ->make()
             ->toArray();
           unset($p['is_approved']);
+          /* @var Profile $profile */
           $profile = $user->profile()->first() ??
             $user->profile()->create($p);
 
@@ -31,7 +33,7 @@ class ProfileSeeder extends Seeder
             $profile->reviews()
               ->create(
                 factory(\App\Models\Profile\Review::class)
-                  ->make(['user_id' => $u->id])
+                  ->make(['user_id' => $u->id, 'speciality_id' => $profile->specialities()->inRandomOrder()->first()->id])
                   ->toArray()
               );
           }
@@ -42,6 +44,9 @@ class ProfileSeeder extends Seeder
                 ->make()
                 ->toArray()
             );
+
+          $profile->synchronizeViews();
+          $profile->synchronizeReviews();
         }
     }
 }
