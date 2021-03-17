@@ -48,7 +48,8 @@ class SpecialitiesController extends Controller
     $speciality = $profile->addSpeciality(
       $request->input('category_id'),
       $request->input('price'),
-      $request->input('name')
+      $request->input('name'),
+      $request->input('description'),
     );
 
     // Return result

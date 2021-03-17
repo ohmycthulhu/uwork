@@ -31,6 +31,9 @@ class CreateProfileSpecialitiesTable extends Migration
 
             $table->float('price')->index();
 
+            $table->text('description')
+              ->nullable();
+
             $table->string('category_path')
               ->index()
               ->nullable();

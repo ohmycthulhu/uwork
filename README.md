@@ -171,6 +171,7 @@
             category_id: Int,
             price: Float,
             name: String,
+            description: String,
             media: Image[],
         }
     </td>
@@ -182,6 +183,7 @@
             category_id: Int,
             price: Float,
             name: String,
+            description: String
         }
     </td>
     <td>Form for specifying specialities</td>

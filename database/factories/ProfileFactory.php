@@ -16,5 +16,6 @@ $factory->define(\App\Models\User\ProfileSpeciality::class, function (Faker $fak
   return [
     'price' => $faker->numberBetween(10, 100),
     'name' => $faker->words(3, true),
+    'description' => $faker->realText(),
   ];
 });

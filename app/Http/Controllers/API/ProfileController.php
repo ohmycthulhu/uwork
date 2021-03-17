@@ -123,7 +123,9 @@ class ProfileController extends Controller
     $user = Auth::user();
 
     // Get user's profile
-    $profile = $user->profile()->first();
+    $profile = $user->profile()
+      ->with('specialities.category.parent', 'media', 'user', 'region', 'city', 'district')
+      ->first();
 
     // Return profile
     return response()->json([
@@ -209,7 +211,7 @@ class ProfileController extends Controller
       return response()->json(['error' => 'Profile not found'], 404);
     }
 
-    $profile->load(['specialities.category', 'media', 'user', 'region', 'city', 'district']);
+    $profile->load(['specialities.category.parent', 'media', 'user', 'region', 'city', 'district']);
 
     return response()->json([
       'profile' => $profile
