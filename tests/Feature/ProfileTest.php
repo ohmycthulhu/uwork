@@ -222,6 +222,17 @@ class ProfileTest extends TestCase
     $this->get(route('api.profile.reviews.get'))
       ->assertStatus(404);
 
+    $review = $profile->reviews()->first();
+    var_dump($review->id);
+    $this->post(route('api.profiles.reviews.reply', ['profile' => $profile->id, 'review' => $review->id]), $form)
+      ->assertStatus(403);
+
+    Auth::login($userOwner);
+    $this->post(route('api.profiles.reviews.reply', ['profile' => $profile->id, 'review' => $review->id]), $form)
+      ->assertOk();
+
+
+    Auth::login($userGuest);
     // Send request to remove review
     $this->delete(route('api.profiles.reviews.delete', ['profile' => $profile->id]))
       ->assertOk();

@@ -17,9 +17,9 @@ class CreateReviewsTable extends Migration
             $table->id();
 
             // Ratings columns
-            $table->integer('rating_quality');
-            $table->integer('rating_price');
-            $table->integer('rating_time');
+            $table->integer('rating_quality')->nullable();
+            $table->integer('rating_price')->nullable();
+            $table->integer('rating_time')->nullable();
 
             $table->string('headline');
             $table->text('text');
@@ -40,6 +40,11 @@ class CreateReviewsTable extends Migration
               ->on('users')
               ->cascadeOnDelete();
 
+            $table->foreignId('parent_id')
+              ->nullable()
+              ->references('id')
+              ->on('reviews')
+              ->cascadeOnDelete();
 
             /**
              * Multiple columns that can be found useful

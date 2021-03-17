@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Review extends Model
@@ -16,6 +17,28 @@ class Review extends Model
     'headline', 'text', 'user_id', 'profile_id', 'speciality_id',
     'ip_addr', 'rating_quality', 'rating_time', 'rating_price'
   ];
+
+  /**
+   * Method to reply to reviews
+   *
+   * @param int $userId
+   * @param ?string $ip
+   * @param string $headline
+   * @param string $text
+   *
+   * @return Review
+  */
+  public function reply(int $userId, ?string $ip, string $headline, string $text): Review {
+    return $this->replies()
+      ->create([
+        'user_id' => $userId,
+        'headline' => $headline,
+        'text' => $text,
+        'profile_id' => $this->profile_id,
+        'speciality_id' => $this->speciality_id,
+        'ip_addr' => $ip,
+      ]);
+  }
 
   /**
    * Relations
@@ -48,6 +71,24 @@ class Review extends Model
   public function speciality(): BelongsTo
   {
     return $this->belongsTo(User\ProfileSpeciality::class, 'speciality_id');
+  }
+
+  /**
+   * Relation to replies
+   *
+   * @return HasMany
+  */
+  public function replies(): HasMany {
+    return $this->hasMany(Review::class, 'parent_id');
+  }
+
+  /**
+   * Relation to parent
+   *
+   * @return BelongsTo
+  */
+  public function parent(): BelongsTo {
+    return $this->belongsTo(Review::class, 'parent_id');
   }
 
   /**
@@ -91,5 +132,29 @@ class Review extends Model
   public function scopeSpecialityId(Builder $query, int $specialityId): Builder
   {
     return $query->where('speciality_id', $specialityId);
+  }
+
+  /**
+   * Scope by having ratings
+   *
+   * @param Builder $query
+   *
+   * @return Builder
+  */
+  public function scopeHasRatings(Builder $query): Builder {
+    return $query->whereNotNull('rating_quality')
+      ->whereNotNull('rating_price')
+      ->whereNotNull('rating_time');
+  }
+
+  /**
+   * Scope by top
+   *
+   * @param Builder $query
+   *
+   * @return Builder
+  */
+  public function scopeTop(Builder $query): Builder {
+    return $query->whereNull('parent_id');
   }
 }

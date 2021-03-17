@@ -224,6 +224,8 @@ Route::group([
       ->name('create');
     $router->post('/reviews', 'API\\Profile\\ReviewsController@create')
       ->name('create');
+    $router->post('/reviews/{review}', 'API\\Profile\\ReviewsController@reply')
+      ->name('reply');
     $router->delete('/reviews', 'API\\Profile\\ReviewsController@delete')
       ->name('delete');
   });

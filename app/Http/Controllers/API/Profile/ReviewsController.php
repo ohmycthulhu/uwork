@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API\Profile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CreateReviewFormRequest;
+use App\Http\Requests\ReplyReviewRequest;
+use App\Models\Profile\Review;
 use App\Models\User\Profile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +47,49 @@ class ReviewsController extends Controller
   }
 
   /**
+   * Method to reply to comments
+   *
+   * @param Review $review
+   * @param Profile $profile
+   * @param ReplyReviewRequest $request
+   *
+   * @return JsonResponse
+  */
+  public function reply(ReplyReviewRequest $request, Profile $profile, Review $review): JsonResponse {
+    // Get profile and user
+    $profile = $review->profile()->first();
+    $user = Auth::user();
+
+    // Check if user is profile's creator
+    if ($profile->user_id != $user->id) {
+      return response()->json([
+        'status' => 'error',
+        'message' => "You can't reply to the reviews on this profile"
+      ], 403);
+    }
+    if ($review->user_id == $user->id) {
+      return response()->json([
+        'status' => 'error',
+        'message' => "You can't reply to own reviews"
+      ]);
+    }
+
+    // Create review
+    $reply = $review->reply(
+      $user->id,
+      $request->ip(),
+      $request->input('headline', ''),
+      $request->input('text', '')
+    );
+
+    // Return review
+    return response()->json([
+      'status' => 'success',
+      'review' => $reply
+    ]);
+  }
+
+  /**
    * Method to add review to profile
    *
    * @param Profile $profile
@@ -82,7 +127,7 @@ class ReviewsController extends Controller
     $reviews = null;
     if ($profile) {
       $reviews = $profile->reviews()
-        ->with(['user', 'speciality'])
+        ->with(['user', 'replies.user', 'speciality'])
         ->paginate(15);
     }
 

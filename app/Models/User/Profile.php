@@ -208,7 +208,7 @@ class Profile extends Model implements HasMedia
    */
   public function reviews(): HasMany
   {
-    return $this->hasMany(Review::class, 'profile_id');
+    return $this->hasMany(Review::class, 'profile_id')->top();
   }
 
   /**

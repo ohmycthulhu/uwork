@@ -1207,6 +1207,9 @@ speciality can change name and price, but not category.
     not including its own profile. Same is applying
     for views.
 </p>
+<p>
+  To reply to review, send request to /profiles/{profile}/reviews/{reviewId}
+</p>
 <table>
     <thead>
         <th>Route</th>
@@ -1252,6 +1255,25 @@ speciality can change name and price, but not category.
         </td>
         <td>
             CreateReviewForm
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                review: Review|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/profiles/{profile}/reviews/{reviewId}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {headline: String, text: String}
         </td>
         <td>
             {
