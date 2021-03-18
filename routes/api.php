@@ -221,9 +221,10 @@ Route::group([
     'as' => 'reviews.'
   ], function (Illuminate\Routing\Router $router) {
     $router->get('/reviews', 'API\\Profile\\ReviewsController@getById')
-      ->name('create');
+      ->name('get');
     $router->post('/reviews', 'API\\Profile\\ReviewsController@create')
-      ->name('create');
+      ->name('create')
+      ->middleware('auth:api');
     $router->post('/reviews/{review}', 'API\\Profile\\ReviewsController@reply')
       ->name('reply');
     $router->delete('/reviews', 'API\\Profile\\ReviewsController@delete')

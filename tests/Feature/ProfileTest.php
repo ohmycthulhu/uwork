@@ -199,14 +199,16 @@ class ProfileTest extends TestCase
     $userOwner = $this->createUser();
     $userGuest = $this->createUser();
     $profile = $this->createProfile($userOwner);
+    $form = factory(Review::class)->make()->toArray();
+
+    $this->post(route('api.profiles.reviews.create', ['profile' => $profile->id]), $form)
+      ->assertStatus(401);
 
     Auth::login($userGuest);
 
     // Send request to remove review
     $this->post(route('api.profiles.reviews.delete', ['profile' => $profile->id]))
       ->assertStatus(403);
-
-    $form = factory(Review::class)->make()->toArray();
 
     // Send request to create review from same user
     Auth::login($userOwner);
