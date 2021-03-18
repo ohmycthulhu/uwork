@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Location\City;
+use App\Models\Location\District;
+use App\Models\Location\Region;
 use App\Models\Messenger\Chat;
 use App\Models\Payment\Card;
 use App\Models\Traits\HasAvatar;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -29,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
   protected $fillable = [
     'first_name', 'last_name', 'father_name',
     'email', 'phone', 'password',
+    'region_id', 'city_id', 'district_id',
   ];
 
   protected $avatarColumn = 'avatar';
@@ -183,6 +188,33 @@ class User extends Authenticatable implements JWTSubject
    * */
   public function chats(): Builder {
     return Chat::query()->user($this);
+  }
+
+  /**
+   * Relation to region
+   *
+   * @return BelongsTo
+   */
+  public function region(): BelongsTo {
+    return $this->belongsTo(Region::class, 'region_id');
+  }
+
+  /**
+   * Relation to city
+   *
+   * @return BelongsTo
+  */
+  public function city(): BelongsTo {
+    return $this->belongsTo(City::class, 'city_id');
+  }
+
+  /**
+   * Relation to district
+   *
+   * @return BelongsTo
+  */
+  public function district(): BelongsTo {
+    return $this->belongsTo(District::class, 'district_id');
   }
 
   /**

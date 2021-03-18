@@ -26,7 +26,31 @@ class CreateUsersTable extends Migration
       // Settings section
       $table->text('settings')->nullable();
 
+      // Detailed information
       $table->string('avatar')->nullable();
+      $table->date('birthdate')->nullable();
+
+      // Location
+      $table->foreignId('region_id')
+        ->nullable()
+        ->references('id')
+        ->on('regions')
+        ->nullOnDelete();
+
+      $table->foreignId('city_id')
+        ->nullable()
+        ->references('id')
+        ->on('cities')
+        ->nullOnDelete();
+
+      $table->foreignId('district_id')
+        ->nullable()
+        ->references('id')
+        ->on('districts')
+        ->nullOnDelete();
+
+      $table->boolean('is_male')
+        ->default(true);
 
       $table->softDeletes();
       $table->timestamps();

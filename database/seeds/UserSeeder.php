@@ -11,6 +11,16 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\User::class, 10)->create();
+      $regions = \App\Models\Location\Region::all()->load(['cities.districts']);
+      for ($i = 0; $i < 10; $i++) {
+        $region = $regions->random();
+        $city = $region->cities->random();
+        $district = $city->districts()->random();
+        factory(\App\Models\User::class)->create([
+          'region_id' => $region->id,
+          'city_id' => $city->id,
+          'district' => $district ? $district->id : null,
+        ]);
+      }
     }
 }

@@ -22,7 +22,7 @@ class CreateProfileRequest extends FormRequest
       'specialities.*.name' => 'required|string',
       'images' => 'nullable|array',
       'images.*' => 'required|exists:App\Models\Media\Image,id',
-      'avatar' => 'nullable|file',
+//      'avatar' => 'nullable|file',
     ];
   }
 }

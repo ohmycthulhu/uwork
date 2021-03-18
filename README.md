@@ -127,7 +127,10 @@
             last_name: String,
             father_name: String,
             notification_settings: Dictionary&lt;String, Boolen&gt;,
-            avatar_url: String|null
+            avatar_url: String|null,
+            region_id: Int|null,
+            city_id: Int|null,
+            district_id: Int|null
         }
     </td>
     <td>User model</td>
@@ -888,7 +891,11 @@ Registration is performed in 3 steps:
                 first_name: String,
                 last_name: String,
                 father_name: String,
-                avatar: File|null
+                avatar: File|null,
+                birthdate: String|null,
+                region_id: Int|null,
+                city_id: Int|null,
+                district_id: Int|null
             }
         </td>
         <td>

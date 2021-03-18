@@ -154,10 +154,10 @@ class ProfileController extends Controller
     }
 
     // If picture is sent, update avatar
-    $avatar = $request->file('avatar');
-    if ($avatar) {
-      $profile->setAvatar($avatar);
-    }
+//    $avatar = $request->file('avatar');
+//    if ($avatar) {
+//      $profile->setAvatar($avatar);
+//    }
 
     // If "images" are set, remove all images not presented in profile
     $images = $request->input('images');

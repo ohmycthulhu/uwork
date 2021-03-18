@@ -82,11 +82,16 @@ class AuthenticationController extends Controller
       $form['phone'] = $phone;
 
       try {
+        /* @var User $user */
         $user = $this->user::create($form);
       } catch (\Exception $e) {
         // If failed, send error message
         return response()
           ->json(['error' => $e->getMessage()], 405);
+      }
+
+      if ($avatar = $request->file('avatar')) {
+        $user->setAvatar($avatar);
       }
 
       // Return user and response

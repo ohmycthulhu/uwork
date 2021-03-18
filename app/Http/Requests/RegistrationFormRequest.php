@@ -17,7 +17,12 @@ class RegistrationFormRequest extends FormRequest
       'father_name' => 'required|string|min:3|max:60',
       'password' => 'required|string|confirmed',
       'email' => 'nullable|unique:users|email',
-      'verification_uuid' => 'required|string|min:11'
+      'verification_uuid' => 'required|string|min:11',
+      'avatar' => 'nullable|file',
+      'birthdate' => 'nullable|date',
+      'region_id' => 'nullable|numeric|exists:regions,id',
+      'city_id' => 'nullable|numeric|exists:cities,id',
+      'district_id' => 'nullable|numeric|exists:districts,id',
     ];
   }
 }
