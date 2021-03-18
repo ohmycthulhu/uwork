@@ -21,6 +21,7 @@
 13. [Favourite services](#favourites)
 14. [Cards](#cards)
 15. [Messages](#messages)
+16. [Communication](#communication)
 
 <p>
   For using API endpoints, all requests should have "API-TOKEN" header
@@ -281,6 +282,42 @@
             chat: Chat,
             chat_id: Int,
             read_at: Datetime|null,
+        }
+    </td>
+    <td>Model represents the view of message</td>
+</tr>
+<tr>
+    <td>AppealReason</td>
+    <td>{
+            id: int,
+            name: String,
+        }
+    </td>
+    <td>Reason for appealing</td>
+</tr>
+<tr>
+    <td>AppealRequest</td>
+    <td>{
+            text: String,
+            appeal_reason_id: Int|null,
+            appeal_reason_other: String|null,
+            name: String|null,
+            phone: String|null,
+            email: String|null
+        }
+    </td>
+    <td>Model represents the view of message</td>
+</tr>
+<tr>
+    <td>Appeal</td>
+    <td>{
+            id: int,
+            text: String|null,
+            appeal_reason: AppealReason|null,
+            appeal_reason_other: String|null,
+            phone: String|null,
+            email: String|null,
+            name: String|null
         }
     </td>
     <td>Model represents the view of message</td>
@@ -1728,3 +1765,64 @@ To mark all messages as read, send PUT request to /api/chats/{userId}
     </tr>
     </tbody>
 </table>
+
+
+<a id="communication" name="communication"></a>
+<div>
+<p>
+At the moment, the only communication supported is appeals.
+To use appeals, user can either choose appeal reason or write something in "Other".
+Authenticated users may not send name, email and/or phone number.
+There is a limit of 3 appeals in 4 hours.
+If limit exceeds, 405 error will be returned
+</p>
+<hr />
+<p>
+  List of routes are shown below:
+</p>
+
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/appeal-reasons
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                reasons: AppealReason[]
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/appeals
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+          AppealRequest
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                appeal: Appeal|null
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
