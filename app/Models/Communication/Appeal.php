@@ -2,6 +2,7 @@
 
 namespace App\Models\Communication;
 
+use App\Models\Scopes\OrderScope;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +22,13 @@ class Appeal extends Model
     protected static $throttleDuration = 240;
     protected static $throttleAmount = 3;
 
-    /**
+    public function __construct(array $attributes = [])
+    {
+      parent::__construct($attributes);
+      self::addGlobalScope(new OrderScope("created_at", 'desc'));
+    }
+
+  /**
      * Methods
     */
 
