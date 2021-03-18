@@ -99,6 +99,7 @@ class Profile extends Model implements HasMedia
     if ($viewsCount != $this->views_count || $openCount != $this->open_count) {
       $this->views_count = $viewsCount;
       $this->open_count = $openCount;
+      $this->phone_display_count = $openCount;
       $this->save();
     }
     return $this;

@@ -11,7 +11,7 @@ class ProfileView extends Model
 {
   // Fillable
   protected $fillable = [
-    'profile_id', 'user_id', 'ip_addr', 'has_open',
+    'profile_id', 'user_id', 'ip_addr', 'opened',
   ];
 
   /**
