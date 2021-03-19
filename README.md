@@ -206,6 +206,15 @@
     <td>Model that represents review</td>
 </tr>
 <tr>
+    <td>ReviewCount</td>
+    <td>{
+            speciliaty_id: Int|null,
+            total: Int,
+        }
+    </td>
+    <td>Statistics entity for reviews count</td>
+</tr>
+<tr>
     <td>CreateReviewForm</td>
     <td>{
             headline: String,
@@ -1285,10 +1294,24 @@ speciality can change name and price, but not category.
         <td>
             GET
         </td>
-        <td></td>
+        <td>{speciality_id: Int|null}</td>
         <td>
             {
                 reviews: Pagination&lt;Review&gt;|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/profiles/{profileId}/reviews/counts
+        </td>
+        <td>
+            GET
+        </td>
+        <td></td>
+        <td>
+            {
+                counts: ReviewCount[]
             }
         </td>
     </tr>

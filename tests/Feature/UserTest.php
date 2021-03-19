@@ -163,7 +163,7 @@ class UserTest extends TestCase
     $user = factory(User::class)
       ->create(['password' => Hash::make($password)]);
 
-    $this->get(route('api.user'))
+    $this->get(route('api.user.get'))
       ->assertStatus(401);
 
     $this->post(route('api.login'), ['email' => $user->email])
@@ -178,7 +178,7 @@ class UserTest extends TestCase
 
     $this->assertNotNull($token);
 
-    $userId = $this->get(route('api.user'), ['headers' => ["Authorization" => "Bearer $token"]])
+    $userId = $this->get(route('api.user.get'), ['headers' => ["Authorization" => "Bearer $token"]])
       ->assertOk()
       ->json("user.id");
 

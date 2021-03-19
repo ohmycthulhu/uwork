@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Review extends Model
 {
@@ -156,5 +157,17 @@ class Review extends Model
   */
   public function scopeTop(Builder $query): Builder {
     return $query->whereNull('parent_id');
+  }
+
+  /**
+   * Scope to count by specialities
+   *
+   * @param Builder $query
+   *
+   * @return Builder
+  */
+  public function scopeSpecialitiesCount(Builder $query): Builder {
+    return $query->groupBy('speciality_id')
+      ->select("speciality_id", DB::raw("COUNT(*) AS `total`"));
   }
 }

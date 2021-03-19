@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Profile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CreateReviewFormRequest;
+use App\Http\Requests\Profile\ReviewsRetrieveRequest;
 use App\Http\Requests\ReplyReviewRequest;
 use App\Models\Profile\Review;
 use App\Models\User\Profile;
@@ -20,7 +21,8 @@ class ReviewsController extends Controller
    *
    * @return JsonResponse
    */
-  public function create(CreateReviewFormRequest $request, Profile $profile): JsonResponse {
+  public function create(CreateReviewFormRequest $request, Profile $profile): JsonResponse
+  {
     $user = Auth::user();
     // Check if profile doesn't belongs to user
     if ($profile->user_id == $user->id) {
@@ -54,8 +56,9 @@ class ReviewsController extends Controller
    * @param ReplyReviewRequest $request
    *
    * @return JsonResponse
-  */
-  public function reply(ReplyReviewRequest $request, Profile $profile, Review $review): JsonResponse {
+   */
+  public function reply(ReplyReviewRequest $request, Profile $profile, Review $review): JsonResponse
+  {
     // Get profile and user
     $profile = $review->profile()->first();
     $user = Auth::user();
@@ -96,7 +99,8 @@ class ReviewsController extends Controller
    *
    * @return JsonResponse
    */
-  public function delete(Profile $profile): JsonResponse {
+  public function delete(Profile $profile): JsonResponse
+  {
     $user = Auth::user();
 
     // Check if user has review on this profile
@@ -118,36 +122,62 @@ class ReviewsController extends Controller
   /**
    * Method to get reviews
    *
+   * @param ReviewsRetrieveRequest $request
+   *
    * @return JsonResponse
    */
-  public function get(): JsonResponse {
+  public function get(ReviewsRetrieveRequest $request): JsonResponse
+  {
     $user = Auth::user();
     $profile = $user->profile()->first();
 
-    $reviews = null;
-    if ($profile) {
-      $reviews = $profile->reviews()
-        ->with(['user', 'replies.user', 'speciality'])
-        ->paginate(15);
+    if (!$profile) {
+      return response()->json([
+        'reviews' => null,
+      ], 404);
     }
 
-    return response()->json([
-      'reviews' => $reviews
-    ], $profile ? 200 : 404);
+    return $this->getById($request, $profile);
   }
 
   /**
    * Method to get reviews by profile id
    *
    * @param Profile $profile
+   * @param ReviewsRetrieveRequest $request
    *
    * @return JsonResponse
-  */
-  public function getById(Profile $profile): JsonResponse {
-    $reviews = $profile->reviews()->paginate(16);
+   */
+  public function getById(ReviewsRetrieveRequest $request, Profile $profile): JsonResponse
+  {
+    $query = $profile->reviews();
+
+    if ($specId = $request->input('speciality_id')) {
+      $query->specialityId($specId);
+    }
+
+    $reviews = $query->with(['user', 'replies.user', 'speciality'])
+      ->paginate(15);
 
     return response()->json([
       'reviews' => $reviews
+    ]);
+  }
+
+  /**
+   * Method to get count of reviews by profile grouped by specialities
+   *
+   * @param Profile $profile
+   *
+   * @return JsonResponse
+  */
+  public function countBySpecialities(Profile $profile): JsonResponse {
+    $counts = $profile->reviews()
+      ->specialitiesCount()
+      ->get();
+
+    return response()->json([
+      'counts' => $counts,
     ]);
   }
 }

@@ -24,13 +24,13 @@ class SpecialitiesTest extends TestCase
 
     $form = $this->getCreationForm();
     // Try to create speciality without login
-    $this->post(route('api.profile.specialities.create'), $form)
+    $this->post(route('api.user.profile.specialities.create'), $form)
       ->assertStatus(401);
 
     $user = $this->createUser();
     Auth::login($user);
     // Try to create speciality without profile
-    $this->post(route('api.profile.specialities.create'), $form)
+    $this->post(route('api.user.profile.specialities.create'), $form)
       ->assertStatus(403);
 
     // Create profile
@@ -38,8 +38,8 @@ class SpecialitiesTest extends TestCase
     $specialitiesAmount = $profile->specialities()->count();
 
     // Create speciality
-    $this->sendPartialRequests(route('api.profile.specialities.create'), $form, $this->getRequiredFields());
-    $speciality = $this->post(route('api.profile.specialities.create'), $form)
+    $this->sendPartialRequests(route('api.user.profile.specialities.create'), $form, $this->getRequiredFields());
+    $speciality = $this->post(route('api.user.profile.specialities.create'), $form)
       ->assertOk()
       ->json('speciality');
 
@@ -48,7 +48,7 @@ class SpecialitiesTest extends TestCase
 
     // Update speciality
     $updateForm = $this->getUpdateForm();
-    $this->put(route('api.profile.specialities.update', ['specialityId' => $speciality['id']]), $updateForm)
+    $this->put(route('api.user.profile.specialities.update', ['specialityId' => $speciality['id']]), $updateForm)
       ->assertOk(); return;
 
     // Check information on speciality
@@ -57,7 +57,7 @@ class SpecialitiesTest extends TestCase
     $this->assertEquals($updateForm['price'], $speciality->price);
 
     // Delete speciality
-    $this->delete(route('api.profile.specialities.delete', ['specialityId' => $speciality['id']]))
+    $this->delete(route('api.user.profile.specialities.delete', ['specialityId' => $speciality['id']]))
       ->assertOk();
 
     // Check amount of specialities
@@ -74,7 +74,7 @@ class SpecialitiesTest extends TestCase
    */
   protected function checkAmount(int $count)
   {
-    $specialities = $this->get(route('api.profile.specialities.list'))
+    $specialities = $this->get(route('api.user.profile.specialities.list'))
       ->assertOk()
       ->json('specialities');
 

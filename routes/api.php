@@ -76,30 +76,31 @@ Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
  * Authenticated routes
  */
 Route::group([
-  'middleware' => 'auth:api'
+  'middleware' => 'auth:api',
+  'as' => 'api.user.',
 ], function (Illuminate\Routing\Router $router) {
   $router->group([
     'prefix' => '/user'
   ], function (Illuminate\Routing\Router $router) {
     $router->get('/', 'API\\AuthenticationController@user')
-      ->name('api.user');
+      ->name('get');
 
     $router->match(['put', 'post'], '/', 'API\\UserController@changeProfile')
-      ->name('api.user.update.profile');
+      ->name('update.profile');
     $router->put('/emails', 'API\\UserController@changeEmail')
-      ->name('api.user.update.email');
+      ->name('update.email');
     $router->put('/phones', 'API\\UserController@changePhone')
-      ->name('api.user.update.phone');
+      ->name('update.phone');
     $router->put('/passwords', 'API\\UserController@changePassword')
-      ->name('api.user.update.password');
+      ->name('update.password');
 
     $router->put('/settings', 'API\\UserController@updateSettings')
-      ->name('api.user.settings');
+      ->name('settings');
 
     // Profiles section
     $router->group([
       'prefix' => '/profile',
-      'as' => 'api.profile.'
+      'as' => 'profile.'
     ], function (Illuminate\Routing\Router $router) {
       $router->post('/', 'API\\ProfileController@create')
         ->name('create');
@@ -138,7 +139,7 @@ Route::group([
     // Favourites section
     $router->group([
       'prefix' =>'/favourites',
-      'as' => 'api.fav.'
+      'as' => 'fav.'
     ], function (Illuminate\Routing\Router $router) {
       // Route to get list of favourites
       $router->get('/', 'API\\FavouritesController@get')
@@ -156,7 +157,7 @@ Route::group([
     // Cards section
     $router->group([
       'prefix' => 'cards',
-      'as' => 'api.user.cards.'
+      'as' => 'cards.'
     ], function (Illuminate\Routing\Router $router) {
       // Route to create
       $router->post('/', 'API\\CardsController@create')
@@ -222,6 +223,8 @@ Route::group([
   ], function (Illuminate\Routing\Router $router) {
     $router->get('/reviews', 'API\\Profile\\ReviewsController@getById')
       ->name('get');
+    $router->get('/reviews/count', 'API\\Profile\\ReviewsController@countBySpecialities')
+      ->name('count');
     $router->post('/reviews', 'API\\Profile\\ReviewsController@create')
       ->name('create')
       ->middleware('auth:api');

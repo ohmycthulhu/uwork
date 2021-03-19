@@ -8,11 +8,12 @@ use App\Models\Profile\Review;
 use App\Models\User;
 use App\Notifications\VerifyPhoneNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-//use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Tests\TestCase;
+
+//use Illuminate\Http\UploadedFile;
 
 class ProfileTest extends TestCase
 {
@@ -83,12 +84,12 @@ class ProfileTest extends TestCase
 
     // Send several malformed requests
     for ($i = 1; $i <= sizeof($form) - 1; $i++) {
-      $this->post(route('api.profile.create'), array_slice($form, 0, $i))
+      $this->post(route('api.user.profile.create'), array_slice($form, 0, $i))
         ->assertStatus(403);
     }
 
     // Send request and ensure everything is okay
-    $response = $this->post(route('api.profile.create'), $form)
+    $response = $this->post(route('api.user.profile.create'), $form)
       ->assertOk();
 
     $profile = $response->json('profile');
@@ -115,7 +116,7 @@ class ProfileTest extends TestCase
     }
 
     // Check get method
-    $this->assertEquals($p->id, $this->get(route('api.profile.get'))
+    $this->assertEquals($p->id, $this->get(route('api.user.profile.get'))
       ->assertOk()
       ->json('profile.id'));
 
@@ -147,14 +148,14 @@ class ProfileTest extends TestCase
     $form = $this->getUpdateForm();
 
     // Try updating profile
-    $this->post(route('api.profile.update'), $form)
+    $this->post(route('api.user.profile.update'), $form)
       ->assertStatus(403);
 
     // Create profile
     $this->createProfile($user);
 
     // Try updating profile
-    $verificationUuid = $this->post(route('api.profile.update'), $form)
+    $verificationUuid = $this->post(route('api.user.profile.update'), $form)
       ->assertOk()
       ->json('verification_uuid');
 
@@ -175,7 +176,7 @@ class ProfileTest extends TestCase
     $image = $profile->media()->inRandomOrder()->first();
     $speciality = $profile->specialities()->inRandomOrder()->first();
 
-    $this->put(route('api.profile.images.update', ['imageId' => $image->id]), ['speciality_id' => $speciality->id])
+    $this->put(route('api.user.profile.images.update', ['imageId' => $image->id]), ['speciality_id' => $speciality->id])
       ->assertOk();
 
     $image = Image::find($image->id);
@@ -221,7 +222,7 @@ class ProfileTest extends TestCase
     $this->post(route('api.profiles.reviews.create', ['profile' => $profile->id]), $form)
       ->assertOk();
 
-    $this->get(route('api.profile.reviews.get'))
+    $this->get(route('api.user.profile.reviews.get'))
       ->assertStatus(404);
 
     $review = $profile->reviews()->first();
@@ -255,8 +256,22 @@ class ProfileTest extends TestCase
       ->assertStatus(403);
     $this->assertEquals(1, $profile->views()->count());
 
-    $this->get(route('api.profile.reviews.get'))
+    $this->get(route('api.user.profile.reviews.get'))
       ->assertOk();
+
+    $specialities = $profile->specialities()->pluck('id');
+    foreach ($specialities as $specId) {
+      $this->get(route('api.user.profile.reviews.get', ['speciality_id' => $specId]))
+        ->assertOk();
+    }
+
+    $reviewsCount = $profile->reviews()->count();
+    $counts = $this->get(route('api.profiles.reviews.count', ['profile' => $profile->id]))
+      ->assertOk()
+      ->json('counts');
+    $this->assertEquals($reviewsCount, array_reduce($counts, function ($acc, $count) {
+      return $acc + $count['total'];
+    }, 0));
 
     // Delete user
     $userOwner->forceDelete();

@@ -28,7 +28,7 @@ class FavouritesTest extends TestCase
       $createdBy = $service->profile()->first()->user_id;
 
       // Try to add without login
-      $this->post(route('api.fav.add', ['serviceId' => $service->id]))
+      $this->post(route('api.user.fav.add', ['serviceId' => $service->id]))
         ->assertStatus(401);
 
       // Login via user
@@ -39,13 +39,13 @@ class FavouritesTest extends TestCase
       Auth::login($user);
 
       // Try to add to favourite
-      $this->post(route('api.fav.add', ['serviceId' => $service->id]))
+      $this->post(route('api.user.fav.add', ['serviceId' => $service->id]))
         ->assertOk();
 
       $this->assertFavsCount($user, 1);
 
       // Remove from favourites
-      $this->delete(route('api.fav.remove', ['serviceId' => $service->id]))
+      $this->delete(route('api.user.fav.remove', ['serviceId' => $service->id]))
         ->assertOk();
 
       // Get favourites and check if it is empty
@@ -55,7 +55,7 @@ class FavouritesTest extends TestCase
       Auth::login(User::find($createdBy));
 
       // Try to add to favourite
-      $this->post(route('api.fav.add', ['serviceId' => $service->id]))
+      $this->post(route('api.user.fav.add', ['serviceId' => $service->id]))
         ->assertStatus(403);
 
       $this->clearDatabase();;
@@ -71,7 +71,7 @@ class FavouritesTest extends TestCase
       $this->assertEquals($count, $user->favouriteServices()->count());
 
       // Get favourites and check if they are same
-      $servicesCount = $this->get(route('api.fav.list'))
+      $servicesCount = $this->get(route('api.user.fav.list'))
         ->assertOk()
         ->json('services.total');
       $this->assertEquals($count, $servicesCount);
