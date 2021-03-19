@@ -15,10 +15,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ActualRegionsSeeder::class);
         $this->call(RealCategoriesSeeder::class);
       } else {
-        $this->call(UserSeeder::class);
 //        $this->call(CategoriesSeeder::class);
         $this->call(RealCategoriesSeeder::class);
         $this->call(ActualRegionsSeeder::class);
+        $this->call(UserSeeder::class);
 //        $this->call(LocationSeeder::class);
         $this->call(ProfileSeeder::class);
         $this->call(AdministratorSeeder::class);

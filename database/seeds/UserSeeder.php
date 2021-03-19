@@ -15,11 +15,13 @@ class UserSeeder extends Seeder
       for ($i = 0; $i < 10; $i++) {
         $region = $regions->random();
         $city = $region->cities->random();
-        $district = $city->districts()->random();
+        /* @var \Illuminate\Support\Collection $districts */
+        $districts = $city->districts;
+        $district = $districts->isNotEmpty() ? $districts->random() : null;
         factory(\App\Models\User::class)->create([
           'region_id' => $region->id,
           'city_id' => $city->id,
-          'district' => $district ? $district->id : null,
+          'district_id' => $district ? $district->id : null,
         ]);
       }
     }
