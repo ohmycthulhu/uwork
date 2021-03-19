@@ -1,12 +1,12 @@
 # UWork API
 
 <p>
- This is the API for working with uwork service. 
+ This is the API for working with uWork service. 
 </p>
 
 ### Table of contents
 
-1.  [Notation](#used-notation-in-documentation)
+1.  [Notation](#notation)
 2.  [Phone Format](#phone-format)
 3.  [Information](#information)
 4.  [Categories](#categories)
@@ -29,9 +29,9 @@
   401 error.
 </p>
 
-<a id="used-notation-in-documentation" name="used-notation-in-documentation"></a>
+<a id="notation" name="notation"></a>
 
-## Used notation
+## Notation
 
 <p>
     There are several types,
@@ -1570,7 +1570,7 @@ can't have favourites.
 
 <a id="cards" name="cards"></a>
 
-## Saved cards
+## Cards
 
 <p>
 Saved cards are available only to authorized users.
@@ -1798,6 +1798,9 @@ To mark all messages as read, send PUT request to /api/chats/{userId}
 
 
 <a id="communication" name="communication"></a>
+
+## Communication
+
 <div>
 <p>
 At the moment, the only communication supported is appeals.
