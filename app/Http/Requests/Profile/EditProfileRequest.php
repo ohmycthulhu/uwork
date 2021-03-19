@@ -16,14 +16,6 @@ class EditProfileRequest extends FormRequest
     return [
       'about' => 'nullable|string',
       'phone' => 'nullable|string|min:11',
-//      'remove_specialities' => 'nullable|array',
-//      'remove_specialities.*' => 'required|exists:App\Models\Categories\Category,id',
-//      'add_specialities' => 'nullable|array',
-//      'add_specialities.*.category_id' => 'required|exists:App\Models\Categories\Category,id',
-//      'add_specialities.*.price' => 'required|numeric',
-      'images' => 'nullable|array',
-      'images.*' => 'required|exists:App\Models\Media\Image,id',
-//      'avatar' => 'nullable|file',
     ];
   }
 }

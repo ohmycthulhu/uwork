@@ -162,8 +162,7 @@
       views_count: Number,
       open_count: Number,
       is_approved: Boolean,
-      specialities: Speciality[],
-      media: Image[]
+      specialities: Speciality[]
     }
     </td>
     <td>Entity of speciality</td>
@@ -1023,12 +1022,6 @@ Registration is performed in 3 steps:
     Specialities contain information about price of work and
     category it's referred to. 
 </p>
-<p>
-  Images can be assigned to the certain specialities. To do that,
-  send request to /api/profile/images/{imageId} with specifying
-  speciality id. If you want image to not refer to any speciality,
-  send request with speciality_id=null
-</p>
 <hr>
 <p>
     Set of available routes are listed below 
@@ -1084,8 +1077,7 @@ Registration is performed in 3 steps:
             {
                 about: String,
                 phone: String|null,
-                specialities: SpecialityForm[],
-                images: Int[]|null,
+                specialities: SpecialityForm[]
             }
         </td>
         <td>
@@ -1109,7 +1101,6 @@ Registration is performed in 3 steps:
             {
                 about: String|null,
                 phone: String|null,
-                images: Int[]|null
             }
         </td>
         <td>
@@ -1119,27 +1110,6 @@ Registration is performed in 3 steps:
                 status: String|null,
                 profile: User|null,
                 verification_uuid: String|null,
-            }
-        </td>
-    </tr>
-    <tr>
-        <td>
-            /api/user/profile/images/{imageId}
-        </td>
-        <td>
-            PUT
-        </td>
-        <td>
-            {
-                speciality_id: Int|null,
-            }
-        </td>
-        <td>
-            {
-                errors: String[]|null,
-                error: String|null,
-                status: String|null,
-                image: Image|null,
             }
         </td>
     </tr>

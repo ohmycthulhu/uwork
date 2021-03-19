@@ -14,9 +14,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class ProfileSpeciality extends Model
+class ProfileSpeciality extends Model implements HasMedia
 {
   use HasMediaTrait;
 

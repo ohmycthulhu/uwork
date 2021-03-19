@@ -110,7 +110,6 @@ class ProfileTest extends TestCase
     // Check profile phone and phone verification
     $p = User\Profile::query()->find($profile['id']);
     $this->assertEquals($form['phone'], $p->phone);
-    $this->assertEquals(1, $p->media()->count());
     if ($p->picture) {
       $this->assertFileExists(storage_path("app/public/{$p->picture}"));
     }
@@ -162,7 +161,6 @@ class ProfileTest extends TestCase
     // Check if profile was updated
     $profile = $user->profile()->first();
     $this->assertEquals($form['about'], $profile->about);
-    $this->assertEquals(sizeof($form['images']), $profile->media()->count());
     Notification::assertSentTo($user, VerifyPhoneNotification::class, function ($n) use ($user, $verificationUuid) {
       $code = $n->toArray($user)['code'];
 
@@ -173,15 +171,7 @@ class ProfileTest extends TestCase
     });
 
     /* Try to change image type */
-    $image = $profile->media()->inRandomOrder()->first();
     $speciality = $profile->specialities()->inRandomOrder()->first();
-
-    $this->put(route('api.user.profile.images.update', ['imageId' => $image->id]), ['speciality_id' => $speciality->id])
-      ->assertOk();
-
-    $image = Image::find($image->id);
-    $this->assertEquals(User\ProfileSpeciality::class, $image->model_additional_type);
-    $this->assertEquals($speciality->id, $image->model_additional_id);
 
     // Upload image to speciality
     $image = $this->getUploadedFile();
@@ -307,11 +297,9 @@ class ProfileTest extends TestCase
   protected function getCreationForm(): array
   {
     $categories = Category::query()->inRandomOrder()->take(3)->pluck('id');
-    $images = [$this->uploadImage()];
     return [
       'about' => 'Some text about me',
       'phone' => '89050023456',
-      'images' => $images,
 //      'avatar' => $this->getUploadedFile(),
       'specialities' => $categories->map(function ($id) {
         return ['category_id' => $id, 'price' => rand(100, 200) / 10, 'name' => Str::random()];
@@ -328,11 +316,9 @@ class ProfileTest extends TestCase
   {
 //    $categoriesToRemove = Category::query()->inRandomOrder()->take(3)->pluck('id');
 //    $categoriesToAdd = Category::query()->inRandomOrder()->take(3)->pluck('id');
-    $images = [$this->uploadImage()];
     return [
       'about' => 'Another text',
       'phone' => '89050216456',
-      'images' => $images,
 //      'avatar' => $this->getUploadedFile(),
 //      'remove_specialities' => $categoriesToRemove->toArray(),
 //      'add_specialities' => $categoriesToAdd->map(function ($id) {

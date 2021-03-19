@@ -23,9 +23,9 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Profile extends Model implements HasMedia
+class Profile extends Model
 {
-  use SoftDeletes, HasMediaTrait, Searchable, CustomSearch;
+  use SoftDeletes, Searchable, CustomSearch;
 
   // Fillable fields
   protected $fillable = [
@@ -221,16 +221,6 @@ class Profile extends Model implements HasMedia
   public function views(): HasMany
   {
     return $this->hasMany(ProfileView::class, 'profile_id');
-  }
-
-  /**
-   * Override media relation
-   *
-   * @return MorphMany
-   */
-  public function media(): MorphMany
-  {
-    return $this->morphMany(Image::class, 'model');
   }
 
   /**

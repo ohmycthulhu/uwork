@@ -85,15 +85,6 @@ class ProfileController extends Controller
       $profile->addSpeciality($speciality['category_id'], $speciality['price'], $speciality['name']);
     }
 
-    // Attach images
-    $images = $request->input('images', []);
-    Image::attachMedia(Profile::class, $profile->getKey(), $images);
-
-    $avatar = $request->file('avatar');
-    if ($avatar) {
-      $profile->setAvatar($avatar);
-    }
-
     // Send verification code if needed
     $uuid = null;
     if ($phone === $user->getPhone()) {
@@ -125,7 +116,7 @@ class ProfileController extends Controller
 
     // Get user's profile
     $profile = $user->profile()
-      ->with('specialities.category.parent', 'media', 'user', 'region', 'city', 'district')
+      ->with('specialities.category.parent', 'specialities.media', 'user', 'region', 'city', 'district')
       ->first();
 
     // Return profile
@@ -154,22 +145,6 @@ class ProfileController extends Controller
       return response()->json(['error' => 'Profile not exists'], 403);
     }
 
-    // If picture is sent, update avatar
-//    $avatar = $request->file('avatar');
-//    if ($avatar) {
-//      $profile->setAvatar($avatar);
-//    }
-
-    // If "images" are set, remove all images not presented in profile
-    $images = $request->input('images');
-
-    if ($images !== null) {
-      $profile->media()->whereNotIn('id', $images)->delete();
-
-      // And add ones, who are not attached yet
-      Image::attachMedia(Profile::class, $profile->id, $images);
-    }
-
     // Update about information if presented
     $profile->setInfo($request->input('about'));
 
@@ -187,7 +162,7 @@ class ProfileController extends Controller
 
     $profile->save();
 
-    $profile->load(['media', 'specialities']);
+    $profile->load(['specialities']);
 
     // Return response
     return response()->json([
@@ -212,7 +187,7 @@ class ProfileController extends Controller
       return response()->json(['error' => 'Profile not found'], 404);
     }
 
-    $profile->load(['specialities.category.parent', 'media', 'user', 'region', 'city', 'district']);
+    $profile->load(['specialities.category.parent', 'specialities.media', 'user', 'region', 'city', 'district']);
 
     return response()->json([
       'profile' => $profile
@@ -253,47 +228,6 @@ class ProfileController extends Controller
       'status' => 'success',
       'profiles' => $profiles,
       'category' => $category,
-    ]);
-  }
-
-  /**
-   * Assigns image to the speciality
-   *
-   * @param ChangeImageDataRequest $request
-   * @param int $imageId
-   *
-   * @return JsonResponse
-  */
-  public function setImageSpeciality(ChangeImageDataRequest $request, int $imageId): JsonResponse {
-    // Get profile
-    /* @var ?User $user */
-    $user = Auth::user();
-    $profile = $user->profile()->first();
-
-    if (!$profile) {
-      return response()->json([
-        'error' => 'You don\'t have a profile'
-      ], 403);
-    }
-
-    // Get image
-    $image = $this->image::query()->media(Profile::class, $profile->id)->find($imageId);
-
-    if (!$image) {
-      return response()->json([
-        'error' => 'Image not found'
-      ], 404);
-    }
-
-    // Set image type
-    $image->setAdditionalModel(
-      ProfileSpeciality::class,
-      $request->input('speciality_id'),
-    );
-
-    // Return response
-    return response()->json([
-      'image' => $image,
     ]);
   }
 }
