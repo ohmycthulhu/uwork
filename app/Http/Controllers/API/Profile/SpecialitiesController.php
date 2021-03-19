@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\API\Profile;
 
+use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
+use App\Http\Requests\Profile\UpdateImageRequest;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
+use App\Http\Requests\Profile\UploadImageRequest;
+use App\Models\Media\Image;
 use App\Models\User\Profile;
+use App\Models\User\ProfileSpeciality;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -169,5 +174,100 @@ class SpecialitiesController extends Controller
     }
 
     return $user->profile()->first();
+  }
+
+  /**
+   * Method to add image to speciality
+   *
+   * @param UploadImageRequest $request
+   * @param int $specialityId
+   *
+   * @return JsonResponse
+   */
+  public function uploadImage(UploadImageRequest $request, int $specialityId): JsonResponse {
+    $profile = $this->getProfile();
+    if (!$profile) {
+      return $this->returnError('No profile found', 404);
+    }
+    $speciality = $profile->specialities()->find($specialityId);
+    if (!$speciality) {
+      return $this->returnError('Speciality not found', 404);
+    }
+
+    $file = $request->file('image');
+    try {
+      $image = MediaFacade::upload(
+        $file,
+        null,
+        ProfileSpeciality::class,
+        $speciality->id
+      );
+    } catch (\Exception $exception) {
+      return $this->returnError($exception->getMessage(), 505);
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'image' => $image,
+    ]);
+  }
+
+  /**
+   * Method to remove image from speciality
+   *
+   * @param int $specialityId
+   * @param int $imageId
+   *
+   * @return JsonResponse
+   */
+  public function removeImage(int $specialityId, int $imageId): JsonResponse {
+    $profile = $this->getProfile();
+    if (!$profile) {
+      return $this->returnError('No profile found', 404);
+    }
+    $speciality = $profile->specialities()->find($specialityId);
+    if (!$speciality) {
+      return $this->returnError('Speciality not found', 404);
+    }
+
+    $image = $speciality->media()->find($imageId);
+    if (!$image) {
+      return $this->returnError('Image not found', 404);
+    }
+    $image->delete();
+
+    return response()->json(['status' => 'success']);
+  }
+
+  /**
+   * Method to remove image from speciality
+   *
+   * @param int $specialityId
+   * @param int $imageId
+   * @param UpdateImageRequest $request
+   *
+   * @return JsonResponse
+   */
+  public function updateImage(int $specialityId, int $imageId, UpdateImageRequest $request): JsonResponse {
+    $profile = $this->getProfile();
+    if (!$profile) {
+      return $this->returnError('No profile found', 404);
+    }
+    $speciality = $profile->specialities()->find($specialityId);
+    if (!$speciality) {
+      return $this->returnError('Speciality not found', 404);
+    }
+
+    /* @var Image $image */
+    $image = $speciality->media()->find($imageId);
+    if (!$image) {
+      return $this->returnError('Image not found', 404);
+    }
+    $image->update($request->validated());
+
+    return response()->json([
+      'status' => 'success',
+      'image' => $image,
+    ]);
   }
 }

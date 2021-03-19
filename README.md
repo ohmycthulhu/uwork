@@ -1161,7 +1161,10 @@ Before using these routes, ensure user has created profile.
 Otherwise all routes will return 403 error. Once created,
 speciality can change name and price, but not category.
 </p>
-
+<p>
+  For managing specialities' images, use .../images routes.
+  For reordering, you can update <i>order_column</i> field
+</p>
 <table>
     <thead>
         <th>Route</th>
@@ -1245,6 +1248,64 @@ speciality can change name and price, but not category.
                 error: String|null,
                 status: String|null,
                 deleted: Bool|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/{specialityId}/images
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+              image: File
+            }
+        </td>
+        <td>
+            {
+              errors: String[]|null,
+              error: String|null,
+              status: String|null,
+              image: Image|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/{specialityId}/images/{imageId}
+        </td>
+        <td>
+            PUT
+        </td>
+        <td>
+            {
+                order_column: Number
+            }
+        </td>
+        <td>
+            {
+              errors: String[]|null,
+              error: String|null,
+              status: String|null,
+              image: Image|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/{specialityId}/images/{imageId}
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                status: String|null
             }
         </td>
     </tr>

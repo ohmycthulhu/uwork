@@ -133,6 +133,18 @@ Route::group([
         // Delete specialities
         $router->delete('/{specialityId}', 'API\\Profile\\SpecialitiesController@delete')
           ->name('delete');
+
+        // Upload image to speciality
+        $router->post('/{specialityId}/images', 'API\\Profile\\SpecialitiesController@uploadImage')
+          ->name('images.upload');
+
+        // Remove image
+        $router->delete('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@removeImage')
+          ->name('images.delete');
+
+        // Reorder image
+        $router->put('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@updateImage')
+          ->name('images.update');
       });
     });
 

@@ -128,7 +128,6 @@ class SearchTest extends TestCase
 
     // Send request with non-existing category id
     $categoryId = rand(10000, 20000);
-    var_dump($this->get(route('api.profiles.random'), ['category_id' => $categoryId])->content());
     $this->get(route('api.profiles.random', ['category_id' => $categoryId]))
       ->assertStatus(404)
       ->assertJsonStructure(['status', 'error']);

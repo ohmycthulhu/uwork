@@ -183,6 +183,27 @@ class ProfileTest extends TestCase
     $this->assertEquals(User\ProfileSpeciality::class, $image->model_additional_type);
     $this->assertEquals($speciality->id, $image->model_additional_id);
 
+    // Upload image to speciality
+    $image = $this->getUploadedFile();
+    $this->post(route('api.user.profile.specialities.images.upload', ['specialityId' => $speciality->id]), ['image' => $image])
+      ->assertOk();
+    $this->assertEquals(1, $speciality->media()->count());
+    $image = $speciality->media()->first();
+
+    // Update image
+    $newOrder = rand();
+    $this->put(route('api.user.profile.specialities.images.update', ['specialityId' => $speciality->id, 'imageId' => $image->id]))
+      ->assertStatus(403);
+    $this->put(route('api.user.profile.specialities.images.update', ['specialityId' => $speciality->id, 'imageId' => $image->id]), ['order_column' => $newOrder])
+      ->assertOk();
+    $this->assertEquals($newOrder, Image::find($image->id)->order_column);
+
+    // Remove image
+    $this->delete(route('api.user.profile.specialities.images.delete', ['specialityId' => $speciality->id, 'imageId' => $image->id]))
+      ->assertOk();
+
+    $this->assertEquals(0, $speciality->media()->count());
+
     // Delete user and categories
     $user->forceDelete();
     Category::query()->forceDelete();

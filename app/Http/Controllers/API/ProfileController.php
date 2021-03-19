@@ -8,6 +8,7 @@ use App\Http\Requests\Profile\ChangeImageDataRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
 use App\Http\Requests\Profile\EditProfileRequest;
 use App\Http\Requests\Profile\RandomProfilesRequest;
+use App\Http\Requests\Profile\UploadImageRequest;
 use App\Models\Categories\Category;
 use App\Models\Media\Image;
 use App\Models\User;

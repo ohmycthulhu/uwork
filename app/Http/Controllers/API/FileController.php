@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Media\Image;
@@ -40,31 +41,14 @@ class FileController extends Controller
   {
     $file = $request->file('image');
 
-    $fileName = Str::random() . ".{$file->getClientOriginalExtension()}";
-
     $collectionName = $request->input('collection', 'default');
 
-    $media = Media::create([
-      'model_type' => '',
-      'model_id' => 0,
-      'collection_name' => $collectionName,
-      'name' => $fileName,
-      'file_name' => $fileName,
-      'mime_type' => $file->getClientMimeType(),
-      'disk' => $this->disk,
-      'size' => $file->getSize(),
-      'manipulations' => '[]',
-      'custom_properties' => '[]',
-      'responsive_images' => '[]'
-    ]);
-
     try {
-      Storage::disk($this->disk)
-        ->makeDirectory($media->id);
-      Storage::disk($this->disk)
-        ->put("{$media->id}/$fileName", File::get($file));
+      $media = MediaFacade::upload(
+        $file,
+        $collectionName,
+      );
     } catch (Exception $e) {
-      $media->delete();
       return response()->json(['error' => $e->getMessage()], 505);
     }
 

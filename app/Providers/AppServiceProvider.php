@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Helpers\MediaHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\SearchHelper;
 use App\Models\Categories\Category;
+use App\Models\Media\Image;
 use App\Models\Search\SearchHistory;
 use App\Models\Transactions\Transaction;
 use App\Models\User;
@@ -34,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
 
     $this->app->bind('payment-helper', function () {
       return new PaymentHelper(new Transaction);
+    });
+
+    $this->app->bind('media-facade', function () {
+      return new MediaHelper(new Image, 'public', 'default');
     });
   }
 

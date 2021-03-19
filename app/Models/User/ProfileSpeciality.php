@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class ProfileSpeciality extends Model
 {
+  use HasMediaTrait;
+
   // Fillable
   protected $fillable = [
     'category_id', 'price', 'name',
@@ -77,13 +80,13 @@ class ProfileSpeciality extends Model
   }
 
   /**
-   * Relation to media images
+   * Override media relation
    *
    * @return MorphMany
    */
   public function media(): MorphMany
   {
-    return $this->morphMany(Image::class, 'modelAdditional');
+    return $this->morphMany(Image::class, 'model');
   }
 
   /**
