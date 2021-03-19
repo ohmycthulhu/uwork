@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\Profile;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\AddViewRequest;
+use App\Http\Requests\Profile\Views\AddViewRequest;
 use App\Models\Profile\ProfileView;
 use App\Models\User\Profile;
 use Illuminate\Http\JsonResponse;

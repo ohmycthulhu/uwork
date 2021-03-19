@@ -80,7 +80,6 @@ class MediaHelper
         ->put("{$media->id}/$fileName", File::get($file));
     } catch (Exception $e) {
       $media->forceDelete();
-      $media = null;
       throw $e;
     }
 

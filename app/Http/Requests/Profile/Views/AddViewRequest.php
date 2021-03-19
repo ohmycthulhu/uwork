@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Profile\Views;
 
-class UpdateSettingsRequest extends FormRequest
+use App\Http\Requests\FormRequest;
+
+class AddViewRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -12,7 +14,7 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'settings' => 'required|array'
+            'opened' => 'nullable|bool'
         ];
     }
 }

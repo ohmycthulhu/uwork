@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API\Profile;
 
 use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Common\UpdateImageRequest;
+use App\Http\Requests\Common\UploadImageRequest;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
-use App\Http\Requests\Profile\UpdateImageRequest;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
-use App\Http\Requests\Profile\UploadImageRequest;
 use App\Models\Media\Image;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;

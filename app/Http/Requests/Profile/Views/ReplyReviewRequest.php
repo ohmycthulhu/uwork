@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Profile;
+namespace App\Http\Requests\Profile\Views;
 
 use App\Http\Requests\FormRequest;
 
-class ChangeImageDataRequest extends FormRequest
+class ReplyReviewRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,8 @@ class ChangeImageDataRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'speciality_id' => 'nullable|exists:App\Models\User\ProfileSpeciality,id'
+          'headline' => 'required|string',
+          'text' => 'required|string',
         ];
     }
 }

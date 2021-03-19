@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Profile;
+
+use App\Http\Requests\FormRequest;
 
 class ProfileSearchRequest extends FormRequest
 {

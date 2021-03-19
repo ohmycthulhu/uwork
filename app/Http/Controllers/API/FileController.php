@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ImageUploadRequest;
+use App\Http\Requests\Common\ImageUploadRequest;
 use App\Models\Media\Image;
 use Exception;
 use Illuminate\Http\JsonResponse;

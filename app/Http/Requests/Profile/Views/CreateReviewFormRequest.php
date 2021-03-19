@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Profile;
+namespace App\Http\Requests\Profile\Views;
 
 use App\Http\Requests\FormRequest;
 

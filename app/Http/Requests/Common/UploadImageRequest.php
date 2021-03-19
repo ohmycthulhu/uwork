@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Common;
 
-class SetPasswordRequest extends FormRequest
+use App\Http\Requests\FormRequest;
+
+class UploadImageRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -12,7 +14,7 @@ class SetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'password' => 'required|confirmed',
+            'image' => 'required|file',
         ];
     }
 }

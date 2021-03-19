@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Common;
+
+use App\Http\Requests\FormRequest;
 
 class ImageUploadRequest extends FormRequest
 {

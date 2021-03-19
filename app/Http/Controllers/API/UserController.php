@@ -4,11 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\ChangeEmailRequest;
-use App\Http\Requests\Profile\ChangeUserInfoRequest;
-use App\Http\Requests\Profile\ChangePasswordRequest;
-use App\Http\Requests\Profile\ChangePhoneRequest;
-use App\Http\Requests\UpdateSettingsRequest;
+use App\Http\Requests\User\ChangeEmailRequest;
+use App\Http\Requests\User\ChangePasswordRequest;
+use App\Http\Requests\User\ChangePhoneRequest;
+use App\Http\Requests\User\ChangeUserInfoRequest;
+use App\Http\Requests\User\UpdateSettingsRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;

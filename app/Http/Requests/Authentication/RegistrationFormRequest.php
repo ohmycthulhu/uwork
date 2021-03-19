@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Profile;
+namespace App\Http\Requests\Authentication;
 
 use App\Http\Requests\FormRequest;
 
-class ChangeUserInfoRequest extends FormRequest
+class RegistrationFormRequest extends FormRequest
 {
   /**
    * Get the validation rules that apply to the request.
@@ -14,9 +14,12 @@ class ChangeUserInfoRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'first_name' => 'nullable|string',
-      'last_name' => 'nullable|string',
-      'father_name' => 'nullable|string',
+      'first_name' => 'required|string|min:3|max:60',
+      'last_name' => 'required|string|min:3|max:60',
+      'father_name' => 'required|string|min:3|max:60',
+      'password' => 'required|string',
+      'email' => 'nullable|unique:users|email',
+      'verification_uuid' => 'required|string|min:11',
       'avatar' => 'nullable|file',
       'birthdate' => 'nullable|date',
       'region_id' => 'nullable|numeric|exists:regions,id',

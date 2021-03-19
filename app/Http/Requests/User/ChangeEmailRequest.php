@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
-class LoginFormRequest extends FormRequest
+use App\Http\Requests\FormRequest;
+
+class ChangeEmailRequest extends FormRequest
 {
   /**
    * Get the validation rules that apply to the request.
@@ -12,9 +14,8 @@ class LoginFormRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'email' => 'required_without_all:phone|email',
-      'phone' => 'required_without_all:email|string|min:11',
       'password' => 'required|string',
+      'email' => 'required|email'
     ];
   }
 }

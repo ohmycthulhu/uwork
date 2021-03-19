@@ -4,11 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Facades\SearchFacade;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProfileSearchRequest;
+use App\Http\Requests\Profile\ProfileSearchRequest;
 use App\Models\Categories\Category;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,63 +75,6 @@ class SearchController extends Controller
           'next_page_url' => route('api.profiles.search', array_merge($request->all(), ['page' => $page + 1]))
         ]
       ]);
-    }
-
-    /**
-     * Method to constraint by keyword
-     *
-     * @param Builder $query
-     * @param string $keyword
-     *
-     * @return Builder
-    */
-    protected function setKeywordConstraint(Builder $query, string $keyword): Builder {
-      $category = $this->category::query()
-        ->keyword($keyword)
-        ->first();
-
-      if ($category) {
-        $query->category($category->id);
-      } else {
-        $query->whereNull('id'); // Make query fail
-      }
-
-      return $query;
-    }
-
-    /**
-     * Method to constraint by keyword
-     *
-     * @param Builder $query
-     * @param int $categoryId
-     *
-     * @return Builder
-    */
-    protected function setCategoryConstraint(Builder $query, int $categoryId): Builder {
-      return $query->category($categoryId);
-    }
-
-    /**
-     * Method to set constraints by region, city and/or district
-     *
-     * @param Builder $query
-     * @param ?int $regionId
-     * @param ?int $cityId
-     * @param ?int $districtId
-     *
-     * @return Builder
-    */
-    protected function setLocationConstraints(Builder $query, ?int $regionId, ?int $cityId, ?int $districtId): Builder {
-      if ($regionId) {
-        $query->region($regionId);
-      }
-      if ($cityId) {
-        $query->city($cityId);
-      }
-      if ($districtId) {
-        $query->district($districtId);
-      }
-      return $query;
     }
 
     /**

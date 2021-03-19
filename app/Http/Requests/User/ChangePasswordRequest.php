@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Profile;
+namespace App\Http\Requests\User;
 
 use App\Http\Requests\FormRequest;
 
@@ -15,7 +15,7 @@ class ChangePasswordRequest extends FormRequest
   {
     return [
       'current_password' => 'required|string',
-      'password' => 'required|string|confirmed',
+      'password' => 'required|string',
     ];
   }
 }

@@ -4,11 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\ChangeImageDataRequest;
 use App\Http\Requests\Profile\CreateProfileRequest;
-use App\Http\Requests\Profile\EditProfileRequest;
+use App\Http\Requests\Profile\UpdateProfileRequest;
 use App\Http\Requests\Profile\RandomProfilesRequest;
-use App\Http\Requests\Profile\UploadImageRequest;
 use App\Models\Categories\Category;
 use App\Models\Media\Image;
 use App\Models\User;
@@ -128,11 +126,11 @@ class ProfileController extends Controller
   /**
    * Method to change profile information
    *
-   * @param EditProfileRequest $request
+   * @param UpdateProfileRequest $request
    *
    * @return JsonResponse
   */
-  public function update(EditProfileRequest $request): JsonResponse {
+  public function update(UpdateProfileRequest $request): JsonResponse {
     // Get profile by user
     /* @var ?User $user */
     $user = Auth::user();

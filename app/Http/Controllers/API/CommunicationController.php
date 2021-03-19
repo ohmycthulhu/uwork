@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AppealFormRequest;
+use App\Http\Requests\Communication\AppealFormRequest;
 use App\Models\Communication\Appeal;
 use App\Models\Communication\AppealReason;
 use Illuminate\Http\JsonResponse;

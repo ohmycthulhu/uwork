@@ -118,7 +118,9 @@ class UserTest extends TestCase
     // Send partial requests
     // Send request to register with the first code
     $form = $this->userForm($uuid);
-    $this->sendPartialRequests(route('api.register'), $form, array_keys($form));
+    $this->sendPartialRequests(route('api.register'), $form, [
+      'first_name', 'last_name', 'father_name', 'password', 'verification_uuid'
+    ]);
     $userId = $this->post(route('api.register'), $form)
       ->assertOk()
       ->json('user.id');

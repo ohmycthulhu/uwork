@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Profile;
+namespace App\Http\Requests\Authentication;
 
 use App\Http\Requests\FormRequest;
 
-class AddViewRequest extends FormRequest
+class RegisterPhoneRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class AddViewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'opened' => 'nullable|bool'
+            'phone' => 'required|string|min:11|unique:users,phone',
         ];
     }
 }

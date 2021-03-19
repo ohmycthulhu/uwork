@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Authentication;
 
-class ReplyReviewRequest extends FormRequest
+use App\Http\Requests\FormRequest;
+
+class PhoneVerificationRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -12,8 +14,7 @@ class ReplyReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-          'headline' => 'required|string',
-          'text' => 'required|string',
+            'code' => 'required|string|size:6'
         ];
     }
 }

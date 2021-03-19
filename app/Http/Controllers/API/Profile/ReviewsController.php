@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API\Profile;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\CreateReviewFormRequest;
+use App\Http\Requests\Profile\Views\CreateReviewFormRequest;
 use App\Http\Requests\Profile\ReviewsRetrieveRequest;
-use App\Http\Requests\ReplyReviewRequest;
+use App\Http\Requests\Profile\Views\ReplyReviewRequest;
 use App\Models\Profile\Review;
 use App\Models\User\Profile;
 use Illuminate\Http\JsonResponse;

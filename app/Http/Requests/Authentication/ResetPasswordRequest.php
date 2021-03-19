@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Authentication;
+
+use App\Http\Requests\FormRequest;
 
 class ResetPasswordRequest extends FormRequest
 {

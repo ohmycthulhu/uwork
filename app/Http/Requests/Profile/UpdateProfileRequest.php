@@ -4,18 +4,18 @@ namespace App\Http\Requests\Profile;
 
 use App\Http\Requests\FormRequest;
 
-class ChangePhoneRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
   /**
    * Get the validation rules that apply to the request.
    *
    * @return array
    */
-  public function rules()
+  public function rules(): array
   {
     return [
-      'password' => 'required',
-      'phone' => 'required|string|min:11',
+      'about' => 'nullable|string',
+      'phone' => 'nullable|string|min:11',
     ];
   }
 }

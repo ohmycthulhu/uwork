@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Communication;
 
+use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AppealFormRequest extends FormRequest
