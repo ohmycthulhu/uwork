@@ -181,17 +181,6 @@
     <td>Entity of speciality</td>
 </tr>
 <tr>
-    <td>SpecialityForm</td>
-    <td>{
-            category_id: Int,
-            price: Float,
-            name: String,
-            description: String
-        }
-    </td>
-    <td>Form for specifying specialities</td>
-</tr>
-<tr>
     <td>Review</td>
     <td>{
             id: Int,
@@ -212,26 +201,6 @@
         }
     </td>
     <td>Statistics entity for reviews count</td>
-</tr>
-<tr>
-    <td>CreateReviewForm</td>
-    <td>{
-            headline: String,
-            text: String,
-            rating_quality: Int,
-            rating_price: Int,
-            rating_time: Int,
-        }
-    </td>
-    <td>Form for creating review</td>
-</tr>
-<tr>
-    <td>CreateViewForm</td>
-    <td>{
-            opened: Boolean|null,
-        }
-    </td>
-    <td>Form to register view</td>
 </tr>
 <tr>
     <td>View</td>
@@ -305,19 +274,6 @@
         }
     </td>
     <td>Reason for appealing</td>
-</tr>
-<tr>
-    <td>AppealRequest</td>
-    <td>{
-            text: String,
-            appeal_reason_id: Int|null,
-            appeal_reason_other: String|null,
-            name: String|null,
-            phone: String|null,
-            email: String|null
-        }
-    </td>
-    <td>Model represents the view of message</td>
 </tr>
 <tr>
     <td>Appeal</td>
@@ -1024,6 +980,30 @@ Registration is performed in 3 steps:
 </p>
 <hr>
 <p>
+Used request forms:
+</p>
+<table>
+<thead>
+<tr>
+<th>
+Name
+</th>
+<th>
+Specification
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SpecialityForm</td>
+<td>
+{ category_id: Int, price: Float, name: String, description: String }	
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>
     Set of available routes are listed below 
 </p>
 
@@ -1296,6 +1276,44 @@ speciality can change name and price, but not category.
 <p>
   To reply to review, send request to /profiles/{profile}/reviews/{reviewId}
 </p>
+<p>
+Used request forms:
+</p>
+<table>
+<thead>
+<tr>
+<th>
+Name
+</th>
+<th>
+Specification
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CreateReviewForm</td>
+<td>
+{
+  headline: String,
+  text: String,
+  rating_quality: Int,
+  rating_price: Int,
+  rating_time: Int
+}
+</td>
+</tr>
+<tr>
+<td>CreateViewForm</td>
+<td>
+{
+  opened: Boolean|null,
+}
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
 <table>
     <thead>
         <th>Route</th>
@@ -1840,6 +1858,36 @@ Authenticated users may not send name, email and/or phone number.
 There is a limit of 3 appeals in 4 hours.
 If limit exceeds, 405 error will be returned
 </p>
+<p>
+Used request forms:
+</p>
+<table>
+<thead>
+<tr>
+<th>
+Name
+</th>
+<th>
+Specification
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AppealRequest</td>
+<td>
+{
+  text: String,
+  appeal_reason_id: Int|null,
+  appeal_reason_other: String|null,
+  name: String|null,
+  phone: String|null,
+  email: String|null
+}
+</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <p>
   List of routes are shown below:
