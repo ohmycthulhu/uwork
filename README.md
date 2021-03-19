@@ -1303,7 +1303,7 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
-            /api/profiles/{profileId}/reviews/counts
+            /api/profiles/{profileId}/reviews/count
         </td>
         <td>
             GET
