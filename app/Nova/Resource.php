@@ -15,7 +15,7 @@ abstract class Resource extends NovaResource
    * @param Builder $query
    * @return Builder
    */
-    public static function indexQuery(NovaRequest $request, Builder $query)
+    public static function indexQuery(NovaRequest $request, $query)
     {
         return $query;
     }
@@ -27,7 +27,7 @@ abstract class Resource extends NovaResource
    * @param \Laravel\Scout\Builder $query
    * @return \Laravel\Scout\Builder
    */
-    public static function scoutQuery(NovaRequest $request, \Laravel\Scout\Builder $query)
+    public static function scoutQuery(NovaRequest $request, $query)
     {
         return $query;
     }
@@ -39,7 +39,7 @@ abstract class Resource extends NovaResource
    * @param Builder $query
    * @return Builder
    */
-    public static function detailQuery(NovaRequest $request, Builder $query)
+    public static function detailQuery(NovaRequest $request, $query)
     {
         return parent::detailQuery($request, $query);
     }
@@ -53,7 +53,7 @@ abstract class Resource extends NovaResource
    * @param Builder $query
    * @return Builder
    */
-    public static function relatableQuery(NovaRequest $request, Builder $query)
+    public static function relatableQuery(NovaRequest $request, $query)
     {
         return parent::relatableQuery($request, $query);
     }

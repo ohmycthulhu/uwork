@@ -38,7 +38,7 @@ class Faq extends Resource
 
   public static $group = 'Info';
 
-  public static function indexQuery(NovaRequest $request, Builder $query): Builder
+  public static function indexQuery(NovaRequest $request, $query): Builder
   {
     $query->when(empty($request->get('orderBy')), function(Builder $q) {
       $q->getQuery()->orders = [];
