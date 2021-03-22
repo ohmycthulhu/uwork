@@ -6,6 +6,8 @@ use App\Helpers\MediaHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\SearchHelper;
 use App\Models\Categories\Category;
+use App\Models\Info\HelpCategory;
+use App\Models\Info\HelpItem;
 use App\Models\Media\Image;
 use App\Models\Search\SearchHistory;
 use App\Models\Transactions\Transaction;
@@ -53,6 +55,8 @@ class AppServiceProvider extends ServiceProvider
     User::observe(UserObserver::class);
     Profile::observe(ProfileObserver::class);
     Category::observe(SlugableObserver::class);
+    HelpCategory::observe(SlugableObserver::class);
+    HelpItem::observe(SlugableObserver::class);
     ProfileSpeciality::observe(ProfileSpecialityObserver::class);
   }
 }

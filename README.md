@@ -290,6 +290,33 @@
     <td>Model represents the view of message</td>
 </tr>
 <tr>
+    <td>HelpCategory</td>
+    <td>{
+            id: int,
+            name: TString,
+            slug: TString,
+            order: Number|null,
+            top_items: HelpItem[]|null,
+            items: HelpItem[]|null,
+            items_count: Number|null
+        }
+    </td>
+    <td>Model for help category</td>
+</tr>
+<tr>
+    <td>HelpItem</td>
+    <td>{
+            id: int,
+            name: TString,
+            slug: TString,
+            order: Number|null,
+            text: TString,
+            help_category_id: Number
+        }
+    </td>
+    <td>Model for help category</td>
+</tr>
+<tr>
     <td>Pagination&lt;T&gt;</td>
     <td>{
             data: T[],
@@ -354,6 +381,7 @@
     <td>
         {
           phone: String|null,
+          public_offer: String|null,
           apps: {android: String|null, ios: String|null}
         }
     </td>
@@ -387,6 +415,59 @@
     <td>
         {
             faq: FAQ[]
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/help-categories
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+      Returns list of help categories with top items
+    </td>
+    <td>
+        {
+            status: String,
+            categories: HelpCategory[]
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/help-categories/{slug}
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+      Returns help category with items
+    </td>
+    <td>
+        {
+            status: String,
+            error: String|null,
+            category: HelpCategory|null
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/help-items/{slug}
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+      Returns help item
+    </td>
+    <td>
+        {
+            status: String,
+            error: String|null,
+            item: HelpItem|null
         }
     </td>
 </tr>

@@ -266,6 +266,14 @@ Route::get('/info/about', 'API\\InfoController@about')
 Route::get('/info/faq', 'API\\InfoController@faq')
   ->name('api.info.faq');
 
+// Help categories
+Route::get('/help-categories', 'API\\InfoController@getHelpCategories')
+  ->name('api.helpCategories.all');
+Route::get('/help-categories/{slug}', 'API\\InfoController@getHelpCategory')
+  ->name('api.helpCategories.slug');
+Route::get('/help-items/{slug}', 'API\\InfoController@getHelpItem')
+  ->name('api.helpItems.slug');
+
 // Communication routes
 Route::get('/appeal-reasons', 'API\\CommunicationController@appealReasons')
   ->name('api.appealReasons');

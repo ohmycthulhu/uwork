@@ -5,6 +5,7 @@ namespace App\Providers;
 use Froala\NovaFroalaField\Froala;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Cards\Help;
+use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
@@ -28,6 +29,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
           Text::make(__('Mobile Application')." Android", 'app_android'),
           Text::make(__('Mobile Application')." iOS", 'app_ios'),
+
+          File::make(__('Public offer'), 'public_offer_path'),
         ]);
     }
 

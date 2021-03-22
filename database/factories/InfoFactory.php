@@ -11,3 +11,18 @@ $factory->define(\App\Models\Info\Faq::class, function (Faker $faker) {
     'order' => $faker->numberBetween(1, 100),
   ];
 });
+
+$factory->define(\App\Models\Info\HelpCategory::class, function (Faker $faker) {
+  return [
+    'name' => $faker->words($faker->numberBetween(2, 4), true),
+    'order' => $faker->numberBetween(1, 100),
+  ];
+});
+
+$factory->define(\App\Models\Info\HelpItem::class, function (Faker $faker) {
+  return [
+    'name' => $faker->words($faker->numberBetween(3, 10), true),
+    'order' => $faker->numberBetween(1, 100),
+    'text' => $faker->randomHtml(3, 9),
+  ];
+});
