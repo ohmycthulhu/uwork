@@ -126,6 +126,8 @@
             first_name: String,
             last_name: String,
             father_name: String,
+            birthdate: String|null,
+            is_male: Boolean|null,
             notification_settings: Dictionary&lt;String, Boolen&gt;,
             avatar_url: String|null,
             region_id: Int|null,
@@ -938,6 +940,7 @@ Registration is performed in 3 steps:
                 father_name: String,
                 avatar: File|null,
                 birthdate: String|null,
+                is_male: Boolean|null,
                 region_id: Int|null,
                 city_id: Int|null,
                 district_id: Int|null
