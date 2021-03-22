@@ -3,12 +3,19 @@
 namespace App\Nova\Resources;
 
 use App\Nova\Resource;
+use App\Nova\Resources\Location\City;
+use App\Nova\Resources\Location\District;
+use App\Nova\Resources\Location\Region;
 use App\Nova\Resources\Profile\Review;
 use App\Nova\Resources\User\Profile;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 
 class User extends Resource
@@ -46,29 +53,37 @@ class User extends Resource
    */
   public function fields(Request $request): array
   {
-    return [
+    return $this->makeReadonly([
       ID::make(__('ID'), 'id')
         ->sortable(),
 
-      Text::make(__('First Name'), 'first_name')
-        ->readonly(),
+      Image::make(__('Picture'), 'avatar'),
 
-      Text::make(__('Last Name'), 'last_name')
-        ->readonly(),
+      Date::make(__('Birthdate'), 'birthdate'),
 
-      Text::make(__('Father Name'), 'father_name')
-        ->readonly(),
+      Select::make(__('Sex'), 'is_male')
+        ->options([
+          true => __('Male'),
+          false => __('Female')
+        ])->displayUsingLabels(),
 
-      Text::make(__('Email'), 'email')
-        ->readonly(),
+      Text::make(__('First Name'), 'first_name'),
 
-      Text::make(__('Phone'), 'phone')
-        ->readonly(),
+      Text::make(__('Last Name'), 'last_name'),
+
+      Text::make(__('Father Name'), 'father_name'),
+
+      Text::make(__('Email'), 'email'),
+
+      Text::make(__('Phone'), 'phone'),
+
+      BelongsTo::make(__('Region'), 'region', Region::class),
+      BelongsTo::make(__('City'), 'city', City::class),
+      BelongsTo::make(__('District'), 'district', District::class),
 
       HasOne::make(__('Profile'), 'profile', Profile::class),
       HasMany::make(__('Reviews'), 'reviews', Review::class),
-
-    ];
+    ]);
   }
 
   /**

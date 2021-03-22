@@ -57,4 +57,15 @@ abstract class Resource extends NovaResource
     {
         return parent::relatableQuery($request, $query);
     }
+
+    /**
+     * Turn all fields readonly
+     *
+     * @param array $fields
+     *
+     * @return array
+    */
+    protected function makeReadonly(array $fields): array {
+      return array_map(function ($f) { return $f->readonly(); }, $fields);
+    }
 }

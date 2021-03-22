@@ -216,6 +216,9 @@ class ProfileController extends Controller
     $profileIds = $query->groupBy('profile_id')
       ->limit($amount)
       ->inRandomOrder()
+      ->whereHas('profile', function ($query) {
+        return $query->public();
+      })
       ->pluck('profile_id');
 
     $profiles = $this->profile::query()

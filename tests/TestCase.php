@@ -84,6 +84,7 @@ abstract class TestCase extends BaseTestCase
       $profile->city_id = $city->id;
       $profile->district_id = $district ? $district->id : null;
       $profile->save();
+      $profile->confirm();
     }
   }
 

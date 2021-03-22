@@ -251,6 +251,30 @@ class Profile extends Model
   }
 
   /**
+   * Confirm the profile
+   *
+   * @return $this
+  */
+  public function confirm(): self {
+    $this->confirmed_at = date('Y-m-d H:i:s');
+    $this->failed_audition = false;
+    $this->save();
+    return $this;
+  }
+
+  /**
+   * Reject the profile
+   *
+   * @return $this
+  */
+  public function reject(): self {
+    $this->confirmed_at = null;
+    $this->failed_audition = true;
+    $this->save();
+    return $this;
+  }
+
+  /**
    * Scopes
    */
 
@@ -276,9 +300,9 @@ class Profile extends Model
    */
   public function scopePublic(Builder $query): Builder
   {
-    return $query->whereNotNull('verified_at')
+    return $query->whereNotNull('confirmed_at')
       ->where('failed_audition', false)
-      ->visible();
+      ->visible(true);
   }
 
   /**
@@ -374,7 +398,7 @@ class Profile extends Model
    */
   public function getIsApprovedAttribute(): bool
   {
-    return !!$this->verified_at && !$this->failed_audition;
+    return !!$this->confirmed_at && !$this->failed_audition;
   }
 
   /**
@@ -404,6 +428,7 @@ class Profile extends Model
       'districtId' => $this->district_id,
       'userId' => $this->user_id,
       'specialities' => $specialitiesInfo,
+      'isConfirmed' => $this->confirmed_at ? 1 : 0,
     ];
   }
 
@@ -464,9 +489,8 @@ class Profile extends Model
       $query->mustNot($userConstraints);
     }
 
-    if (!$locations && !$categories && !$categoryId) {
-      $query->mustNot(['match' => ['id' => ""]]);
-    }
+    // Filter only by confirmed
+    $query->must(['match' => ['isConfirmed' => 1]]);
 
     /* Perform search */
     return $query

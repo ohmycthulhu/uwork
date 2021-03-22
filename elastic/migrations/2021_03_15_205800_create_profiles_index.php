@@ -21,6 +21,8 @@ final class CreateProfilesIndex implements MigrationInterface
         $mapping->keyword("districtId");
         $mapping->keyword('userId');
         $mapping->object("specialities");
+
+        $mapping->keyword('isConfirmed');
       });
     }
 

@@ -39,6 +39,10 @@ class User extends Authenticatable implements JWTSubject
 
   protected $avatarColumn = 'avatar';
 
+  protected $casts = [
+    'birthdate' => 'date',
+  ];
+
   /**
    * The attributes that should be hidden for arrays.
    *
