@@ -237,7 +237,6 @@ class ProfileTest extends TestCase
       ->assertStatus(404);
 
     $review = $profile->reviews()->first();
-    var_dump($review->id);
     $this->post(route('api.profiles.reviews.reply', ['profile' => $profile->id, 'review' => $review->id]), $form)
       ->assertStatus(403);
 

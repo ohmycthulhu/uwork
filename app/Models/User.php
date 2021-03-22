@@ -7,6 +7,7 @@ use App\Models\Location\District;
 use App\Models\Location\Region;
 use App\Models\Messenger\Chat;
 use App\Models\Payment\Card;
+use App\Models\Profile\Review;
 use App\Models\Traits\HasAvatar;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
@@ -188,6 +189,15 @@ class User extends Authenticatable implements JWTSubject
    * */
   public function chats(): Builder {
     return Chat::query()->user($this);
+  }
+
+  /**
+   * Relation to reviews
+   *
+   * @return HasMany
+  */
+  public function reviews(): HasMany {
+    return $this->hasMany(Review::class, 'user_id');
   }
 
   /**

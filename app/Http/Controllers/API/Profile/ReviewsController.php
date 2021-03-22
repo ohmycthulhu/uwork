@@ -7,6 +7,7 @@ use App\Http\Requests\Profile\Views\CreateReviewFormRequest;
 use App\Http\Requests\Profile\ReviewsRetrieveRequest;
 use App\Http\Requests\Profile\Views\ReplyReviewRequest;
 use App\Models\Profile\Review;
+use App\Models\User;
 use App\Models\User\Profile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,7 @@ class ReviewsController extends Controller
    */
   public function create(CreateReviewFormRequest $request, Profile $profile): JsonResponse
   {
+    /* @var User $user */
     $user = Auth::user();
     // Check if profile doesn't belongs to user
     if ($profile->user_id == $user->id) {
@@ -37,7 +39,15 @@ class ReviewsController extends Controller
       $review->fill($request->validated());
     } else {
       // Create review
-      $review = $profile->reviews()->create(array_merge($request->validated(), ['user_id' => $user->id]));
+      // Check if user created enough reviews for a day already
+      if ($this->canCreateReview($user)) {
+        $review = $profile->reviews()->create(array_merge($request->validated(), ['user_id' => $user->id]));
+      } else {
+        return response()->json([
+          'status' => 'error',
+          'error' => 'You exceed daily reviews limit'
+        ], 405);
+      }
     }
     $profile->synchronizeReviews();
 
@@ -179,5 +189,19 @@ class ReviewsController extends Controller
     return response()->json([
       'counts' => $counts,
     ]);
+  }
+
+  /**
+   * Method to check if user can create review
+   *
+   * @param User $user
+   *
+   * @return bool
+  */
+  protected function canCreateReview(User $user): bool {
+    /* Check if user hasn't created 3 or more reviews in 24 hours */
+    return $user->reviews()
+        ->lastHours(24)
+        ->count() < 3;
   }
 }

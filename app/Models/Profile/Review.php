@@ -170,4 +170,16 @@ class Review extends Model
     return $query->groupBy('speciality_id')
       ->select("speciality_id", DB::raw("COUNT(*) AS `total`"));
   }
+
+  /**
+   * Scope for date
+   *
+   * @param Builder $query
+   * @param int $hours
+   *
+   * @return Builder
+  */
+  public function scopeLastHours(Builder $query, int $hours): Builder {
+    return $query->where('created_at', '>=', now()->addHours(-$hours));
+  }
 }
