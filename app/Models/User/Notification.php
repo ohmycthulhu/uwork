@@ -24,7 +24,7 @@ class Notification extends Model
       'title', 'description',
     ];
 
-    protected $appends = ['isRead'];
+//    protected $appends = ['isRead'];
 
     protected static function boot()
     {

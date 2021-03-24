@@ -279,7 +279,6 @@
             user_id: Number,
             notifiable_type: Number,
             notifiable_id: Number,
-            is_read: Boolean,
             read_at: Datetime|null,
             title: TString,
             description: TString|null
