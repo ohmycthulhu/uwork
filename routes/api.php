@@ -77,7 +77,7 @@ Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
 Route::group([
   'middleware' => 'auth:api',
   'as' => 'api.user.',
-  'prefix' => '/users',
+  'prefix' => '/user',
 ], function (Illuminate\Routing\Router $router) {
   $router->get('/', 'API\\AuthenticationController@user')
     ->name('get');
