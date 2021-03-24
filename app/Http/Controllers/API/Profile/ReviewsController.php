@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\CreateComplaintRequest;
 use App\Http\Requests\Profile\Views\CreateReviewFormRequest;
 use App\Http\Requests\Profile\ReviewsRetrieveRequest;
 use App\Http\Requests\Profile\Views\ReplyReviewRequest;
@@ -203,5 +204,38 @@ class ReviewsController extends Controller
     return $user->reviews()
         ->lastHours(24)
         ->count() < 3;
+  }
+
+  /**
+   * Creates new complaint
+   *
+   * @param CreateComplaintRequest $request
+   * @param Review $review
+   *
+   * @return JsonResponse
+   */
+  public function createComplaint(CreateComplaintRequest $request, Review $review): JsonResponse {
+    /* @var User $user */
+    $user = Auth::user();
+
+    if ($user->id === $review->user_id) {
+      return $this->returnError('You can\'t complaint to own profile', 403);
+    }
+
+    $complaint = $review->createComplaint(
+      $user,
+      $request->ip(),
+      $request->input('type_id'),
+      $request->input('reason_other'),
+      $request->input('text')
+    );
+
+    if ($complaint) {
+      // Return success if could create
+      return $this->returnSuccess(compact($complaint));
+    } else {
+      // Otherwise, return error
+      return $this->returnError('Error on creating complaint', 405);
+    }
   }
 }

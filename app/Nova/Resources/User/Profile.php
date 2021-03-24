@@ -6,6 +6,7 @@ use App\Nova\Actions\Profiles\ConfirmProfile;
 use App\Nova\Actions\Profiles\RejectProfile;
 use App\Nova\Filters\Profiles\StateFilter;
 use App\Nova\Resource;
+use App\Nova\Resources\Complaints\Complaint;
 use App\Nova\Resources\Location\City;
 use App\Nova\Resources\Location\District;
 use App\Nova\Resources\Location\Region;
@@ -87,6 +88,8 @@ class Profile extends Resource
 
       HasMany::make(__('Specialities'), 'specialities', ProfileSpeciality::class),
       HasMany::make(__('Reviews'), 'reviews', Review::class),
+
+      MorphMany::make(__('Complaints'), 'complaints', Complaint::class),
     ]);
   }
 

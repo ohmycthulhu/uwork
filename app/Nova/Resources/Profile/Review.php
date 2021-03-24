@@ -3,10 +3,12 @@
 namespace App\Nova\Resources\Profile;
 
 use App\Nova\Resource;
+use App\Nova\Resources\Complaints\Complaint;
 use App\Nova\Resources\User;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\MorphMany;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
@@ -65,6 +67,8 @@ class Review extends Resource
         ->readonly()->onlyOnDetail(),
       Number::make(__('Rating (price)'), 'rating_price')
         ->readonly()->onlyOnDetail(),
+
+      MorphMany::make(__('Complaints'), 'complaints', Complaint::class),
     ];
   }
 

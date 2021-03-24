@@ -23,6 +23,7 @@
 15. [Messages](#messages)
 16. [Communication](#communication)
 17. [Notifications](#notifications)
+18. [Complaints](#complaints)
 
 <p>
   For using API endpoints, all requests should have "API-TOKEN" header
@@ -272,7 +273,7 @@
     <td>Model represents the view of message</td>
 </tr>
 <tr>
-    <td>Message</td>
+    <td>Notification</td>
     <td>{
             id: int,
             user_id: Number,
@@ -285,6 +286,27 @@
         }
     </td>
     <td>Model represents notification element</td>
+</tr>
+<tr>
+    <td>Complaint</td>
+    <td>{
+            id: int,
+            user_id: Number|null,
+            type_id: Number|null,
+            reason_other: String|null,
+            text: String
+        }
+    </td>
+    <td>Model represents a single complaint</td>
+</tr>
+<tr>
+    <td>ComplaintType</td>
+    <td>{
+            id: int,
+            name: String
+        }
+    </td>
+    <td>Model represents complaint type</td>
 </tr>
 <tr>
     <td>AppealReason</td>
@@ -2135,6 +2157,117 @@ Specification
                 errors: String[]|null,
                 status: String|null,
                 count: Number|null
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+<a id="complaints" name="complaints"></a>
+
+## Complaints
+
+<div>
+<p>
+For creating complaint, send request specifying
+review and profile. You can't get complaints, only
+create them.
+</p>
+<hr />
+<p>
+Used request forms:
+</p>
+<table>
+<thead>
+<tr>
+<th>
+Name
+</th>
+<th>
+Specification
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CreateComplaint</td>
+<td>
+{
+  type_id: Number|null,
+  reason_other: String|null,
+  text: String
+}
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+  List of routes are shown below:
+</p>
+
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/complaint-types
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                types: ComplaintType[]
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/profiles/{profileId}/complaints
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+          CreateComplaint
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                complaint: Complaint
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/profiles/{profileId}/reviews/{reviewId}/complaints
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+          CreateComplaint
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null,
+                complaint: Complaint
             }
         </td>
     </tr>

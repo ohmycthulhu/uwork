@@ -5,6 +5,7 @@ namespace App\Models\User;
 use App\Facades\NotificationFacade;
 use App\Facades\SearchFacade;
 use App\Models\Categories\Category;
+use App\Models\Complaints\Complaint;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
@@ -12,21 +13,19 @@ use App\Models\Media\Image;
 use App\Models\Model;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
+use App\Models\Traits\HasComplaints;
 use App\Models\User;
 use ElasticScoutDriverPlus\CustomSearch;
 use ElasticScoutDriverPlus\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class Profile extends Model
 {
-  use SoftDeletes, Searchable, CustomSearch;
+  use SoftDeletes, Searchable, CustomSearch, HasComplaints;
 
   // Fillable fields
   protected $fillable = [

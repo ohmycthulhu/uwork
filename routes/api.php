@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -80,113 +79,113 @@ Route::group([
   'as' => 'api.user.',
   'prefix' => '/users',
 ], function (Illuminate\Routing\Router $router) {
-    $router->get('/', 'API\\AuthenticationController@user')
+  $router->get('/', 'API\\AuthenticationController@user')
+    ->name('get');
+
+  $router->match(['put', 'post'], '/', 'API\\UserController@changeProfile')
+    ->name('update.profile');
+  $router->put('/emails', 'API\\UserController@changeEmail')
+    ->name('update.email');
+  $router->put('/phones', 'API\\UserController@changePhone')
+    ->name('update.phone');
+  $router->put('/passwords', 'API\\UserController@changePassword')
+    ->name('update.password');
+
+  $router->put('/settings', 'API\\UserController@updateSettings')
+    ->name('settings');
+
+  // Profiles section
+  $router->group([
+    'prefix' => '/profile',
+    'as' => 'profile.'
+  ], function (Illuminate\Routing\Router $router) {
+    $router->post('/', 'API\\ProfileController@create')
+      ->name('create');
+    $router->get('/', 'API\\ProfileController@get')
       ->name('get');
+    $router->post('/update', 'API\\ProfileController@update')
+      ->name('update');
+    $router->put('/images/{imageId}', 'API\\ProfileController@setImageSpeciality')
+      ->name('images.update');
 
-    $router->match(['put', 'post'], '/', 'API\\UserController@changeProfile')
-      ->name('update.profile');
-    $router->put('/emails', 'API\\UserController@changeEmail')
-      ->name('update.email');
-    $router->put('/phones', 'API\\UserController@changePhone')
-      ->name('update.phone');
-    $router->put('/passwords', 'API\\UserController@changePassword')
-      ->name('update.password');
+    $router->get('/reviews', 'API\\Profile\\ReviewsController@get')
+      ->name('reviews.get');
 
-    $router->put('/settings', 'API\\UserController@updateSettings')
-      ->name('settings');
-
-    // Profiles section
     $router->group([
-      'prefix' => '/profile',
-      'as' => 'profile.'
+      'prefix' => '/specialities',
+      'as' => 'specialities.'
     ], function (Illuminate\Routing\Router $router) {
-      $router->post('/', 'API\\ProfileController@create')
-        ->name('create');
-      $router->get('/', 'API\\ProfileController@get')
-        ->name('get');
-      $router->post('/update', 'API\\ProfileController@update')
-        ->name('update');
-      $router->put('/images/{imageId}', 'API\\ProfileController@setImageSpeciality')
-        ->name('images.update');
-
-      $router->get('/reviews', 'API\\Profile\\ReviewsController@get')
-        ->name('reviews.get');
-
-      $router->group([
-        'prefix' => '/specialities',
-        'as' => 'specialities.'
-      ], function (Illuminate\Routing\Router $router) {
-        // Create specialities
-        $router->post('/', 'API\\Profile\\SpecialitiesController@create')
-          ->name('create');
-
-        // Get specialities
-        $router->get('/', 'API\\Profile\\SpecialitiesController@get')
-          ->name('list');
-
-        // Update specialities
-        $router->put('/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
-          ->name('update');
-
-        // Delete specialities
-        $router->delete('/{specialityId}', 'API\\Profile\\SpecialitiesController@delete')
-          ->name('delete');
-
-        // Upload image to speciality
-        $router->post('/{specialityId}/images', 'API\\Profile\\SpecialitiesController@uploadImage')
-          ->name('images.upload');
-
-        // Remove image
-        $router->delete('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@removeImage')
-          ->name('images.delete');
-
-        // Reorder image
-        $router->put('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@updateImage')
-          ->name('images.update');
-      });
-    });
-
-    // Favourites section
-    $router->group([
-      'prefix' =>'/favourites',
-      'as' => 'fav.'
-    ], function (Illuminate\Routing\Router $router) {
-      // Route to get list of favourites
-      $router->get('/', 'API\\FavouritesController@get')
-        ->name('list');
-
-      // Route to add service as favourite
-      $router->post('/{serviceId}', 'API\\FavouritesController@add')
-        ->name('add');
-
-      // Route to remove service from services
-      $router->delete('/{serviceId}', 'API\\FavouritesController@remove')
-        ->name('remove');
-    });
-
-    // Cards section
-    $router->group([
-      'prefix' => 'cards',
-      'as' => 'cards.'
-    ], function (Illuminate\Routing\Router $router) {
-      // Route to create
-      $router->post('/', 'API\\CardsController@create')
+      // Create specialities
+      $router->post('/', 'API\\Profile\\SpecialitiesController@create')
         ->name('create');
 
-      // Route to get
-      $router->get('/', 'API\\CardsController@get')
+      // Get specialities
+      $router->get('/', 'API\\Profile\\SpecialitiesController@get')
         ->name('list');
 
-      // Route to update
-      $router->put('/{cardId}', 'API\\CardsController@update')
+      // Update specialities
+      $router->put('/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
         ->name('update');
 
-      // Route to delete
-      $router->delete('/{cardId}', 'API\\CardsController@delete')
+      // Delete specialities
+      $router->delete('/{specialityId}', 'API\\Profile\\SpecialitiesController@delete')
         ->name('delete');
-    });
 
-    // Notifications
+      // Upload image to speciality
+      $router->post('/{specialityId}/images', 'API\\Profile\\SpecialitiesController@uploadImage')
+        ->name('images.upload');
+
+      // Remove image
+      $router->delete('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@removeImage')
+        ->name('images.delete');
+
+      // Reorder image
+      $router->put('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@updateImage')
+        ->name('images.update');
+    });
+  });
+
+  // Favourites section
+  $router->group([
+    'prefix' => '/favourites',
+    'as' => 'fav.'
+  ], function (Illuminate\Routing\Router $router) {
+    // Route to get list of favourites
+    $router->get('/', 'API\\FavouritesController@get')
+      ->name('list');
+
+    // Route to add service as favourite
+    $router->post('/{serviceId}', 'API\\FavouritesController@add')
+      ->name('add');
+
+    // Route to remove service from services
+    $router->delete('/{serviceId}', 'API\\FavouritesController@remove')
+      ->name('remove');
+  });
+
+  // Cards section
+  $router->group([
+    'prefix' => 'cards',
+    'as' => 'cards.'
+  ], function (Illuminate\Routing\Router $router) {
+    // Route to create
+    $router->post('/', 'API\\CardsController@create')
+      ->name('create');
+
+    // Route to get
+    $router->get('/', 'API\\CardsController@get')
+      ->name('list');
+
+    // Route to update
+    $router->put('/{cardId}', 'API\\CardsController@update')
+      ->name('update');
+
+    // Route to delete
+    $router->delete('/{cardId}', 'API\\CardsController@delete')
+      ->name('delete');
+  });
+
+  // Notifications
   $router->group([
     'prefix' => '/notifications',
     'as' => 'notifications.'
@@ -237,6 +236,10 @@ Route::group([
   $router->post('/{profile}/views', 'API\\Profile\\ViewsController@add')
     ->name('views.create');
 
+  // Complaints
+  $router->post('/{profile}/complaints', 'API\\ProfileController@createComplaint')
+    ->name('complaints.create');
+
   $router->group([
     'prefix' => '/{profile}',
     'as' => 'reviews.'
@@ -252,6 +255,9 @@ Route::group([
       ->name('reply');
     $router->delete('/reviews', 'API\\Profile\\ReviewsController@delete')
       ->name('delete');
+    // Complaints
+    $router->post('/reviews/{review}/complaints', 'API\\Profile\\ReviewsController@createComplaint')
+      ->name('complaints.create');
   });
 });
 
@@ -287,3 +293,10 @@ Route::get('/appeal-reasons', 'API\\CommunicationController@appealReasons')
   ->name('api.appealReasons');
 Route::post('/appeals', 'API\\CommunicationController@create')
   ->name('api.appeals.create');
+
+// Complaints
+Route::get('/complaint-types', function () {
+  return response()->json([
+    'types' => \App\Models\Complaints\ComplaintType::all()
+  ]);
+});

@@ -2,6 +2,7 @@
 
 namespace App\Models\Profile;
 
+use App\Models\Traits\HasComplaints;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Review extends Model
 {
-  use SoftDeletes;
+  use SoftDeletes, HasComplaints;
 
   protected $fillable = [
     'headline', 'text', 'user_id', 'profile_id', 'speciality_id',
