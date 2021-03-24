@@ -26,4 +26,20 @@ class Controller extends BaseController
         'error' => $error,
       ], $status);
     }
+
+    /**
+     * Method to return successful response
+     *
+     * @param ?array $result
+     *
+     * @return JsonResponse
+    */
+    protected function returnSuccess(?array $result): JsonResponse {
+      return response()->json(
+        array_merge(
+          ['status' => 'success'],
+          $result ?? []
+        )
+      );
+    }
 }

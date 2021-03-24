@@ -78,10 +78,8 @@ Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
 Route::group([
   'middleware' => 'auth:api',
   'as' => 'api.user.',
+  'prefix' => '/users',
 ], function (Illuminate\Routing\Router $router) {
-  $router->group([
-    'prefix' => '/user'
-  ], function (Illuminate\Routing\Router $router) {
     $router->get('/', 'API\\AuthenticationController@user')
       ->name('get');
 
@@ -187,6 +185,16 @@ Route::group([
       $router->delete('/{cardId}', 'API\\CardsController@delete')
         ->name('delete');
     });
+
+    // Notifications
+  $router->group([
+    'prefix' => '/notifications',
+    'as' => 'notifications.'
+  ], function (\Illuminate\Routing\Router $router) {
+    $router->get('/', 'NotificationsController@get')
+      ->name('get');
+    $router->match(['post', 'put'], '/', 'NotificationsController@markRead')
+      ->name('read');
   });
 });
 

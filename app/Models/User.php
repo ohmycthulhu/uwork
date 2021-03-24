@@ -9,6 +9,7 @@ use App\Models\Messenger\Chat;
 use App\Models\Payment\Card;
 use App\Models\Profile\Review;
 use App\Models\Traits\HasAvatar;
+use App\Models\User\Notification;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Database\Eloquent\Builder;
@@ -230,6 +231,15 @@ class User extends Authenticatable implements JWTSubject
   */
   public function district(): BelongsTo {
     return $this->belongsTo(District::class, 'district_id');
+  }
+
+  /**
+   * Relation to notifications
+   *
+   * @return HasMany
+  */
+  public function notifications(): HasMany {
+    return $this->hasMany(Notification::class, 'user_id');
   }
 
   /**

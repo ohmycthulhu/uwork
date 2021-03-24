@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Facades\NotificationFacade;
 use App\Facades\SearchFacade;
 use App\Models\Categories\Category;
 use App\Models\Location\City;
@@ -261,6 +262,13 @@ class Profile extends Model
     $this->confirmed_at = date('Y-m-d H:i:s');
     $this->failed_audition = false;
     $this->save();
+    NotificationFacade::create(
+      $this->user()->first(),
+      static::class,
+      $this->id,
+      ['en' => 'Profile was approved', 'ru' => 'Профиль подтверждён'],
+      null
+    );
     return $this;
   }
 
@@ -273,6 +281,13 @@ class Profile extends Model
     $this->confirmed_at = null;
     $this->failed_audition = true;
     $this->save();
+    NotificationFacade::create(
+      $this->user()->first(),
+      static::class,
+      $this->id,
+      ['en' => 'Profile was rejected', 'ru' => 'Профиль отклонён'],
+      null
+    );
     return $this;
   }
 
@@ -492,7 +507,8 @@ class Profile extends Model
     }
 
     // Filter only by confirmed
-    $query->must(['match' => ['isConfirmed' => 1]]);
+//    $query->mustNot(['match' => ['id' => ""]]);
+    $query->must(['match' => ['isConfirmed' => "1"]]);
 
     /* Perform search */
     return $query

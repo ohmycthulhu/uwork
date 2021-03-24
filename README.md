@@ -22,6 +22,7 @@
 14. [Cards](#cards)
 15. [Messages](#messages)
 16. [Communication](#communication)
+17. [Notifications](#notifications)
 
 <p>
   For using API endpoints, all requests should have "API-TOKEN" header
@@ -265,10 +266,25 @@
             user_id: Int,
             chat: Chat,
             chat_id: Int,
-            read_at: Datetime|null,
+            read_at: Datetime|null
         }
     </td>
     <td>Model represents the view of message</td>
+</tr>
+<tr>
+    <td>Message</td>
+    <td>{
+            id: int,
+            user_id: Number,
+            notifiable_type: Number,
+            notifiable_id: Number,
+            is_read: Boolean,
+            read_at: Datetime|null,
+            title: TString,
+            description: TString|null
+        }
+    </td>
+    <td>Model represents notification element</td>
 </tr>
 <tr>
     <td>AppealReason</td>
@@ -2018,6 +2034,107 @@ Specification
                 error: String|null,
                 status: String|null,
                 appeal: Appeal|null
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+<a id="notifications" name="notifications"></a>
+
+## Notifications
+
+<div>
+<p>
+Notifications are connected to user and at the moment
+only to the profile. It can change later. There are 2
+endpoints: to get notifications and to mark as read.
+For getting, you can specify if you want to get only
+unread and size of chunk.
+When reading, you can either send array with IDs or
+not specify (every unread notification will be marked)
+</p>
+<p>
+Used request forms:
+</p>
+<table>
+<thead>
+<tr>
+<th>
+Name
+</th>
+<th>
+Specification
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RetrieveNotifications</td>
+<td>
+{
+  unread_only: Boolean|null,
+  amount: Number|null,
+}
+</td>
+</tr>
+<tr>
+<td>ReadNotifications</td>
+<td>
+{
+  ids: Array|null,
+}
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+  List of routes are shown below:
+</p>
+
+<table>
+    <thead>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Request</th>
+        <th>Response</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            /api/user/notifications
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+          RetrieveNotifications
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                notifications: Pagination&lt;Notification&gt;
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/notifications
+        </td>
+        <td>
+            GET,PUT
+        </td>
+        <td>
+          ReadNotifications
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                count: Number|null
             }
         </td>
     </tr>

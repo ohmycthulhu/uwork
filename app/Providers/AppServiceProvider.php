@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Helpers\MediaHelper;
+use App\Helpers\NotificationHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\SearchHelper;
 use App\Models\Categories\Category;
@@ -42,6 +43,10 @@ class AppServiceProvider extends ServiceProvider
 
     $this->app->bind('media-facade', function () {
       return new MediaHelper(new Image, 'public', 'default');
+    });
+
+    $this->app->bind('notifications-helper', function () {
+      return new NotificationHelper(new User\Notification);
     });
   }
 
