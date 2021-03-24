@@ -182,4 +182,17 @@ class Review extends Model
   public function scopeLastHours(Builder $query, int $hours): Builder {
     return $query->where('created_at', '>=', now()->addHours(-$hours));
   }
+
+  /**
+   * Scope for average rating
+   *
+   * @param Builder $query
+   * @param float $rating
+   *
+   * @return Builder
+  */
+  public function scopeAverageRating(Builder $query, float $rating): Builder {
+    $totalRating = $rating * 3;
+    return $query->whereRaw("(rating_price + rating_time + rating_quality) >= $totalRating");
+  }
 }

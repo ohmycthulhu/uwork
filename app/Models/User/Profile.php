@@ -77,8 +77,10 @@ class Profile extends Model
           return $acc + $this->{$type} / 5;
         }, 0);
         $this->rating = sizeof($ratingTypes) * $ratProd / $ratSum;
+        $this->positive_rating_ratio = $this->reviews()->averageRating(3)->count() / $reviewsCount;
       } else {
         $this->rating = 0;
+        $this->positive_rating_ratio = 0;
       }
 
       $this->save();

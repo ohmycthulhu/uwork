@@ -65,6 +65,7 @@ class CreateProfilesTable extends Migration
       $table->unsignedInteger('phone_display_count')->default(0);
 
       // Ratings
+      $table->float('positive_rating_ratio')->default(0);
       $table->float('rating')->default(0);
       $table->float('rating_time')->default(0);
       $table->float('rating_quality')->default(0);

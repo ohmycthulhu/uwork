@@ -157,7 +157,9 @@
     <td>{
       about: String,
       phone: String,
+      positive_rating_ratio: Number,
       reviews_count: Number,
+      rating: Number,
       rating_quality: Number,
       rating_price: Number,
       rating_time: Number,
