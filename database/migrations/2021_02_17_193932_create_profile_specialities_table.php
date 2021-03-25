@@ -29,7 +29,7 @@ class CreateProfileSpecialitiesTable extends Migration
 
             $table->string('name')->nullable()->index();
 
-            $table->float('price')->index();
+            $table->float('price')->nullable()->index();
 
             $table->text('description')
               ->nullable();

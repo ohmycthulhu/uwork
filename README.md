@@ -1126,7 +1126,7 @@ Specification
 <tr>
 <td>SpecialityForm</td>
 <td>
-{ category_id: Int, price: Float, name: String, description: String }	
+{ category_id: Int, price: Float|null, name: String|null }	
 </td>
 </tr>
 </tbody>
@@ -1184,7 +1184,7 @@ Specification
         </td>
         <td>
             {
-                about: String,
+                about: String|null,
                 phone: String|null,
                 specialities: SpecialityForm[]
             }

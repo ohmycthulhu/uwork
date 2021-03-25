@@ -14,12 +14,12 @@ class CreateProfileRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'about' => 'required|string',
+      'about' => 'nullable|string',
       'phone' => 'nullable|string|min:11',
       'specialities' => 'required|array',
       'specialities.*.category_id' => 'required|exists:App\Models\Categories\Category,id',
-      'specialities.*.price' => 'required|numeric',
-      'specialities.*.name' => 'required|string',
+      'specialities.*.price' => 'nullable|numeric',
+      'specialities.*.name' => 'nullable|string',
     ];
   }
 }

@@ -126,8 +126,11 @@ class UserTest extends TestCase
       ->json('user.id');
 
     // Verify if user was created
-    $this->assertNotNull(User::find($userId));
+    $user = User::find($userId);
+    $this->assertNotNull($user);
     $this->assertEquals($phone, User::find($userId)->phone);
+    $this->assertNotNull($user->avatar);
+    $this->assertNotNull($user->avatarUrl);
 
     // Repeat request but with another code
     $form = $this->userForm($uuid2);
@@ -152,6 +155,7 @@ class UserTest extends TestCase
       'verification_uuid' => $uuid,
       'password' => $password,
       'password_confirmation' => $password,
+      'avatar' => $this->getUploadedFile(),
     ]);
   }
 

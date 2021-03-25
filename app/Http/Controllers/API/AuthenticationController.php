@@ -86,8 +86,7 @@ class AuthenticationController extends Controller
         $user = $this->user::create($form);
       } catch (\Exception $e) {
         // If failed, send error message
-        return response()
-          ->json(['error' => $e->getMessage()], 405);
+        return $this->returnError($e->getMessage(), 405);
       }
 
       if ($avatar = $request->file('avatar')) {

@@ -22,7 +22,7 @@ class CreateProfilesTable extends Migration
         ->cascadeOnDelete();
 
       // Text
-      $table->text('about');
+      $table->text('about')->nullable();
       $table->string('phone');
       $table->boolean('phone_verified')->default(false);
 
