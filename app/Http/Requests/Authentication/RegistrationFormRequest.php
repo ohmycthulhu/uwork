@@ -22,6 +22,7 @@ class RegistrationFormRequest extends FormRequest
       'verification_uuid' => 'required|string|min:11',
       'avatar' => 'nullable|file',
       'birthdate' => 'nullable|date',
+      'is_male' => 'nullable|boolean',
       'region_id' => 'nullable|numeric|exists:regions,id',
       'city_id' => 'nullable|numeric|exists:cities,id',
       'district_id' => 'nullable|numeric|exists:districts,id',

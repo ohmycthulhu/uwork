@@ -95,9 +95,7 @@ class AuthenticationController extends Controller
       }
 
       // Return user and response
-      return response()->json([
-        'user' => $user,
-      ]);
+      return $this->returnSuccess(compact('user'));
     }
 
     /**

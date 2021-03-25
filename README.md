@@ -756,6 +756,12 @@ Registration is performed in 3 steps:
   father_name: String,
   email: String|null,
   verification_uuid: String,
+  is_male: Boolean|null,
+  birthdate: Date|null,
+  avatar: File|null,
+  region_id: Number|null,
+  city_id: Number|null,
+  district_id: Number|null,
   password: String,
   password_confirmation: String
 }</td>

@@ -24,7 +24,7 @@ trait HasAvatar
    */
   public function setAvatar(UploadedFile $image): self
   {
-    if (!Str::startsWith($image->getMimeType(), "image")) {
+    if (!Str::startsWith($image->getMimeType(), "image") && false) {
       return $this;
     }
 
