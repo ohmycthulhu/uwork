@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -103,6 +104,18 @@ class ProfileSpeciality extends Model implements HasMedia
       'service_id',
       'user_id'
     );
+  }
+
+  /**
+   * Checks if speciality belongs to category
+   *
+   * @param ?int $categoryId
+   *
+   * @return bool
+  */
+  public function belongsToCategory(?int $categoryId): bool {
+    return !$categoryId ||
+      ($this->category_path && Str::contains($this->category_path, "f{$categoryId}c"));
   }
 
   /**

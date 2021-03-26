@@ -62,6 +62,13 @@ class SearchController extends Controller
       $profiles = $specQuery->models();
       $profiles->load(['specialities.category', 'user']);
 
+      $profiles = $profiles->map(function (Profile $profile) use ($categoryId) {
+        $profile->specialities = $profile->specialities->filter(function (ProfileSpeciality $speciality) use ($categoryId) {
+          return $speciality->belongsToCategory($categoryId);
+        });
+        return $profile;
+      });
+
       if ($keyword) {
         SearchFacade::registerSearch($keyword);
       }

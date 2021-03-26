@@ -520,7 +520,7 @@
 ## Categories
 
 <p>
-    There are 2 routes for fetching categories
+    There are 3 routes for fetching categories
 </p>
 <table>
 <thead>
@@ -576,7 +576,7 @@
     </td>
     <td>
         {
-            categories: Category|null,
+            categories: Category[]|null
         }
     </td>
 </tr>
