@@ -57,6 +57,7 @@ class User extends Authenticatable implements JWTSubject
   protected $appends = [
     'notification_settings',
     'avatar_url',
+    'avatar_path',
   ];
 
   /**

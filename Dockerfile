@@ -65,4 +65,4 @@ RUN php artisan key:generate && \
 # RUN php artisan storage:link
 
 RUN chmod a+rw storage -R
-
+RUN php artisan config:clear

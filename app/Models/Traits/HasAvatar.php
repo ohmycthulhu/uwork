@@ -50,6 +50,16 @@ trait HasAvatar
   */
   public function getAvatarUrlAttribute(): ?string {
     $url = $this->{$this->avatarColumn};
-    return $url ? URL::to("storage/$url") : null;
+    return $url ? Storage::url("storage/$url") : null;
+  }
+
+  /**
+   * Avatar attribute
+   *
+   * @return ?string
+  */
+  public function getAvatarPathAttribute(): ?string {
+    $url = $this->{$this->avatarColumn};
+    return $url ? "/storage/$url" : null;
   }
 }
