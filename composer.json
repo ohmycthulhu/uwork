@@ -19,17 +19,17 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
         "laravel/framework": "^7.29",
-        "laravel/nexmo-notification-channel": "^2.5",
         "laravel/nova": "*",
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.5",
-        "nexmo/client": "^2.4",
+        "nutnet/laravel-sms": "^0.10.0",
         "optimistdigital/nova-settings": "^3.1",
         "optimistdigital/nova-translatable": "^1.7",
         "spatie/eloquent-sortable": "^3.8",
         "spatie/laravel-medialibrary": "^7.0.0",
         "spatie/laravel-translatable": "*",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+        "zelenin/smsru": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

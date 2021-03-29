@@ -4,8 +4,9 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Notification;
+use Nutnet\LaravelSms\Notifications\NutnetSmsChannel;
+use Nutnet\LaravelSms\Notifications\NutnetSmsMessage;
 
 class PasswordResetNotification extends Notification
 {
@@ -41,7 +42,7 @@ class PasswordResetNotification extends Notification
   {
     $result = [];
     if ($this->hasPhone) {
-      array_push($result, 'nexmo');
+      array_push($result, NutnetSmsChannel::class);
     }
     if ($this->hasEmail) {
       array_push($result, 'email');
@@ -77,14 +78,12 @@ class PasswordResetNotification extends Notification
   }
 
   /**
-   * Get the Nexmo / SMS representation of the notification.
+   * To Nutnet SMS
    *
-   * @param mixed $notifiable
-   * @return NexmoMessage
-   */
-  public function toNexmo($notifiable)
-  {
-    return (new NexmoMessage)
-      ->content("Your code for resetting the password is {$this->uuid}");
+   * @param mixed $notifable
+   * @return NutnetSmsMessage
+  */
+  public function toNutnetSms($notifable): array {
+    return new NutnetSmsMessage("Use following code to reset password: {$this->uuid}");
   }
 }
