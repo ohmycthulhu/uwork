@@ -158,11 +158,11 @@ class SearchHelper
     $lastCategoryId = $categoryId;
     $result = '';
     do {
-      $result = "f{$lastCategoryId}c{$result}";
+      $result = " {$lastCategoryId} {$result}";
       $category = $category->parent()->first();
       $lastCategoryId = $category ? $category->id : null;
     } while ($lastCategoryId);
 
-    return "s{$result}e";
+    return $result;
   }
 }

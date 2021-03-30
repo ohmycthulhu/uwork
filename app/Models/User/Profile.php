@@ -492,12 +492,12 @@ class Profile extends Model
 
     /* Prepare category filter */
     if ($categoryId) {
-      $strictCategory = ["wildcard" => ["specialities.catPath" => "s*c{$categoryId}c*e"]];
+      $strictCategory = ["match" => ["specialities.catPath" => $categoryId]];
       $query->must($strictCategory);
     }
 
     foreach (($categories ?? []) as $cat) {
-      $query->should(["wildcard" => ["specialities.catPath" => "s*c{$cat}c*e"]]);
+      $query->should(["match" => ["specialities.catPath" => $cat]]);
     }
 
     if ($userId) {
