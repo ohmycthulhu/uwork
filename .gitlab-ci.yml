@@ -1,0 +1,10 @@
+stages:
+  - triggers
+
+trigger:
+  stage: triggers
+  trigger:
+    include: .gitlab/.gitlab-ci.yml
+  rules:
+    - changes:
+        - version.txt
