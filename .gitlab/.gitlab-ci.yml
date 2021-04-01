@@ -1,21 +1,38 @@
+image: docker:19.03.12
+
 stages:
   - build
-  - deploy
-
-image: docker:20.10.5
+  - push
 
 services:
-  - docker:20.10.5-dind
+  - docker:19.03.12-dind
 
 before_script:
-  - echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin
+  - echo -n $CI_REGISTRY_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
 
-build_image:
+Build:
   stage: build
   script:
-    - docker build -t uworkback/uwork-api:$(cat version.txt) .
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
-push_image:
-  stage: deploy
+# Tag the "master" branch as "latest"
+Push latest:
+  stage: push
+  only:
+    - master
   script:
-    - docker push uworkback/uwork-api:$(cat version.txt)
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+# Docker tag any Git tag
+Push tag:
+  stage: push
+  only:
+    - tags
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
