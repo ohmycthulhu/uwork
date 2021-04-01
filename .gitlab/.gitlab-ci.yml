@@ -7,10 +7,10 @@ image: docker:20.10.5
 build_image:
   stage: build
   script:
-    - docker build -t ohmycthulhu/uwork-api:$(cat version.txt) .
+    - docker build -t uworkback/uwork-api:$(cat version.txt) .
 
 push_image:
   stage: deploy
   script:
     - echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin
-    - docker push ohmycthulhu/uwork-api:$(cat version.txt)
+    - docker push uworkback/uwork-api:$(cat version.txt)
