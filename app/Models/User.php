@@ -343,8 +343,8 @@ class User extends Authenticatable implements JWTSubject
     return [];
   }
 
-  public function routeNotificationForNexmo($notification)
+  public function routeNotificationForNutnetSms($notification)
   {
-    return $this->phone;
+    return str_replace(['-', '+', '(', ')', '.'], "", $this->phone ?? '');
   }
 }

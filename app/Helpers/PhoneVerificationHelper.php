@@ -7,8 +7,7 @@ use App\Notifications\VerifyPhoneNotification;
 use App\Utils\CacheAccessor;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
-use Nexmo\Client;
-use Nexmo\Client\Credentials\Basic;
+use Nutnet\LaravelSms\SmsSender;
 
 class PhoneVerificationHelper
 {
@@ -88,16 +87,9 @@ class PhoneVerificationHelper
         Notification::send($user, new VerifyPhoneNotification($code));
       } else {
         if (config('app.env') !== 'testing') {
-          $basic = new Basic(config('nexmo.api_key'), config('nexmo.api_secret'));
-          $client = new Client($basic);
-
-          $message = "This is testing from ItSolutionStuff.com";
-
-          $client->message()->send([
-            'to' => $phone,
-            'from' => 'uWork',
-            'text' => $message
-          ]);
+          /* @var SmsSender $sender*/
+          $sender = app(SmsSender::class);
+          $sender->send($phone, "Your verification code is $code");
         }
       }
     }

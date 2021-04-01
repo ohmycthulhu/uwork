@@ -115,7 +115,7 @@ class ProfileSpeciality extends Model implements HasMedia
   */
   public function belongsToCategory(?int $categoryId): bool {
     return !$categoryId ||
-      ($this->category_path && Str::contains($this->category_path, "f{$categoryId}c"));
+      ($this->category_path && Str::contains($this->category_path, " {$categoryId} "));
   }
 
   /**
@@ -160,7 +160,7 @@ class ProfileSpeciality extends Model implements HasMedia
    */
   public function scopeCategory(Builder $query, int $categoryId): Builder
   {
-    return $query->where('category_path', 'LIKE', "%|$categoryId|%");
+    return $query->where('category_path', 'LIKE', "% $categoryId %");
   }
 
   /**

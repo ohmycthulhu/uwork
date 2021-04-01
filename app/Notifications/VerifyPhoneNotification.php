@@ -10,6 +10,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Notification;
+use Nutnet\LaravelSms\Notifications\NutnetSmsChannel;
+use Nutnet\LaravelSms\Notifications\NutnetSmsMessage;
 
 class VerifyPhoneNotification extends Notification
 {
@@ -37,7 +39,7 @@ class VerifyPhoneNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['nexmo'];
+        return [NutnetSmsChannel::class];
     }
 
     /**
@@ -71,11 +73,10 @@ class VerifyPhoneNotification extends Notification
    * Get the Nexmo / SMS representation of the notification.
    *
    * @param  mixed  $notifiable
-   * @return NexmoMessage
+   * @return NutnetSmsMessage
    */
-  public function toNexmo($notifiable)
+  public function toNutnetSms($notifiable): NutnetSmsMessage
   {
-    return (new NexmoMessage)
-      ->content("Your verification code is {$this->code}");
+    return new NutnetSmsMessage("Your verification code is {$this->code}");
   }
 }

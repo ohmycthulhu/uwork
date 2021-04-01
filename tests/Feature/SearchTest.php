@@ -85,7 +85,7 @@ class SearchTest extends TestCase
       $catIds = array_reduce(
         $profile['specialities'],
         function ($acc, $s) {
-          $categories = explode('|', $s['category_path']);
+          $categories = array_map('trim', explode(' ', $s['category_path']));
           return array_merge($acc, $categories);
         },
         []
@@ -113,7 +113,7 @@ class SearchTest extends TestCase
 
     foreach ($profiles as $profile) {
       $spec = array_map(function ($s) {return $s['category_path'];}, $profile['specialities']);
-      $this->assertStringContainsString("|{$category->id}|", join(',',$spec));
+      $this->assertStringContainsString($category->id, join(',',$spec));
     }
     $this->clearDatabase();
   }
