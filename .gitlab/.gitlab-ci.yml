@@ -4,6 +4,12 @@ stages:
 
 image: docker:20.10.5
 
+services:
+  - docker:20.10.5-dind
+
+before_script:
+  - echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin
+
 build_image:
   stage: build
   script:
@@ -12,5 +18,4 @@ build_image:
 push_image:
   stage: deploy
   script:
-    - echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin
     - docker push uworkback/uwork-api:$(cat version.txt)
