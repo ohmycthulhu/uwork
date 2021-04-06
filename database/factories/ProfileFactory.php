@@ -9,6 +9,8 @@ $factory->define(\App\Models\User\Profile::class, function (Faker $faker) {
     'about' => $faker->text,
     'phone' => $faker->phoneNumber,
     'phone_verified' => $faker->boolean,
+    'confirmed_at' => now()->toDateTimeString(),
+
   ];
 });
 

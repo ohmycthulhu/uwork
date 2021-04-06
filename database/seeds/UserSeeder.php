@@ -6,7 +6,7 @@ class UserSeeder extends Seeder
 {
   protected $users = [
     [
-      'phone' => '751214215',
+      'phone' => '71234445678',
       'email' => 'example@gmail.com',
       'password' => 'password',
     ]

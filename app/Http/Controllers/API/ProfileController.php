@@ -224,7 +224,8 @@ class ProfileController extends Controller
 
     $profiles = $this->profile::query()
       ->whereIn('id', $profileIds)
-      ->with(['region', 'district', 'city', 'user', 'speciality']);
+      ->with(['region', 'district', 'city', 'user', 'speciality'])
+      ->get();
 
     return response()->json([
       'status' => 'success',
