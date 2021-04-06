@@ -782,8 +782,7 @@ Registration is performed in 3 steps:
 </p>
 <p>
     In authentication, there can be used either email or phone,
-    and password. Before login, user should verify phone number.
-    After registration, 6 letter code is being sent to inputted number.
+    and password. On registration, 6 letter code is being sent to inputted number.
     For verifying code, you should know also UUID of verification.
     UUID is valid for 10 minutes. After that, you should resend code
     and get new UUID for verification.
