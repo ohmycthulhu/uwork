@@ -43,11 +43,20 @@ class CacheAccessor
    *
    * @param string $key
    * @param mixed $default
+   * @param bool $setOnFail
    *
    * @return mixed
   */
-  public function get(string $key, $default = null) {
-    return Cache::get($this->generateKeyName($key), $default ?? $this->default);
+  public function get(string $key, $default = null, bool $setOnFail = false) {
+    $value = Cache::get($this->generateKeyName($key));
+    if ($value) {
+      return $value;
+    }
+    $result = is_callable($default) ? call_user_func($default) : $default ?? $this->default;
+    if ($setOnFail) {
+      $this->set($key, $result);
+    }
+    return $result;
   }
 
   /**
