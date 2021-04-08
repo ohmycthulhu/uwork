@@ -18,6 +18,7 @@ final class CreateCategoriesIndex implements MigrationInterface
           $mapping->wildcard('name');
           $mapping->keyword('id');
           $mapping->keyword('parent_id');
+          $mapping->keyword('category_path');
         });
     }
 

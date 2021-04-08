@@ -34,6 +34,10 @@ class CreateCategoriesTable extends Migration
         ->index()
         ->default(false);
 
+      $table->string('category_path')
+        ->nullable()
+        ->index();
+
       $table->softDeletes();
       $table->timestamps();
     });

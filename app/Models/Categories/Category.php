@@ -30,7 +30,7 @@ class Category extends Model implements Slugable
       'name', 'slug'
     ];
 
-    protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_hidden', 'is_shown'];
+    protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_hidden', 'is_shown', 'category_path'];
 
     protected $appends = ['is_shown'];
 
@@ -152,6 +152,7 @@ class Category extends Model implements Slugable
         'id' => $this->id,
         'parent_id' => $this->parent_id,
         'name' => strtolower($this->name),
+        'category_path' => $this->category_path,
       ];
     }
 
