@@ -15,6 +15,7 @@ use App\Models\Transactions\Transaction;
 use App\Models\User;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
+use App\Observers\CategoryObserver;
 use App\Observers\ProfileObserver;
 use App\Observers\ProfileSpecialityObserver;
 use App\Observers\SlugableObserver;
@@ -60,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
     User::observe(UserObserver::class);
     Profile::observe(ProfileObserver::class);
     Category::observe(SlugableObserver::class);
+    Category::observe(CategoryObserver::class);
     HelpCategory::observe(SlugableObserver::class);
     HelpItem::observe(SlugableObserver::class);
     ProfileSpeciality::observe(ProfileSpecialityObserver::class);
