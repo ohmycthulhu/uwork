@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Translatable\HasTranslations;
 
@@ -151,7 +152,7 @@ class Category extends Model implements Slugable
       return [
         'id' => $this->id,
         'parent_id' => $this->parent_id,
-        'name' => strtolower($this->name),
+        'name' => Str::lower($this->name),
         'category_path' => $this->category_path,
       ];
     }

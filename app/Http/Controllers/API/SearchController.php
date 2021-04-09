@@ -11,6 +11,7 @@ use App\Models\User\ProfileSpeciality;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class SearchController extends Controller
 {
@@ -108,8 +109,13 @@ class SearchController extends Controller
      * @return JsonResponse
     */
     public function searchCategories(Request $request): JsonResponse {
-      $keyword = $request->input('keyword', '');
-      $categories = $this->category::search("*$keyword*")->take(10)->get()->load('parent');
+      $keyword = Str::lower($request->input('keyword', ''));
+      $categories = $this->category::boolSearch()
+        ->must(['wildcard' => ['name' => "*$keyword*"]])
+        ->size(10)
+        ->execute()
+        ->models()
+        ->load('parent');
       return response()->json([
         'categories' => $categories
       ]);
