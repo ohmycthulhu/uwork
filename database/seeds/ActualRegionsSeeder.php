@@ -37,11 +37,11 @@ class ActualRegionsSeeder extends Seeder
 
     // Create regions for each entry
     foreach ($regionsData as $regionInfo) {
-      $googleId = $regionInfo->google_id;
+      $googleId = $regionInfo->google_id ?? null;
 
-      $region = Region::query()->googleId($googleId)->first();
+      $region = $googleId ? Region::query()->googleId($googleId)->first() : null;
       if ($region) {
-        echo "City ({$regionInfo->name}) already exists\n";
+        echo "Region ({$regionInfo->name}) already exists\n";
       }
 
       $region = $region ??
@@ -53,9 +53,9 @@ class ActualRegionsSeeder extends Seeder
       // Create cities for each region
       $citiesList = $regionInfo->cities;
       foreach ($citiesList as $cityInfo) {
-        $cityGoogleId = $cityInfo->google_id;
+        $cityGoogleId = $cityInfo->google_id ?? null;
 
-        $city = City::query()->googleId($cityGoogleId)->first();
+        $city = $cityGoogleId ? City::query()->googleId($cityGoogleId)->first() : null;
         if ($city) {
           echo "City ({$cityInfo->name}) already exists\n";
         }

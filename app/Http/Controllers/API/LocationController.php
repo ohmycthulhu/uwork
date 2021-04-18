@@ -40,7 +40,7 @@ class LocationController extends Controller
    * @return JsonResponse
    */
   public function regions(): JsonResponse {
-    $regions = $this->region::query()->with('cities.districts')->get();
+    $regions = $this->region::query()->with('cities')->get();
 
     return response()->json(['regions' => $regions]);
   }
@@ -53,7 +53,7 @@ class LocationController extends Controller
    * @return JsonResponse
    */
   public function regionById(int $id): JsonResponse {
-    $region = $this->region::query()->with('cities.districts')->find($id);
+    $region = $this->region::query()->with('cities')->find($id);
     if (!$region) {
       return response()->json(['error' => 'Region not found'], 404);
     }

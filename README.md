@@ -614,7 +614,7 @@
             GET
         </td>
         <td>
-            Returns all available regions
+            Returns all available regions, with attached cities
         </td>
         <td>
             {
@@ -630,7 +630,7 @@
             GET
         </td>
         <td>
-          Returns information about specific region, including cities.
+          Returns information about specific region, including cities, but without districts.
         </td>
         <td>
             {
@@ -646,7 +646,7 @@
             GET
         </td>
         <td>
-            Returns information cities of specific region
+            Returns information cities with districts of specific region
         </td>
         <td>
             {
