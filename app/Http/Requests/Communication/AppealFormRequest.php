@@ -23,7 +23,7 @@ class AppealFormRequest extends FormRequest
         if (Auth::guest()) {
           $base = array_merge($base, [
             'name' => 'required|string',
-            'phone' => 'required_without_all:email|nullable|string|min:9',
+            'phone' => 'required_without_all:email|nullable|string|min:7',
             'email' => 'required_without_all:phone|nullable|email'
           ]);
         }

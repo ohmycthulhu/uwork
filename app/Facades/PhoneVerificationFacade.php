@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void        removeVerifiedPhone(string $uuid)
  * @method static bool        isBlocked(string $phone)
  * @method static void        blockPhone(string $phone)
+ * @method static string      normalizePhone(string $phone)
  *
 */
 class PhoneVerificationFacade extends Facade

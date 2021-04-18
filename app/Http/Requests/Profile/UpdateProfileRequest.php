@@ -15,7 +15,7 @@ class UpdateProfileRequest extends FormRequest
   {
     return [
       'about' => 'nullable|string',
-      'phone' => 'nullable|string|min:11',
+      'phone' => 'nullable|string|min:7',
     ];
   }
 }

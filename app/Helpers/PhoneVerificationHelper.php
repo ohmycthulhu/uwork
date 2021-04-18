@@ -252,4 +252,22 @@ class PhoneVerificationHelper
       'tries' => 3,
     ];
   }
+
+  /**
+   * Method for normalizing phone number
+   *
+   * @param string $phone
+   *
+   * @return string
+  */
+  public function normalizePhone(string $phone): string {
+    $result = '';
+    for ($i = 0; $i < strlen($phone); $i++) {
+      $char = $phone[$i];
+      if (is_numeric($char)) {
+        $result .= $char;
+      }
+    }
+    return $result;
+  }
 }

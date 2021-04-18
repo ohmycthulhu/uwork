@@ -98,7 +98,7 @@ class UserController extends Controller
       return response()->json(['error' => 'Password is incorrect'], 403);
     }
 
-    $phone = $request->input('phone');
+    $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
     $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phone);
 

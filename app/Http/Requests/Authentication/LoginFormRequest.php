@@ -15,7 +15,7 @@ class LoginFormRequest extends FormRequest
   {
     return [
       'email' => 'required_without_all:phone|email',
-      'phone' => 'required_without_all:email|string|min:11',
+      'phone' => 'required_without_all:email|string|min:7',
       'password' => 'required|string',
     ];
   }

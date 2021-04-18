@@ -43,7 +43,7 @@ class AuthenticationController extends Controller
      * @return JsonResponse
     */
     public function promptPhone(RegisterPhoneRequest $request): JsonResponse {
-      $phone = $request->input('phone');
+      $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
       // Generate verification uuid
       $uuid = PhoneVerificationFacade::createSession(null, null, null, $phone);
@@ -198,8 +198,10 @@ class AuthenticationController extends Controller
     public function login(LoginFormRequest $request): JsonResponse {
       // Get params
       $params = $request->validated();
+      $email = $params['email'] ?? null;
+      $phone = ($params['phone'] ?? false) ? PhoneVerificationFacade::normalizePhone($params['phone']) : null;
 
-      if (!$this->checkUserExists($request->input('email'), $request->input('phone'))) {
+      if (!$this->checkUserExists($email, $phone)) {
         return response()->json(['error' => 'User not exists'], 404);
       }
 
