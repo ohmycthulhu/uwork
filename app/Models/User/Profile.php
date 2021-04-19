@@ -434,6 +434,7 @@ class Profile extends Model
       ->map(function (ProfileSpeciality $speciality) {
         return [
           'price' => $speciality->price,
+          'categoryId' => $speciality->category_id,
           'catPath' => SearchFacade::calculateCategoryPath($speciality->category_id),
         ];
       })->toArray();
@@ -497,7 +498,7 @@ class Profile extends Model
     }
 
     foreach (($categories ?? []) as $cat) {
-      $query->should(["match" => ["specialities.catPath" => $cat]]);
+      $query->should(["match" => ["specialities.categoryId" => $cat]]);
     }
 
     if ($userId) {

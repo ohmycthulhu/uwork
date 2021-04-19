@@ -14,12 +14,14 @@ class ProfileSearchRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'keyword' => 'nullable|string',
+//      'keyword' => 'nullable|string',
       'category_id' => 'nullable|numeric',
       'region_id' => 'nullable|numeric',
       'city_id' => 'nullable|numeric',
       'district_id' => 'nullable|numeric',
-      'per_page' => 'nullable|numeric'
+      'per_page' => 'nullable|numeric',
+      'categories' => 'nullable|array',
+      'categories.*' => 'numeric',
     ];
   }
 }

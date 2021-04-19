@@ -69,14 +69,14 @@ class SearchTest extends TestCase
       $this->assertEquals($district->id, $profile['district_id']);
     }
 
-    // Search profile by keyword
+    // Search profile by categories
     $category = Category::query()
       ->inRandomOrder()
       ->first();
 
-    $keyword = substr($category->name, 1, 4);
+    $cats = [$category->id];
 
-    $profiles = $this->get(route('api.profiles.search', ['keyword' => $keyword]))
+    $profiles = $this->get(route('api.profiles.search', ['categories' => $cats]))
       ->assertOk()
       ->json('result.data');
 

@@ -45,8 +45,7 @@ class SearchController extends Controller
       // Create query
       $keyword = $request->input('keyword');
       // Get similar categories
-      $categories = $keyword ?
-        $this->category::searchByName($keyword)->map(function ($c) { return $c->id; })->toArray() : null;
+      $categories = $request->input('categories', []);
       $categoryId = $request->input('category_id');
 
       $specQuery = $this->profile::completeSearch(

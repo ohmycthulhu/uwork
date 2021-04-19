@@ -765,7 +765,7 @@ Registration is performed in 3 steps:
   password: String,
   password_confirmation: String
 }</td>
-<td>{user: User|null, errors: String[]|null, error: String}</td>
+<td>{user: User|null, token: String|null, errors: String[]|null, error: String}</td>
 </tr>
 </tbody>
 </table>
@@ -1617,8 +1617,8 @@ Specification
         </td>
         <td>
             {
-                keyword: string|null,
                 category_id: int|null,
+                categories: Array&lt;int&gt;
                 region_id: int|null,
                 city_id: int|null,
                 district_id: int|null,

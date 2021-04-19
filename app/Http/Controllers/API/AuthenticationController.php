@@ -93,8 +93,10 @@ class AuthenticationController extends Controller
         $user->setAvatar($avatar);
       }
 
+      $token = Auth::login($user);
+
       // Return user and response
-      return $this->returnSuccess(compact('user'));
+      return $this->returnSuccess(compact('user', 'token'));
     }
 
     /**
