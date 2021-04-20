@@ -46,7 +46,7 @@ return [
   | Should phone verification be bypassed
   |--------------------------------------------------------------------------
   */
-  'code_chek_enabled' => !env('BYPASS_TOKEN', false),
+  'code_check_enabled' => !env('BYPASS_TOKEN', false),
 
   /*
   |--------------------------------------------------------------------------

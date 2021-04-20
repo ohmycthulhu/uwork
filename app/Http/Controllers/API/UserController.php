@@ -23,12 +23,10 @@ class UserController extends Controller
    * @return JsonResponse
   */
   public function changeProfile(ChangeUserInfoRequest $request): JsonResponse {
-    $params = $request->validated();
-
     /* @var ?User $user */
     $user = Auth::user();
 
-    $user->fill($params);
+    $user->fill($request->validated());
     $user->save();
 
     if ($image = $request->file('avatar')) {
@@ -62,6 +60,7 @@ class UserController extends Controller
   }
 
   /**
+   * Note: It's deprecated
    * Method to change email
    *
    * @param ChangeEmailRequest $request
@@ -92,11 +91,6 @@ class UserController extends Controller
   public function changePhone(ChangePhoneRequest $request): JsonResponse {
     /* @var ?User $user */
     $user = Auth::user();
-    $password = $request->input('password');
-
-    if (!$this->checkPassword($user, $password)) {
-      return response()->json(['error' => 'Password is incorrect'], 403);
-    }
 
     $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
@@ -142,5 +136,29 @@ class UserController extends Controller
       'status' => 'success',
       'user' => $user,
     ]);
+  }
+
+  /**
+   * Route for deleting the account
+   *
+   * @return JsonResponse
+  */
+  public function delete(): JsonResponse {
+    // Get user and the profile
+    /* @var User $user */
+    $user = Auth::user();
+    $profile = $user->profile()->first();
+
+    try {
+      // Delete profile if exists
+      $profile->delete();
+
+      // Delete user
+      $user->delete();
+    } catch (\Exception $exception) {
+      return $this->returnError($exception->getMessage(), 503);
+    }
+
+    return $this->returnSuccess();
   }
 }

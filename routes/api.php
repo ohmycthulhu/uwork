@@ -81,9 +81,12 @@ Route::group([
 ], function (Illuminate\Routing\Router $router) {
   $router->get('/', 'API\\AuthenticationController@user')
     ->name('get');
+  $router->delete('/', 'API\\UserController@delete')
+    ->name('delete');
 
   $router->match(['put', 'post'], '/', 'API\\UserController@changeProfile')
     ->name('update.profile');
+  // Note: Deprecated Route
   $router->put('/emails', 'API\\UserController@changeEmail')
     ->name('update.email');
   $router->put('/phones', 'API\\UserController@changePhone')

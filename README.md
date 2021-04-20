@@ -6,15 +6,15 @@
 
 ### Table of contents
 
-1.  [Notation](#notation)
-2.  [Phone Format](#phone-format)
-3.  [Information](#information)
-4.  [Categories](#categories)
-5.  [Locations](#locations)
-6.  [Registration](#registration)
-7.  [Authentication](#authentication-and-authorization)
-8.  [User controller](#user-controller)
-9.  [Profiles](#profiles)
+1. [Notation](#notation)
+2. [Phone Format](#phone-format)
+3. [Information](#information)
+4. [Categories](#categories)
+5. [Locations](#locations)
+6. [Registration](#registration)
+7. [Authentication](#authentication-and-authorization)
+8. [User controller](#user-controller)
+9. [Profiles](#profiles)
 10. [Specialities](#specialities)
 11. [Reviews and views](#reviews-and-views)
 12. [Search](#search)
@@ -693,6 +693,7 @@
 <a id="registration" name="registration"></a>
 
 ## Registration
+
 <div>
 <p>
 Registration is performed in 3 steps:
@@ -906,16 +907,30 @@ Registration is performed in 3 steps:
 </p>
 <p>
     User can change basic information (names) by using sending PUT
-    request. For changing email, phone and password, you should
-    provide current password. If user tries to change phone,
-    phone should be verified before changing. After verification,
-    changes are applied.
+    request. For changing the password you should
+    provide current password.
+</p>
+<p>
+  To delete profile, use /api/user with DELETE request.
 </p>
 <p>
   Settings can be changed with /api/user/settings route. You should
   provide settings as associative array, where keys are names of 
   settings and values are boolean values. (e.g. ['key1' => true])
 </p>
+<p>
+  Changing the phone number goes in the following steps:
+</p>
+<ol>
+<li>
+User sends request to /user/phones with new phone. Response contains verification uuid for verifying the number.
+The code is being sent to user's phone number
+</li>
+<li>
+Verification code with verification uuid is being sent to verification route (/api/verify/{uuid}).
+If the code is correct, phone will be validated and phone in user profile will be changed.
+</li>
+</ol>
 <hr />
 <p>
   List of available settings:
@@ -975,6 +990,22 @@ Registration is performed in 3 steps:
             /api/user
         </td>
         <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                error: String|null,
+                status: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user
+        </td>
+        <td>
             PUT, POST
         </td>
         <td>
@@ -983,6 +1014,7 @@ Registration is performed in 3 steps:
                 last_name: String,
                 father_name: String,
                 avatar: File|null,
+                email: String|null,
                 birthdate: String|null,
                 is_male: Boolean|null,
                 region_id: Int|null,
@@ -1000,28 +1032,6 @@ Registration is performed in 3 steps:
     </tr>
     <tr>
         <td>
-            /api/user/emails
-        </td>
-        <td>
-            PUT
-        </td>
-        <td>
-            {
-                email: String,
-                password: String
-            }
-        </td>
-        <td>
-            {
-                errors: String[]|null,
-                error: String|null,
-                user: User|null,
-                status: String|null
-            }
-        </td>
-    </tr>
-    <tr>
-        <td>
             /api/user/phones
         </td>
         <td>
@@ -1029,8 +1039,7 @@ Registration is performed in 3 steps:
         </td>
         <td>
             {
-                phone: String,
-                password: String,
+                phone: String
             }
         </td>
         <td>

@@ -22,6 +22,8 @@ class ChangeUserInfoRequest extends FormRequest
       'region_id' => 'nullable|numeric|exists:regions,id',
       'city_id' => 'nullable|numeric|exists:cities,id',
       'district_id' => 'nullable|numeric|exists:districts,id',
+      'is_male' => 'nullable|boolean',
+      'email' => 'nullable|email',
     ];
   }
 }

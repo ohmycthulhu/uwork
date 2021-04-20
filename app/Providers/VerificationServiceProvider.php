@@ -18,7 +18,7 @@ class VerificationServiceProvider extends ServiceProvider
     // Register phone verification facade
     $this->app->bind('phone-verification', function () {
       $isNexmoEnabled = !config('nexmo.is_disabled');
-      return new PhoneVerificationHelper(config('app.code_chek_enabled'), $isNexmoEnabled);
+      return new PhoneVerificationHelper(config('app.code_check_enabled'), $isNexmoEnabled);
     });
 
     // Register reset password facade

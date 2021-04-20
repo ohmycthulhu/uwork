@@ -34,7 +34,7 @@ class Controller extends BaseController
      *
      * @return JsonResponse
     */
-    protected function returnSuccess(?array $result): JsonResponse {
+    protected function returnSuccess(?array $result = null): JsonResponse {
       return response()->json(
         array_merge(
           ['status' => 'success'],
