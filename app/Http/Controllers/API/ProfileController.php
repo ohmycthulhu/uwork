@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Facades\NotificationFacade;
 use App\Facades\PhoneVerificationFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CreateComplaintRequest;
@@ -94,6 +95,14 @@ class ProfileController extends Controller
 
     $profile->load(['specialities.category']);
 
+    NotificationFacade::create(
+      $user,
+      Profile::class,
+      $profile->id,
+      ['en' => 'Профиль отправлен на проверку', 'ru' => 'Профиль отправлен на проверку'],
+      null
+    );
+
     // Return results
     return response()->json([
       'status' => 'success',
@@ -157,6 +166,17 @@ class ProfileController extends Controller
       } else {
         $profile->phone = $phone;
       }
+    }
+
+    if ($profile->confirmed_at) {
+      $profile->confirmed_at = null;
+      NotificationFacade::create(
+        $user,
+        Profile::class,
+        $profile->id,
+        ['en' => 'Профиль отправлен на проверку', 'ru' => 'Профиль отправлен на проверку'],
+        null
+      );
     }
 
     $profile->save();

@@ -21,7 +21,7 @@ class CreateNotificationsTable extends Migration
               ->cascadeOnUpdate()
               ->cascadeOnDelete();
 
-            $table->morphs('notifiable');
+            $table->nullableMorphs('notifiable');
 
             $table->string('title');
             $table->text('description')->nullable();
