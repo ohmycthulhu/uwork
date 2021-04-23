@@ -32,7 +32,7 @@ class ProfileSpeciality extends Model implements HasMedia
 //  ];
 
   protected $with = [
-    'category'
+    'category', 'media',
   ];
 
   /**
