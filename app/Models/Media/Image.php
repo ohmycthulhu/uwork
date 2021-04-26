@@ -11,6 +11,8 @@ class Image extends Media
 {
   protected $table = 'media';
 
+  protected $appends = ['url'];
+
   /**
    * Method to attach empty elements to model
    *
@@ -101,6 +103,6 @@ class Image extends Media
    * @return string
   */
   public function getUrlAttribute(): string {
-    return $this->getUrl();
+    return config('app.url').$this->getUrl();
   }
 }
