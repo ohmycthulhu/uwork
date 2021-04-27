@@ -16,7 +16,7 @@ class CreateSpecialityFormRequest extends FormRequest
     return [
       'price' => 'required|numeric',
       'name' => 'nullable|string',
-      'descriptin' => 'nullable|string',
+      'description' => 'nullable|string',
       'category_id' => 'required|exists:App\Models\Categories\Category,id'
     ];
   }

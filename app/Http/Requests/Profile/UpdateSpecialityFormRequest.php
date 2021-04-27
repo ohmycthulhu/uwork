@@ -16,6 +16,7 @@ class UpdateSpecialityFormRequest extends FormRequest
     return [
       'name' => 'nullable|string',
       'price' => 'required|numeric',
+      'description' => 'nullable|string',
     ];
   }
 }
