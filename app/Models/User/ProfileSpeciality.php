@@ -24,7 +24,7 @@ class ProfileSpeciality extends Model implements HasMedia
 
   // Fillable
   protected $fillable = [
-    'category_id', 'price', 'name',
+    'category_id', 'price', 'name', 'description',
   ];
 
 //  protected $hidden = [
