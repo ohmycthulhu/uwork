@@ -40,16 +40,20 @@ class ProfileSpeciality extends Model implements HasMedia
    *
    * @param ?float $price
    * @param ?string $name
+   * @param ?string $description
    *
    * @return $this
    */
-  public function updateInfo(?float $price, ?string $name): ProfileSpeciality
+  public function updateInfo(?float $price, ?string $name, ?string $description): ProfileSpeciality
   {
     if ($price) {
       $this->price = $price;
     }
     if ($name) {
       $this->name = $name;
+    }
+    if ($description) {
+      $this->description = $description;
     }
     if ($this->isDirty()) {
       $this->save();

@@ -116,7 +116,11 @@ class SpecialitiesController extends Controller
     }
 
     // Update speciality
-    $speciality->updateInfo($request->input('price'), $request->input('name'));
+    $speciality->updateInfo(
+      $request->input('price'),
+      $request->input('name'),
+      $request->input('description')
+    );
 
     // Return the result
     return response()->json([
