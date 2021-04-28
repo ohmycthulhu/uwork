@@ -33,7 +33,7 @@ class UserController extends Controller
       $user->setAvatar($image);
     }
 
-    return response()->json(['user' => $user]);
+    return $this->returnSuccess(compact('user'));
   }
 
   /**
@@ -56,7 +56,7 @@ class UserController extends Controller
 
     $user->setPassword($newPassword);
 
-    return response()->json(['user' => $user, 'status' => 'success']);
+    return $this->returnSuccess(compact('user'));
   }
 
   /**
@@ -78,7 +78,7 @@ class UserController extends Controller
 
     $user->setEmail($request->input('email'));
 
-    return response()->json(['status' => 'success', 'user' => $user]);
+    return $this->returnSuccess(compact('user'));
   }
 
   /**
@@ -132,10 +132,7 @@ class UserController extends Controller
     }
     $user->save();
 
-    return response()->json([
-      'status' => 'success',
-      'user' => $user,
-    ]);
+    return $this->returnSuccess(compact('user'));
   }
 
   /**
