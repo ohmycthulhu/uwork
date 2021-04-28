@@ -86,6 +86,8 @@ Route::group([
 
   $router->match(['put', 'post'], '/', 'API\\UserController@changeProfile')
     ->name('update.profile');
+  $router->delete('/avatar', 'API\\UserController@removeAvatar')
+    ->name('delete.avatar');
   // Note: Deprecated Route
   $router->put('/emails', 'API\\UserController@changeEmail')
     ->name('update.email');

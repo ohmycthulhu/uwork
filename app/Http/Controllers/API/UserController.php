@@ -161,4 +161,18 @@ class UserController extends Controller
 
     return $this->returnSuccess();
   }
+
+  /**
+   * Function for deleting the avatar
+   *
+   * @return JsonResponse
+  */
+  public function removeAvatar(): JsonResponse {
+    /* @var User $user */
+    $user = Auth::user();
+
+    $user->removeAvatar();
+
+    return $this->returnSuccess(['user' => $user]);
+  }
 }

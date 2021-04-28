@@ -44,6 +44,17 @@ trait HasAvatar
   }
 
   /**
+   * Function to remove avatar
+   *
+   * @return $this
+  */
+  public function removeAvatar(): self {
+    $this->{$this->avatarColumn} = null;
+    $this->save();
+    return $this;
+  }
+
+  /**
    * Avatar attribute
    *
    * @return ?string

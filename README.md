@@ -933,6 +933,10 @@ If the code is correct, phone will be validated and phone in user profile will b
 </ol>
 <hr />
 <p>
+To delete avatar, send DELETE request to /api/user/avatar.
+</p>
+<hr />
+<p>
   List of available settings:
 </p>
 <table>
@@ -1026,6 +1030,21 @@ If the code is correct, phone will be validated and phone in user profile will b
             {
                 errors: String[]|null,
                 error: String|null,
+                user: User|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/avatar
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
                 user: User|null
             }
         </td>
