@@ -82,7 +82,12 @@ class ProfileController extends Controller
 
     // Attach specialities
     foreach ($specialities as $speciality) {
-      $profile->addSpeciality($speciality['category_id'], $speciality['price'], $speciality['name']);
+      $profile->addSpeciality(
+        $speciality['category_id'],
+        $speciality['price'] ?? null,
+        $speciality['name'] ?? '',
+        $speciality['description'] ?? '',
+      );
     }
 
     // Send verification code if needed

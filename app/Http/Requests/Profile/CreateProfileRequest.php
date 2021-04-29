@@ -20,6 +20,7 @@ class CreateProfileRequest extends FormRequest
       'specialities.*.category_id' => 'required|exists:App\Models\Categories\Category,id',
       'specialities.*.price' => 'nullable|numeric',
       'specialities.*.name' => 'nullable|string',
+      'specialities.*.description' => 'nullable|string',
     ];
   }
 }

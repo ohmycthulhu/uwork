@@ -28,7 +28,11 @@ class ProfileSeeder extends Seeder
 
           foreach ($categories->shuffle()->slice(0, 3) as $category) {
             /* @var ProfileSpeciality $speciality */
-            $speciality = $profile->addSpeciality($category->id, rand(100, 5000) / 10, Str::random());
+            $speciality = $profile->addSpeciality(
+              $category->id,
+              rand(100, 5000) / 10,
+              Str::random(),
+            );
 
             for ($i = rand(1, 4); $i > 0; $i--) {
               $this->addImageToSpeciality($speciality);
