@@ -478,14 +478,12 @@ class Profile extends Model
 
     $locations = [];
     /* Prepare location constraints */
-    if ($regionId) {
-      $locations["regionId"] = $regionId;
-    }
-    if ($cityId) {
-      $locations["cityId"] = $cityId;
-    }
     if ($districtId) {
       $locations["districtId"] = $districtId;
+    } elseif ($cityId) {
+      $locations["cityId"] = $cityId;
+    } elseif ($regionId) {
+      $locations["regionId"] = $regionId;
     }
     if ($locations) {
       $query->must(["match" => $locations]);
