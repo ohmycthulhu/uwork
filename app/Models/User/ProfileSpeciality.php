@@ -116,10 +116,9 @@ class ProfileSpeciality extends Model implements HasMedia
    * @param ?int $categoryId
    *
    * @return bool
-  */
-  public function belongsToCategory(?int $categoryId): bool {
-    return !$categoryId ||
-      ($this->category_path && Str::contains($this->category_path, " {$categoryId} "));
+   */
+  public function belongsToCategory(?int $categoryId) {
+    return Str::contains($this->category_path, " {$categoryId} ");
   }
 
   /**
