@@ -14,7 +14,7 @@ class CreateSpecialityFormRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'price' => 'required|numeric',
+      'price' => 'required|numeric|min:1|max:999999',
       'name' => 'nullable|string',
       'description' => 'nullable|string',
       'category_id' => 'required|exists:App\Models\Categories\Category,id'

@@ -239,7 +239,12 @@ return [
     'URL' => Illuminate\Support\Facades\URL::class,
     'Validator' => Illuminate\Support\Facades\Validator::class,
     'View' => Illuminate\Support\Facades\View::class,
-
   ],
 
+  /**
+   * Configuration of specialities
+  */
+  'specialities' => [
+    'maxImages' => env('SPECIALITIES_MAX_IMAGES', 8),
+  ]
 ];

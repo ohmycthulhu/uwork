@@ -198,6 +198,11 @@ class SpecialitiesController extends Controller
       return $this->returnError('Speciality not found', 404);
     }
 
+    // Check if the image limit is already exceeded
+    if ($speciality->media()->count() >= config('app.specialities.maxImages')) {
+      return $this->returnError('Image limit is exceeded', 405);
+    }
+
     $file = $request->file('image');
     try {
       $image = MediaFacade::upload(
