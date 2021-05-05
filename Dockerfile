@@ -62,7 +62,7 @@ RUN test -f .env || cp .env.example .env
 RUN php artisan key:generate && \
     php artisan jwt:secret -f
 
-# RUN php artisan storage:link
+RUN php artisan storage:link
 
 RUN chmod a+rw storage -R
 RUN php artisan config:clear
