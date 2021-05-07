@@ -507,6 +507,7 @@ class Profile extends Model
     // Filter only by confirmed
 //    $query->mustNot(['match' => ['id' => ""]]);
     $query->must(['match' => ['isConfirmed' => "1"]]);
+    $query->minimumShouldMatch(1);
 
     /* Perform search */
     return $query
