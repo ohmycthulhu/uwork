@@ -60,8 +60,8 @@ trait HasAvatar
    * @return ?string
   */
   public function getAvatarUrlAttribute(): ?string {
-    $url = $this->{$this->avatarColumn};
-    return $url ? URL::to(Storage::url($url)) : null;
+    $path = $this->getAvatarPathAttribute();
+    return $path ? config('app.url').$path : null;
   }
 
   /**
