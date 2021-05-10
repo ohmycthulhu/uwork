@@ -43,9 +43,9 @@ class Category extends Model implements Slugable
      * @return Collection
     */
     public static function searchByName(string $name): Collection {
-      $nameToSearch = strtolower($name);
+      $nameToSearch = trim(strtolower($name));
       return static::boolSearch()
-        ->should(['wildcard' => ['name' => ['value' => "*$nameToSearch*"]]])
+        ->should(['wildcard' => ['name' => ['value' => "*".str_replace(" ", "*", $nameToSearch)."*"]]])
         ->should(['match' => ['name' => ['query' => $nameToSearch]]])
         ->minimumShouldMatch(1)
         ->execute()

@@ -569,10 +569,12 @@
         /api/categories/search
     </td>
     <td>
-        GET, {keyword: string}
+        GET, {keyword: string, parent_id: Integer|null}
     </td>
     <td>
-      Performs search by category, including hidden ones
+      Performs search by category, including hidden ones.
+      If parent id is provided, search is limited by only child
+      categories.
     </td>
     <td>
         {

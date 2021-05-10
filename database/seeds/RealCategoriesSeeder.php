@@ -31,7 +31,8 @@ class RealCategoriesSeeder extends Seeder
   {
     $categoriesInfo = json_decode(\Illuminate\Support\Facades\File::get($this->filePath));
 
-    foreach ($categoriesInfo as $categoryInfo) {
+    foreach ($categoriesInfo as $index => $categoryInfo) {
+      echo "Importing categories | ".($index + 1)." / ". (sizeof($categoriesInfo))."\n";
       $this->createCategoryTree(
         $categoryInfo->name,
         $categoryInfo->categories ?? null
