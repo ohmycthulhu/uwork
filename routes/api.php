@@ -285,6 +285,20 @@ Route::get('/info/about', 'API\\InfoController@about')
 Route::get('/info/faq', 'API\\InfoController@faq')
   ->name('api.info.faq');
 
+/**
+ * Routes for upvoting and downvoting info parts
+*/
+Route::group([
+  'prefix' => '/info/text-statistics/{type}',
+  'as' => 'text-statistics.',
+  'where' => ['type' => implode('|', config('info.texts'))]
+  ], function (\Illuminate\Routing\Router $router) {
+  $router->match(['post', 'put'], '/', 'API\\TextStatisticsController@addUpvote')
+    ->name('upvote');
+  $router->match(['delete'], '/', 'API\\TextStatisticsController@addDownvote')
+    ->name('downvote');
+});
+
 // Help categories
 Route::get('/help-categories', 'API\\InfoController@getHelpCategories')
   ->name('api.helpCategories.all');

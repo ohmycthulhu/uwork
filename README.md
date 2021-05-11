@@ -401,6 +401,11 @@
   Information about phone number, links to mobile applications,
   items in FAQ section and text in "About us"
 </p>
+<p>
+  Certain pages should have "Is useful" button. To collect statistics,
+  there are "/api/info/text-statistics" routes, that take type as route
+  parameter and by method type either upvote or downvote the text.
+</p>
 <table>
 <thead>
 <th>Route</th>
@@ -440,6 +445,40 @@
     <td>
         {
             about_us: TString
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/info/text-statistics/{type}
+    </td>
+    <td>
+        POST, PUT
+    </td>
+    <td>
+      Adds upvote to the text
+    </td>
+    <td>
+        {
+            status: string,
+            amount: integer
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/info/text-statistics/{type}
+    </td>
+    <td>
+        DELETE
+    </td>
+    <td>
+      Adds downvote to the text
+    </td>
+    <td>
+        {
+            status: string,
+            amount: integer
         }
     </td>
 </tr>
