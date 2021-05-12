@@ -110,6 +110,7 @@ class SearchController extends Controller
   public function searchCategories(Request $request): JsonResponse {
     $keyword = Str::lower($request->input('keyword', ''));
     $parentCategory = $request->input('parent_id');
+    $keyword = str_replace(" ", "*", trim(strtolower($keyword)));
     $query = $this->category::boolSearch()
       ->should(['wildcard' => ['name' => "*$keyword*"]])
       ->minimumShouldMatch(1)
