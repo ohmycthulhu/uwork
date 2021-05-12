@@ -51,7 +51,8 @@
         @endif
     </div>
 
-    <button class="w-full btn btn-default text-white kob-bg" type="submit">
+    <button class="w-full btn btn-default btn-primary hover:bg-primary-dark"
+            type="submit">
         {{ __('Login') }}
     </button>
 </form>

@@ -289,13 +289,15 @@ Route::get('/info/faq', 'API\\InfoController@faq')
  * Routes for upvoting and downvoting info parts
 */
 Route::group([
-  'prefix' => '/info/text-statistics/{type}',
-  'as' => 'text-statistics.',
+  'prefix' => '/info/{type}',
+  'as' => 'texts.',
   'where' => ['type' => implode('|', config('info.texts'))]
   ], function (\Illuminate\Routing\Router $router) {
-  $router->match(['post', 'put'], '/', 'API\\TextStatisticsController@addUpvote')
+  $router->get('/', 'API\\TextStatisticsController@getText')
+    ->name('get');
+  $router->match(['post', 'put'], '/statistics', 'API\\TextStatisticsController@addUpvote')
     ->name('upvote');
-  $router->match(['delete'], '/', 'API\\TextStatisticsController@addDownvote')
+  $router->delete('/statistics', 'API\\TextStatisticsController@addDownvote')
     ->name('downvote');
 });
 

@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TextStatistic extends Model
 {
   protected $fillable = [
-    'key', 'upvotes', 'downvotes'
+    'key', 'upvotes', 'downvotes', 'text',
+  ];
+
+  protected $visible = [
+    'name', 'text',
   ];
 
   /**

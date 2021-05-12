@@ -59,16 +59,22 @@ class TextStatisticsTest extends TestCase
   */
   public function testRoutes() {
     $infoTypes = config('info.texts');
+
+    foreach ($infoTypes as $type) {
+      $this->get(route('texts.get', ['type' => $type]))
+        ->assertOk();
+    }
+
     $type = $infoTypes[array_rand($infoTypes)];
 
     for ($i = 1; $i <= 10; $i++) {
-      $this->assertEquals($i, $this->post(route('text-statistics.upvote', compact('type')))
+      $this->assertEquals($i, $this->post(route('texts.upvote', compact('type')))
         ->assertOk()
         ->json('amount'));
     }
 
     for ($i = 1; $i <= 10; $i++) {
-      $this->assertEquals($i, $this->delete(route('text-statistics.downvote', compact('type')))
+      $this->assertEquals($i, $this->delete(route('texts.downvote', compact('type')))
         ->assertOk()
         ->json('amount'));
     }

@@ -22,6 +22,21 @@ class TextStatisticsController extends Controller
     }
 
     /**
+     * Method to get text
+     *
+     * @param string $type
+     *
+     * @return JsonResponse
+    */
+    public function getText(string $type): JsonResponse {
+      $text = $this->textStatistics::query()
+        ->type($type)
+        ->first();
+
+      return $this->returnSuccess(compact('text'));
+    }
+
+    /**
      * Method to add upvotes
      *
      * @param string $type

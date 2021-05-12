@@ -450,7 +450,24 @@
 </tr>
 <tr>
     <td>
-        /api/info/text-statistics/{type}
+        /api/info/{type}
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+      Returns text information as {name: String|null, text: String|null}
+    </td>
+    <td>
+        {
+            status: string,
+            text: integer
+        }
+    </td>
+</tr>
+<tr>
+    <td>
+        /api/info/{type}/statistics
     </td>
     <td>
         POST, PUT
@@ -467,7 +484,7 @@
 </tr>
 <tr>
     <td>
-        /api/info/text-statistics/{type}
+        /api/info/{type}/statistics
     </td>
     <td>
         DELETE
