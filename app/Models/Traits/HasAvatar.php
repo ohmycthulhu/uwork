@@ -3,7 +3,6 @@
 
 namespace App\Models\Traits;
 
-
 use App\Models\User\Profile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -61,7 +60,7 @@ trait HasAvatar
   */
   public function getAvatarUrlAttribute(): ?string {
     $path = $this->getAvatarPathAttribute();
-    return $path ? config('app.url').$path : null;
+    return $path ? URL::to($path) : null;
   }
 
   /**

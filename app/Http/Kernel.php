@@ -62,7 +62,7 @@ class Kernel extends HttpKernel
     ],
 
     'api' => [
-      'throttle:600,10',
+      'throttle:6000,10',
       ApiTokenMiddleware::class,
       SubstituteBindings::class,
     ],

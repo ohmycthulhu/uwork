@@ -25,6 +25,8 @@ use Laravel\Scout\Searchable;
 
 class Profile extends Model
 {
+  const SORT_PRICE = 'price_avg';
+
   use SoftDeletes, Searchable, CustomSearch, HasComplaints;
 
   // Fillable fields
@@ -429,15 +431,17 @@ class Profile extends Model
    */
   public function toSearchableArray(): array
   {
-    $specialitiesInfo = $this->specialities()
-      ->get()
-      ->map(function (ProfileSpeciality $speciality) {
+    $specialities = $this->specialities()
+      ->get();
+    $specialitiesInfo = $specialities->map(function (ProfileSpeciality $speciality) {
         return [
           'price' => $speciality->price,
           'categoryId' => $speciality->category_id,
           'catPath' => SearchFacade::calculateCategoryPath($speciality->category_id),
         ];
       })->toArray();
+    $prices = $specialities->pluck('price')->filter(function ($p) { return $p; });
+
     return [
       'id' => $this->id,
       'regionId' => $this->region_id,
@@ -446,6 +450,9 @@ class Profile extends Model
       'userId' => $this->user_id,
       'specialities' => $specialitiesInfo,
       'isConfirmed' => $this->confirmed_at ? 1 : 0,
+      'price_avg' => $prices->average(),
+      'price_min' => $prices->min(),
+      'price_max' => $prices->max()
     ];
   }
 
@@ -470,6 +477,10 @@ class Profile extends Model
     ?int $cityId,
     ?int $districtId,
     ?int $userId,
+    ?float $priceMin,
+    ?float $priceMax,
+    $searchColumn = null,
+    $searchDir = 'asc',
     ?int $page = 1,
     int $amount = 5
   ): Paginator
@@ -495,6 +506,13 @@ class Profile extends Model
       $query->must($strictCategory);
     }
 
+    if ($priceMax != null || $priceMin != null) {
+      $range = [];
+      if ($priceMin != null) $range['gte'] = $priceMin;
+      if ($priceMax != null) $range['lte'] = $priceMax;
+      $query->must(['range' => ['specialities.price' => $range]]);
+    }
+
     foreach (($categories ?? []) as $cat) {
       $query->should(["match" => ["specialities.categoryId" => $cat]]);
     }
@@ -508,6 +526,10 @@ class Profile extends Model
 //    $query->mustNot(['match' => ['id' => ""]]);
     $query->must(['match' => ['isConfirmed' => "1"]]);
     $query->minimumShouldMatch(1);
+
+    if ($searchColumn) {
+      $query->sort($searchColumn, $searchDir);
+    }
 
     /* Perform search */
     return $query

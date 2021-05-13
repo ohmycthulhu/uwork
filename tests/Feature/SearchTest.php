@@ -115,6 +115,23 @@ class SearchTest extends TestCase
       $spec = array_map(function ($s) {return $s['category_path'];}, $profile['specialities']);
       $this->assertStringContainsString($category->id, join(',',$spec));
     }
+
+    // Test price range search
+    $priceMin = ProfileSpeciality::query()->first()->price;
+    $priceMax = $priceMin;
+
+    $profiles = $this->get(
+      route('api.profiles.search', ['sort' => 'price', 'dir' => 'desc', 'price_min' => $priceMin, 'price_max' => $priceMax])
+    )
+      ->assertOk()
+      ->json('result.data');
+
+    $this->assertEmpty(array_filter($profiles, function ($profile) use ($priceMin, $priceMax) {
+      return !empty(array_filter($profile['specialities'], function ($spec) use ($priceMin, $priceMax) {
+        return $spec->price < $priceMin || $spec->price > $priceMax;
+      }));
+    }));
+
     $this->clearDatabase();
   }
 

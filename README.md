@@ -1709,7 +1709,11 @@ Specification
                 city_id: int|null,
                 district_id: int|null,
                 per_page: int|null,
-                page: int|null
+                page: int|null,
+                sort_by: "price"|null,
+                sort_dir: "asc"|"desc"|null,
+                price_min: Number|null,
+                price_max: Number|null,
             }
         </td>
         <td>

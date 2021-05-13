@@ -47,6 +47,11 @@ class SearchController extends Controller
     // Get similar categories
     $categories = $request->input('categories', []);
     $categoryId = $request->input('category_id');
+    $priceMin = $request->input('price_min');
+    $priceMax = $request->input('price_max');
+
+    $sortColumn = strtolower($request->input('sort_by', '')) == 'price' ? $this->profile::SORT_PRICE : null;
+    $sortDir = strtolower($request->input('sort_dir', 'asc')) == 'asc' ? 'asc' : 'desc';
 
     $specQuery = $this->profile::completeSearch(
       $categoryId,
@@ -55,6 +60,10 @@ class SearchController extends Controller
       $request->input('city_id'),
       $request->input('district_id'),
       Auth::id(),
+      $priceMin,
+      $priceMax,
+      $sortColumn,
+      $sortDir,
       $page,
       15
     );
@@ -62,9 +71,12 @@ class SearchController extends Controller
     $profiles = $specQuery->models();
     $profiles->load(['specialities.category', 'user']);
 
-    $profiles = $profiles->map(function (Profile $profile) use ($categoryId) {
-      $specialities = $profile->specialities->filter(function (ProfileSpeciality $speciality) use ($categoryId) {
-        return $speciality->belongsToCategory($categoryId);
+    $profiles = $profiles->map(function (Profile $profile) use ($categoryId, $priceMin, $priceMax) {
+      $specialities = $profile->specialities
+        ->filter(function (ProfileSpeciality $speciality) use ($categoryId, $priceMin, $priceMax) {
+        return $speciality->belongsToCategory($categoryId) &&
+          ($priceMin == null || $speciality->price >= $priceMin) &&
+          ($priceMax == null || $speciality->price <= $priceMax);
       })->values();
       return array_merge($profile->toArray(), ['specialities' => $specialities]);
     });

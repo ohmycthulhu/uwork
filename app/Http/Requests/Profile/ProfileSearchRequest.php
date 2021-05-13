@@ -22,6 +22,12 @@ class ProfileSearchRequest extends FormRequest
       'per_page' => 'nullable|numeric',
       'categories' => 'nullable|array',
       'categories.*' => 'numeric',
+
+      'price_min' => 'nullable|numeric|min:0',
+      'price_max' => 'nullable|numeric|min:0',
+
+      'sort_by' => 'nullable|string',
+      'sort_dir' => 'nullable|string',
     ];
   }
 }
