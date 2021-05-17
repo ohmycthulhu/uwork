@@ -229,7 +229,7 @@ class AuthenticationController extends Controller
      * @return JsonResponse
     */
     public function user(): JsonResponse {
-      $user = Auth::user();
+      $user = Auth::user()->load(['profile', 'district', 'city', 'region']);
 
       return response()->json(['user' => $user]);
     }
