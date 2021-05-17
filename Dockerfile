@@ -14,6 +14,7 @@ RUN apt-get install -y \
     libbz2-dev \
     libpng-dev \
     libjpeg-dev \
+    libghc-gd-dev \
     libmcrypt-dev \
     libreadline-dev \
     libfreetype6-dev \
@@ -40,6 +41,7 @@ RUN docker-php-ext-install \
     calendar \
     mbstring \
     pdo_mysql \
+    gd  \
     zip
 
 # 5. Composer
