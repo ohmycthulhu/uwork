@@ -105,7 +105,7 @@ class Image extends Media
    * @return string
   */
   public function getUrlAttribute(): string {
-    return config('app.url').$this->getUrl();
+    return $this->getUrl();
   }
 
   /**
