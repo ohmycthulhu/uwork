@@ -83,6 +83,76 @@ class MediaHelper
       throw $e;
     }
 
+    /* TODO: Insert code for optimizing the images */
+    $this->createResponsiveImages($media, config('images.sizes'));
+
     return $media;
+  }
+
+  /**
+   * Prepare responsive images
+   *
+   * @param Image $image
+   * @param array $sizes
+   *
+   * @return Image
+  */
+  protected function createResponsiveImages(Image $image, array $sizes): Image {
+    /* TODO: Implement the method */
+    $responsive = [];
+    foreach ($sizes as $type => $size) {
+      $responsive[$type] = "{$image->id}/".$this->generatePath($size['w'], $size['h']);
+      $this->convertImage($image, $size['w'], $size['h']);
+    }
+    $image->responsive_images = json_encode($responsive);
+    $image->save();
+    return $image;
+  }
+
+  /**
+   * Convert image
+   *
+   * @param Image $imageModel
+   * @param int $width
+   * @param int $height
+   *
+   * @return void
+   * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+   */
+  protected function convertImage(Image $imageModel, int $width, int $height) {
+    $path = Storage::disk($imageModel->disk)
+      ->get("{$imageModel->id}/{$imageModel->file_name}");
+
+    // Load image
+    $img = \Intervention\Image\Facades\Image::make($path);
+
+    $ratio = $img->width() / $img->height();
+    // Resize image
+    if ($width / $height > $ratio) {
+      $newH = $width / $ratio;
+      $newW = $width;
+    } else {
+      $newH = $height;
+      $newW = $height * $ratio;
+    }
+    $img->resize($newW, $newH);
+
+    // Crop image
+    $img->crop($width, $height);
+
+    // Save
+    $img->save(storage_path("app/public/{$imageModel->id}/".($this->generatePath($width, $height))));
+  }
+
+  /**
+   * Method for generating image path from size
+   *
+   * @param int $width
+   * @param int $height
+   *
+   * @return string
+  */
+  protected function generatePath(int $width, int $height): string {
+    return "{$width}x{$height}.jpg";
   }
 }

@@ -144,6 +144,7 @@
     <td>{
             id: Int,
             path: String,
+            responsive_image_urls: Dictionary&ltString,String&gt,
             model: T1,
             model_type: String,
             model_id: Int,

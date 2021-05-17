@@ -321,3 +321,11 @@ Route::get('/complaint-types', function () {
     'types' => \App\Models\Complaints\ComplaintType::all()
   ]);
 });
+
+// Testing routes
+// TODO: Remove
+Route::post('/test/upload', function (\Illuminate\Http\Request $request) {
+  $file = $request->file('image');
+  $image = \App\Facades\MediaFacade::upload($file, 'unknown');
+  return response()->json(compact('image'));
+});

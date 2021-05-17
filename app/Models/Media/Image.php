@@ -5,13 +5,15 @@ namespace App\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Spatie\MediaLibrary\Models\Media;
 
 class Image extends Media
 {
   protected $table = 'media';
 
-  protected $appends = ['url'];
+  protected $appends = ['url', 'responsive_image_urls'];
 
   /**
    * Method to attach empty elements to model
@@ -104,5 +106,19 @@ class Image extends Media
   */
   public function getUrlAttribute(): string {
     return config('app.url').$this->getUrl();
+  }
+
+  /**
+   * Attribute to map images
+   *
+   * @return array
+  */
+  public function getResponsiveImageUrlsAttribute(): array
+  {
+    $res = [];
+    foreach (json_decode($this->responsive_images) ?? [] as $type => $path) {
+      $res[$type] = URL::to(Storage::url($path));
+    }
+    return $res;
   }
 }
