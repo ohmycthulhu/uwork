@@ -124,11 +124,15 @@ class SearchController extends Controller
     $parentCategory = $request->input('parent_id');
     $keyword = str_replace(" ", "*", trim(strtolower($keyword)));
     $query = $this->category::boolSearch()
-      ->should(['wildcard' => ['name' => "*$keyword*"]])
-      ->minimumShouldMatch(1)
       ->size(10);
+
+    if ($keyword) {
+      $query->should(['wildcard' => ['name' => "*$keyword*"]])
+        ->minimumShouldMatch(1);
+    }
+
     if ($parentCategory) {
-      $query->must(['wildcard' => ['category_path' => " *$parentCategory* "]]);
+      $query->must(['wildcard' => ['category_path' => "*$parentCategory*"]]);
     }
 
       $categories = $query->execute()

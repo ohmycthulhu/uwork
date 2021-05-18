@@ -128,6 +128,9 @@ Route::group([
       $router->get('/', 'API\\Profile\\SpecialitiesController@get')
         ->name('list');
 
+      // Get grouped specialities
+      $router->get('/categories', 'API\\Profile\\SpecialitiesController@getCategories');
+
       // Update specialities
       $router->put('/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
         ->name('update');

@@ -188,6 +188,15 @@
     <td>Entity of speciality</td>
 </tr>
 <tr>
+    <td>CategoryOccurrence</td>
+    <td>{
+            category: Category,
+            count: Int
+        }
+    </td>
+    <td>Entity of speciality</td>
+</tr>
+<tr>
     <td>Review</td>
     <td>{
             id: Int,
@@ -1351,6 +1360,23 @@ speciality can change name and price, but not category.
             {
                 error: String|null,
                 specialities: Specialities[]|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/categories
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                result: CategoryOccurrence[]|null,
             }
         </td>
     </tr>

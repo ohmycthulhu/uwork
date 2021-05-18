@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Common\UpdateImageRequest;
 use App\Http\Requests\Common\UploadImageRequest;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
+use App\Http\Requests\Profile\LoadSpecialitiesCategoriesRequest;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
+use App\Models\Categories\Category;
 use App\Models\Media\Image;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
@@ -272,5 +274,55 @@ class SpecialitiesController extends Controller
     return $this->returnSuccess([
       'image' => $image,
     ]);
+  }
+
+  /**
+   * Route to get categories for specialities
+   *
+   * @param LoadSpecialitiesCategoriesRequest $request
+   *
+   * @return JsonResponse
+  */
+  public function getCategories(LoadSpecialitiesCategoriesRequest $request): JsonResponse {
+    $profile = $this->getProfile();
+
+    if (!$profile) {
+      return $this->returnError(__('No profile found'), 404);
+    }
+
+    $level = $request->input('level', 1);
+    $categoryIds = $profile->specialities()
+      ->pluck('category_path')
+      ->map(function ($catPath) use ($level) {
+        if (!$catPath) {
+          return null;
+        }
+        $parts = array_filter(explode(' ', $catPath), 'strlen');
+        if (sizeof($parts) > $level) {
+          return null;
+        } else {
+          return $parts[$level - 1];
+        }
+      })
+      ->filter(function ($x) { return $x; });
+
+    $categories = Category::query()
+      ->whereIn('id', $categoryIds)
+      ->get();
+
+    $occurrences = [];
+    foreach ($categoryIds as $categoryId) {
+      if (key_exists($categoryId, $occurrences)) {
+        $occurrences[$categoryId]['count']++;
+      } else {
+        $occurrences[$categoryId] = [
+          'count' => 1,
+          'category' => $categories->find($categoryId),
+        ];
+      }
+    }
+
+    $result = array_values($occurrences);
+    return $this->returnSuccess(compact('result'));
   }
 }
