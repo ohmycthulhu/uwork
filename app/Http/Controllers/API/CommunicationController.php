@@ -51,15 +51,12 @@ class CommunicationController extends Controller
           $request->input('email')
         );
 
-        return response()->json([
+        return $this->returnSuccess([
           'status' => 'success',
           'appeal' => $appeal,
         ]);
       } catch (\Exception $exception) {
-        return response()->json([
-          'status' => 'error',
-          'error' => $exception->getMessage()
-        ], 405);
+        return $this->returnError(__($exception->getMessage()), 405);
       }
     }
 
@@ -69,7 +66,7 @@ class CommunicationController extends Controller
      * @return JsonResponse
     */
     public function appealReasons(): JsonResponse {
-      return response()->json([
+      return $this->returnSuccess([
         'reasons' => $this->appealReason::all(),
       ]);
     }

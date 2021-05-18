@@ -83,7 +83,6 @@ class MediaHelper
       throw $e;
     }
 
-    /* TODO: Insert code for optimizing the images */
     $this->createResponsiveImages($media, config('images.sizes'));
 
     return $media;
@@ -98,11 +97,12 @@ class MediaHelper
    * @return Image
   */
   protected function createResponsiveImages(Image $image, array $sizes): Image {
-    /* TODO: Implement the method */
     $responsive = [];
     foreach ($sizes as $type => $size) {
-      $responsive[$type] = "{$image->id}/".$this->generatePath($size['w'], $size['h']);
-      $this->convertImage($image, $size['w'], $size['h']);
+      $res = $this->convertImage($image, $size['w'], $size['h']);
+      if ($res) {
+        $responsive[$type] = "{$image->id}/" . $this->generatePath($size['w'], $size['h']);
+      }
     }
     $image->responsive_images = json_encode($responsive);
     $image->save();
@@ -116,15 +116,18 @@ class MediaHelper
    * @param int $width
    * @param int $height
    *
-   * @return void
-   * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+   * @return bool
    */
   protected function convertImage(Image $imageModel, int $width, int $height) {
-    $path = Storage::disk($imageModel->disk)
-      ->get("{$imageModel->id}/{$imageModel->file_name}");
+    try {
+      $path = Storage::disk($imageModel->disk)
+        ->get("{$imageModel->id}/{$imageModel->file_name}");
 
-    // Load image
-    $img = \Intervention\Image\Facades\Image::make($path);
+      // Load image
+      $img = \Intervention\Image\Facades\Image::make($path);
+    } catch (\Exception $exception) {
+      return false;
+    }
 
     $ratio = $img->width() / $img->height();
     // Resize image
@@ -142,6 +145,7 @@ class MediaHelper
 
     // Save
     $img->save(storage_path("app/public/{$imageModel->id}/".($this->generatePath($width, $height))));
+    return true;
   }
 
   /**

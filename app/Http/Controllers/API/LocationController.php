@@ -42,7 +42,7 @@ class LocationController extends Controller
   public function regions(): JsonResponse {
     $regions = $this->region::query()->with('cities')->get();
 
-    return response()->json(['regions' => $regions]);
+    return $this->returnSuccess(['regions' => $regions]);
   }
 
   /**
@@ -55,10 +55,10 @@ class LocationController extends Controller
   public function regionById(int $id): JsonResponse {
     $region = $this->region::query()->with('cities')->find($id);
     if (!$region) {
-      return response()->json(['error' => 'Region not found'], 404);
+      return $this->returnError(__('Region not found'), 404);
     }
 
-    return response()->json(['region' => $region]);
+    return $this->returnSuccess(['region' => $region]);
   }
 
   /**
@@ -71,11 +71,11 @@ class LocationController extends Controller
   public function regionCities(int $id): JsonResponse {
     $region = $this->region::query()->find($id);
     if (!$region) {
-      return response()->json(['error' => 'Region not found'], 404);
+      return $this->returnError(__('Region not found'), 404);
     }
     $cities = $region->cities()->with('districts')->get();
 
-    return response()->json(['cities' => $cities]);
+    return $this->returnSuccess(['cities' => $cities]);
   }
 
   /**
@@ -89,10 +89,10 @@ class LocationController extends Controller
     $city = $this->city::query()->with('districts')->find($id);
 
     if (!$city) {
-      return response()->json(['error' => 'City not found'], 404);
+      return $this->returnError(__('City not found'), 404);
     }
 
-    return response()->json(['city' => $city]);
+    return $this->returnSuccess(['city' => $city]);
   }
 
   /**
@@ -106,11 +106,11 @@ class LocationController extends Controller
     $city = $this->city::query()->find($id);
 
     if (!$city) {
-      return response()->json(['error' => 'City not found'], 404);
+      return $this->returnError(__('City not found'), 404);
     }
 
     $districts = $city->districts()->get();
 
-    return response()->json(['districts' => $districts]);
+    return $this->returnSuccess(['districts' => $districts]);
   }
 }

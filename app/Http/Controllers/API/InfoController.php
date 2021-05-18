@@ -61,7 +61,7 @@ class InfoController extends Controller
       $publicOfferPath = nova_get_setting('public_offer_path');
       $public_offer = $publicOfferPath ? URL::to("storage/$publicOfferPath") : null;
 
-      return response()->json(compact('phone', 'apps', 'public_offer'));
+      return $this->returnSuccess(compact('phone', 'apps', 'public_offer'));
     }
 
     /**
@@ -72,7 +72,7 @@ class InfoController extends Controller
     public function about(): JsonResponse {
       $aboutUs = json_decode(nova_get_setting('about_us'), true) ?? ['en' => ''];
 
-      return response()->json([
+      return $this->returnSuccess([
         'about_us' => $aboutUs
       ]);
     }
@@ -85,7 +85,7 @@ class InfoController extends Controller
     public function faq(): JsonResponse {
       $faq = $this->faq::all();
 
-      return response()->json([
+      return $this->returnSuccess([
         'faq' => $faq
       ]);
     }
@@ -105,7 +105,7 @@ class InfoController extends Controller
         ->withCount('items')
         ->get();
 
-      return response()->json(['status' => 'success', 'categories' => $categories]);
+      return $this->returnSuccess(['categories' => $categories]);
     }
 
     /**
@@ -122,10 +122,10 @@ class InfoController extends Controller
         ->first();
 
       if (!$category) {
-        return response()->json(['status' => 'error', 'error' => 'Category not found'], 404);
+        return $this->returnError(__('Category not found'), 404);
       }
 
-      return response()->json(['status' => 'success', 'category' => $category]);
+      return $this->returnSuccess(['category' => $category]);
     }
 
     /**
@@ -139,9 +139,9 @@ class InfoController extends Controller
       $item = $this->helpItem::query()->slug($slug)->first();
 
       if (!$item) {
-        return $this->returnError('Item not found', 404);
+        return $this->returnError(__('Item not found'), 404);
       }
 
-      return response()->json(['status' => 'success', 'item' => $item]);
+      return $this->returnSuccess(['item' => $item]);
     }
 }

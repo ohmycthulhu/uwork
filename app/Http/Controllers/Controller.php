@@ -17,29 +17,31 @@ class Controller extends BaseController
      *
      * @param string $error
      * @param int $status
+     * @param array $data
      *
      * @return JsonResponse
     */
-    protected function returnError(string $error, int $status): JsonResponse {
-      return response()->json([
+    protected function returnError(string $error, int $status, array $data = []): JsonResponse {
+      return response()->json(array_merge([
         'status' => 'error',
         'error' => $error,
-      ], $status);
+      ], $data), $status);
     }
 
     /**
      * Method to return successful response
      *
      * @param ?array $result
+     * @param int $status
      *
      * @return JsonResponse
     */
-    protected function returnSuccess(?array $result = null): JsonResponse {
+    protected function returnSuccess(?array $result = null, int $status = 200): JsonResponse {
       return response()->json(
         array_merge(
           ['status' => 'success'],
           $result ?? []
-        )
+        ), $status
       );
     }
 }

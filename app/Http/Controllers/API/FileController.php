@@ -49,11 +49,10 @@ class FileController extends Controller
         $collectionName,
       );
     } catch (Exception $e) {
-      return response()->json(['error' => $e->getMessage()], 505);
+      return $this->returnError(__($e->getMessage()), 505);
     }
 
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'id' => $media->id,
       'media' => $media,
       'url' => $media->getFullUrl()

@@ -68,7 +68,7 @@ class ProfileController extends Controller
     $user = Auth::user();
 
     if ($user->profile()->first()) {
-      return response()->json(['error' => 'User already has a profile'], 403);
+      return $this->returnError(__('User already has a profile'), 403);
     }
 
     // Get params
@@ -109,8 +109,7 @@ class ProfileController extends Controller
     );
 
     // Return results
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'profile' => $profile,
       'verification_uuid' => $uuid,
     ]);
@@ -133,7 +132,7 @@ class ProfileController extends Controller
       ->first();
 
     // Return profile
-    return response()->json([
+    return $this->returnSuccess([
       'profile' => $profile
     ], $profile ? 200 : 404);
   }
@@ -155,7 +154,7 @@ class ProfileController extends Controller
 
     // If profile doesn't exists, return error
     if (!$profile) {
-      return response()->json(['error' => 'Profile not exists'], 403);
+      return $this->returnError(__('Profile not exists'), 403);
     }
 
     // Update about information if presented
@@ -189,8 +188,7 @@ class ProfileController extends Controller
     $profile->load(['specialities']);
 
     // Return response
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'profile' => $profile,
       'verification_uuid' => $verUuid,
     ]);
@@ -208,12 +206,12 @@ class ProfileController extends Controller
     $profile = $this->profile::find($id);
 
     if (!$profile) {
-      return response()->json(['error' => 'Profile not found'], 404);
+      return $this->returnError(__('Profile not found'), 404);
     }
 
     $profile->load(['specialities.category.parent', 'specialities.media', 'user', 'region', 'city', 'district']);
 
-    return response()->json([
+    return $this->returnSuccess([
       'profile' => $profile
     ]);
   }
@@ -231,7 +229,7 @@ class ProfileController extends Controller
     $category = $categoryId ? $this->category::find($categoryId) : null;
 
     if ($categoryId && !$category) {
-      return response()->json(['status' => 'error', 'error' => 'Category not found'], 404);
+      return $this->returnError(__('Category not found'), 404);
     }
 
     $query = ProfileSpeciality::query();
@@ -252,8 +250,7 @@ class ProfileController extends Controller
       ->with(['region', 'district', 'city', 'user', 'specialities'])
       ->get();
 
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'profiles' => $profiles,
       'category' => $category,
     ]);
@@ -288,7 +285,7 @@ class ProfileController extends Controller
       return $this->returnSuccess(compact($complaint));
     } else {
       // Otherwise, return error
-      return $this->returnError('Error on creating complaint', 405);
+      return $this->returnError(__('Error on creating complaint'), 405);
     }
   }
 }

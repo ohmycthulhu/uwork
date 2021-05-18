@@ -47,7 +47,7 @@ class CategoriesController extends Controller
       true
     );
 
-    return response()->json([
+    return $this->returnSuccess([
       'categories' => $categories
     ]);
   }
@@ -80,9 +80,9 @@ class CategoriesController extends Controller
       ->first();
 
     if (!$category) {
-      return response()->json(['error' => 'Category not found'], 404);
+      return $this->returnError(__('Category not found'), 404);
     }
 
-    return response()->json(['category' => $category]);
+    return $this->returnSuccess(['category' => $category]);
   }
 }

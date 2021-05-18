@@ -56,7 +56,7 @@ class Category extends Resource
       Image::make(__('Icon Default'), 'icon_default')->hideFromIndex(),
       Image::make(__('Icon Selected'), 'icon_selected')->hideFromIndex(),
       BelongsTo::make(__('Category'), 'parent', Category::class),
-      Boolean::make(__('Baseline'), 'is_baseline'),
+//      Boolean::make(__('Baseline'), 'is_baseline'),
       HasMany::make(__('Subcategories'), 'children', Category::class),
     ];
   }

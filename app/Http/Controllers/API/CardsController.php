@@ -36,7 +36,7 @@ class CardsController extends Controller
     $user = Auth::user();
     $cards = $user->cards()->get();
 
-    return response()->json([
+    return $this->returnSuccess([
       'cards' => $cards,
     ]);
   }
@@ -53,9 +53,8 @@ class CardsController extends Controller
 
     $card = $user->cards()->create($request->validated());
 
-    return response()->json([
+    return $this->returnSuccess([
       'card' => $card,
-      'status' => 'success',
     ]);
   }
 
@@ -72,7 +71,7 @@ class CardsController extends Controller
     $card = $user->cards()->find($cardId);
 
     if (!$card) {
-      return response()->json(['error' => 'card does not not exists'], 403);
+      return $this->returnError(__('Card does not exists'), 403);
     }
 
     $card->updateInfo(
@@ -81,9 +80,8 @@ class CardsController extends Controller
       $request->input('expiration_year'),
     );
 
-    return response()->json([
+    return $this->returnSuccess([
       'card' => $card,
-      'status' => 'success',
     ]);
   }
 
@@ -100,8 +98,7 @@ class CardsController extends Controller
 
     $card->delete();
 
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'card_found' => !!$card,
     ]);
   }

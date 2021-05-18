@@ -33,7 +33,7 @@ class SpecialitiesController extends Controller
 
     // If not, return error
     if (!$profile) {
-      return response()->json(['error' => 'user does not have profile'], 403);
+      return $this->returnError(__('User does not have profile'), 403);
     }
 
     // Search if user has exact same speciality
@@ -43,10 +43,11 @@ class SpecialitiesController extends Controller
 
     // If yes, return error
     if ($exactSpec) {
-      return response()->json([
-        'error' => 'Similar speciality exists',
-        'speciality' => $exactSpec
-      ]);
+      return $this->returnError(
+        __('Similar speciality exists'),
+        405,
+        ['speciality' => $exactSpec]
+      );
     }
 
     // Create speciality
@@ -58,8 +59,7 @@ class SpecialitiesController extends Controller
     );
 
     // Return result
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'speciality' => $speciality,
     ]);
   }
@@ -76,13 +76,13 @@ class SpecialitiesController extends Controller
 
     // If not, return error
     if (!$profile) {
-      return response()->json(['error' => 'user does not have profile'], 403);
+      return $this->returnError(__('User does not have profile'), 403);
     }
 
     $specialities = $profile->specialities()->get();
 
     // Return all specialities of the profile
-    return response()->json([
+    return $this->returnSuccess([
       'specialities' => $specialities,
     ]);
   }
@@ -102,7 +102,7 @@ class SpecialitiesController extends Controller
 
     // If not, return error
     if (!$profile) {
-      return response()->json(['error' => 'user does not have profile'], 403);
+      return $this->returnError(__('User does not have profile'), 403);
     }
 
     // Get speciality by id
@@ -110,9 +110,7 @@ class SpecialitiesController extends Controller
 
     // Check if speciality exists
     if (!$speciality) {
-      return response()->json([
-        'error' => "'Speciality doesn't exists'",
-      ], 403);
+      return $this->returnError(__("Speciality doesn't exists"), 403);
     }
 
     // Update speciality
@@ -123,8 +121,7 @@ class SpecialitiesController extends Controller
     );
 
     // Return the result
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'speciality' => $speciality,
     ]);
   }
@@ -144,7 +141,7 @@ class SpecialitiesController extends Controller
 
     // If not, return error
     if (!$profile) {
-      return response()->json(['error' => 'user does not have profile'], 403);
+      return $this->returnError(__('User does not have profile'), 403);
     }
 
     // Get speciality by id
@@ -159,8 +156,7 @@ class SpecialitiesController extends Controller
     }
 
     // Return result
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'deleted' => !!$speciality,
     ]);
   }
@@ -191,16 +187,16 @@ class SpecialitiesController extends Controller
   public function uploadImage(UploadImageRequest $request, int $specialityId): JsonResponse {
     $profile = $this->getProfile();
     if (!$profile) {
-      return $this->returnError('No profile found', 404);
+      return $this->returnError(__('No profile found'), 404);
     }
     $speciality = $profile->specialities()->find($specialityId);
     if (!$speciality) {
-      return $this->returnError('Speciality not found', 404);
+      return $this->returnError(__('Speciality not found'), 404);
     }
 
     // Check if the image limit is already exceeded
     if ($speciality->media()->count() >= config('app.specialities.maxImages')) {
-      return $this->returnError('Image limit is exceeded', 405);
+      return $this->returnError(__('Image limit is exceeded'), 405);
     }
 
     $file = $request->file('image');
@@ -215,8 +211,7 @@ class SpecialitiesController extends Controller
       return $this->returnError($exception->getMessage(), 505);
     }
 
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'image' => $image,
     ]);
   }
@@ -232,20 +227,20 @@ class SpecialitiesController extends Controller
   public function removeImage(int $specialityId, int $imageId): JsonResponse {
     $profile = $this->getProfile();
     if (!$profile) {
-      return $this->returnError('No profile found', 404);
+      return $this->returnError(__('No profile found'), 404);
     }
     $speciality = $profile->specialities()->find($specialityId);
     if (!$speciality) {
-      return $this->returnError('Speciality not found', 404);
+      return $this->returnError(__('Speciality not found'), 404);
     }
 
     $image = $speciality->media()->find($imageId);
     if (!$image) {
-      return $this->returnError('Image not found', 404);
+      return $this->returnError(__('Image not found'), 404);
     }
     $image->delete();
 
-    return response()->json(['status' => 'success']);
+    return $this->returnSuccess();
   }
 
   /**
@@ -260,22 +255,21 @@ class SpecialitiesController extends Controller
   public function updateImage(int $specialityId, int $imageId, UpdateImageRequest $request): JsonResponse {
     $profile = $this->getProfile();
     if (!$profile) {
-      return $this->returnError('No profile found', 404);
+      return $this->returnError(__('No profile found'), 404);
     }
     $speciality = $profile->specialities()->find($specialityId);
     if (!$speciality) {
-      return $this->returnError('Speciality not found', 404);
+      return $this->returnError(__('Speciality not found'), 404);
     }
 
     /* @var Image $image */
     $image = $speciality->media()->find($imageId);
     if (!$image) {
-      return $this->returnError('Image not found', 404);
+      return $this->returnError(__('Image not found'), 404);
     }
     $image->update($request->validated());
 
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'image' => $image,
     ]);
   }

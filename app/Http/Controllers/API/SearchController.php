@@ -86,7 +86,7 @@ class SearchController extends Controller
     }
 
     // Return response
-    return response()->json([
+    return $this->returnSuccess([
       'result' => [
         'data' => $profiles,
         'total' => $specQuery->count(),
@@ -107,7 +107,7 @@ class SearchController extends Controller
     $keyword = $request->input('keyword', 'NULL');
     $suggestions = SearchFacade::getAutocomplete($keyword);
 
-    return response()->json([
+    return $this->returnSuccess([
       'suggestions' => $suggestions,
     ]);
   }
@@ -134,7 +134,7 @@ class SearchController extends Controller
       $categories = $query->execute()
       ->models()
       ->load('parent');
-    return response()->json([
+    return $this->returnSuccess([
       'categories' => $categories
     ]);
   }

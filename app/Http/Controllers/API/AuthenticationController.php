@@ -49,7 +49,7 @@ class AuthenticationController extends Controller
       $uuid = PhoneVerificationFacade::createSession(null, null, null, $phone);
 
       // Return uuid
-      return response()->json([
+      return $this->returnSuccess([
         'verification_uuid' => $uuid,
       ]);
     }
@@ -69,13 +69,13 @@ class AuthenticationController extends Controller
       $phone = PhoneVerificationFacade::getVerifiedPhone($verUuid);
 
       if (!$phone) {
-        return response()->json(['error' => 'Phone is not verified'], 403);
+        return $this->returnError(__('Phone is not verified'), 403);
       } else {
         PhoneVerificationFacade::removeVerifiedPhone($verUuid);
       }
 
       if ($this->user::phone($phone)->first()) {
-        return response()->json(['error' => 'Phone is already occupied'], 403);
+        return $this->returnError(__('Phone is already occupied'), 403);
       }
 
       $form['password'] = Hash::make($form['password']);
@@ -86,7 +86,7 @@ class AuthenticationController extends Controller
         $user = $this->user::create($form);
       } catch (\Exception $e) {
         // If failed, send error message
-        return $this->returnError($e->getMessage(), 405);
+        return $this->returnError(__($e->getMessage()), 405);
       }
 
       if ($avatar = $request->file('avatar')) {
@@ -110,7 +110,7 @@ class AuthenticationController extends Controller
     public function verifyPhoneNumber(PhoneVerificationRequest $request, string $uuid): JsonResponse {
       // Pass $uuid to facade and get result
       if (!PhoneVerificationFacade::checkUUID($uuid)) {
-        return response()->json(['error' => 'UUID not exists'], 403);
+        return $this->returnError(__('UUID not exists'), 403);
       }
 
       $code = $request->input('code');
@@ -118,16 +118,13 @@ class AuthenticationController extends Controller
       $verification = PhoneVerificationFacade::checkCode($uuid, $code);
 
       if (!$verification) {
-        return response()->json(['error' => 'UUID not exists'], 403);
+        return $this->returnError(__('UUID not exists'), 403);
       }
 
       $error = $verification['error'] ?? null;
       // If no tries left, delete the entity
       if ($error) {
-        return response()->json([
-          'error' => 'Code is incorrect',
-          'tries_left' => $verification['tries'],
-        ], 405);
+        return $this->returnError(__('Code is incorrect'), 405);
       }
 
       // If everything is okay, return success message
@@ -146,8 +143,7 @@ class AuthenticationController extends Controller
       $flag = $modelClass ? PhoneVerificationHelper::DELETE_ON_SUCCESS : PhoneVerificationHelper::SAVE_ON_SUCCESS;
       PhoneVerificationFacade::checkCode($uuid, $code, $flag);
 
-      return response()->json([
-        'status' => 'success',
+      return $this->returnSuccess([
         'user' => $model,
       ]);
     }
@@ -168,14 +164,12 @@ class AuthenticationController extends Controller
 
       // If not exists, return error
       if (!$user) {
-        return response()->json(['error' => 'Phone not exists'], 403);
+        return $this->returnError('Phone not exists', 403);
       }
 
       // If exists, check if phone number is blocked
       if (PhoneVerificationFacade::isBlocked($phoneNumber)) {
-        return response()->json([
-          'error' => 'Phone number is blocked. Try again in a hour',
-        ], 403);
+        return $this->returnError(__('Phone number is blocked. Try again in a hour'), 403);
       }
 
       // Adds try to phone number
@@ -184,8 +178,7 @@ class AuthenticationController extends Controller
       $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phoneNumber);
 
       // Send notification and save phone number as temporary blocked
-      return response()->json([
-        'status' => 'okay',
+      return $this->returnSuccess([
         'uuid' => $uuid,
       ]);
     }
@@ -204,20 +197,20 @@ class AuthenticationController extends Controller
       $phone = ($params['phone'] ?? false) ? PhoneVerificationFacade::normalizePhone($params['phone']) : null;
 
       if (!$this->checkUserExists($email, $phone)) {
-        return response()->json(['error' => 'User not exists'], 404);
+        return $this->returnError(__('User not exists'), 404);
       }
 
       // Try to log in
       $token = auth()->attempt($params);
 
       if (!$token) {
-        return response()->json(['error' => 'Invalid credentials'], 403);
+        return $this->returnError(__('Invalid credentials'), 403);
       }
 
       $user = Auth::user();
 
       // Return token and user info
-      return response()->json([
+      return $this->returnSuccess([
         'access_token' => $token,
         'user' => $user,
       ]);
@@ -231,7 +224,7 @@ class AuthenticationController extends Controller
     public function user(): JsonResponse {
       $user = Auth::user()->load(['profile', 'district', 'city', 'region']);
 
-      return response()->json(['user' => $user]);
+      return $this->returnSuccess(['user' => $user]);
     }
 
     /**
@@ -256,12 +249,12 @@ class AuthenticationController extends Controller
       $user = $query->first();
 
       if (!$user) {
-        return response()->json(['status' => 'error', 'error' => 'User not found'], 404);
+        return $this->returnError(__('User not found'), 404);
       }
 
       $uuid = ResetPasswordFacade::createSession($user, !!$email, !!$phone);
 
-      return response()->json(['status' => 'success', 'uuid' => $uuid]);
+      return $this->returnSuccess(['uuid' => $uuid]);
     }
 
     /**
@@ -276,7 +269,7 @@ class AuthenticationController extends Controller
       $userId = ResetPasswordFacade::checkUUID($uuid);
 
       if (!$userId) {
-        return response()->json(['error' => 'UUID is invalid'], 403);
+        return $this->returnError('UUID is invalid', 403);
       }
 
       $password = $request->input('password');
@@ -288,7 +281,7 @@ class AuthenticationController extends Controller
 
       ResetPasswordFacade::removeUuid($uuid);
 
-      return response()->json(['status' => 'success']);
+      return $this->returnSuccess();
     }
 
     /**

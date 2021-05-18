@@ -51,7 +51,7 @@ class UserController extends Controller
     $user = Auth::user();
 
     if (!$this->checkPassword($user, $password)) {
-      return response()->json(['error' => 'Password is incorrect'], 403);
+      return $this->returnError(__('Password is incorrect'), 403);
     }
 
     $user->setPassword($newPassword);
@@ -73,7 +73,7 @@ class UserController extends Controller
     $password = $request->input('password');
 
     if (!$this->checkPassword($user, $password)) {
-      return response()->json(['error' => 'Password is incorrect'], 403);
+      return $this->returnError(__('Password is incorrect'), 403);
     }
 
     $user->setEmail($request->input('email'));
@@ -96,9 +96,8 @@ class UserController extends Controller
 
     $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phone);
 
-    return response()->json([
+    return $this->returnSuccess([
       'user' => $user,
-      'status' => 'success',
       'message' => 'Code sent to confirm',
       'verification_uuid' => $uuid,
     ]);
@@ -153,7 +152,7 @@ class UserController extends Controller
       // Delete user
       $user->delete();
     } catch (\Exception $exception) {
-      return $this->returnError($exception->getMessage(), 503);
+      return $this->returnError(__($exception->getMessage()), 503);
     }
 
     return $this->returnSuccess();
@@ -170,6 +169,6 @@ class UserController extends Controller
 
     $user->removeAvatar();
 
-    return $this->returnSuccess(['user' => $user]);
+    return $this->returnSuccess(compact('user'));
   }
 }

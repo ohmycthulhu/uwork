@@ -29,7 +29,7 @@ class ReviewsController extends Controller
     $user = Auth::user();
     // Check if profile doesn't belongs to user
     if ($profile->user_id == $user->id) {
-      return response()->json(['error' => 'You can\'t review own profile'], 403);
+      return $this->returnError(__("You can't review own profile"), 403);
     }
 
     // Check if user already left review on the profile
@@ -44,17 +44,13 @@ class ReviewsController extends Controller
       if ($this->canCreateReview($user)) {
         $review = $profile->reviews()->create(array_merge($request->validated(), ['user_id' => $user->id]));
       } else {
-        return response()->json([
-          'status' => 'error',
-          'error' => 'You exceed daily reviews limit'
-        ], 405);
+        return $this->returnError(__('You exceed daily reviews limit'), 405);
       }
     }
     $profile->synchronizeReviews();
 
     // Return response
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'review' => $review,
     ]);
   }
@@ -76,16 +72,10 @@ class ReviewsController extends Controller
 
     // Check if user is profile's creator
     if ($profile->user_id != $user->id) {
-      return response()->json([
-        'status' => 'error',
-        'message' => "You can't reply to the reviews on this profile"
-      ], 403);
+      return $this->returnError(__("You can't reply to the reviews on this profile"), 403);
     }
     if ($review->user_id == $user->id) {
-      return response()->json([
-        'status' => 'error',
-        'message' => "You can't reply to own reviews"
-      ]);
+      return $this->returnError(__("You can't reply to own reviews"), 403);
     }
 
     // Create review
@@ -97,8 +87,7 @@ class ReviewsController extends Controller
     );
 
     // Return review
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'review' => $reply
     ]);
   }
@@ -118,16 +107,14 @@ class ReviewsController extends Controller
     $review = $profile->reviews()->userId($user->id)->first();
 
     if (!$review) {
-      return response()->json(['error' => 'You don\'t have review on the profile'], 403);
+      return $this->returnError("You don't have review on the profile", 403);
     }
 
     $review->delete();
 
     $profile->synchronizeReviews();
 
-    return response()->json([
-      'status' => 'success'
-    ]);
+    return $this->returnSuccess();
   }
 
   /**
@@ -143,9 +130,9 @@ class ReviewsController extends Controller
     $profile = $user->profile()->first();
 
     if (!$profile) {
-      return response()->json([
+      return $this->returnError('', 404, [
         'reviews' => null,
-      ], 404);
+      ]);
     }
 
     return $this->getById($request, $profile);
@@ -170,7 +157,7 @@ class ReviewsController extends Controller
     $reviews = $query->with(['user', 'replies.user', 'speciality'])
       ->paginate(15);
 
-    return response()->json([
+    return $this->returnSuccess([
       'reviews' => $reviews
     ]);
   }
@@ -187,7 +174,7 @@ class ReviewsController extends Controller
       ->specialitiesCount()
       ->get();
 
-    return response()->json([
+    return $this->returnSuccess([
       'counts' => $counts,
     ]);
   }
@@ -219,7 +206,7 @@ class ReviewsController extends Controller
     $user = Auth::user();
 
     if ($user->id === $review->user_id) {
-      return $this->returnError('You can\'t complaint to own profile', 403);
+      return $this->returnError(__("You can't complaint to own profile"), 403);
     }
 
     $complaint = $review->createComplaint(
@@ -235,7 +222,7 @@ class ReviewsController extends Controller
       return $this->returnSuccess(compact($complaint));
     } else {
       // Otherwise, return error
-      return $this->returnError('Error on creating complaint', 405);
+      return $this->returnError(__('Error on creating complaint'), 405);
     }
   }
 }

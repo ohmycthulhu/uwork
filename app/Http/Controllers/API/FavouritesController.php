@@ -34,7 +34,7 @@ class FavouritesController extends Controller
   public function get(): JsonResponse {
     $services = Auth::user()->favouriteServices()->paginate(12);
 
-    return response()->json([
+    return $this->returnSuccess([
       'services' => $services,
     ]);
   }
@@ -53,20 +53,18 @@ class FavouritesController extends Controller
     $service = $this->service::query()->with(['profile'])->find($serviceId);
 
     if (!$service) {
-      return response()->json(['error' => 'Service does not exists'], 403);
+      return $this->returnError(__('Service does not exists'), 403);
     }
 
     // Get profile and check if user is owner
     if ($service->profile && $service->profile->user_id == $user->id) {
-      return response()->json(['error' => 'You can not add your service as favourite'], 403);
+      return $this->returnError(__('You can not add your service as favourite'), 403);
     }
 
     // Attach service as favourite
     $user->favouriteServices()->attach($service->id);
 
-    return response()->json([
-      'status' => 'success'
-    ]);
+    return $this->returnSuccess();
   }
 
   /**
@@ -80,9 +78,6 @@ class FavouritesController extends Controller
     $user = Auth::user();
 
     $user->favouriteServices()->detach($serviceId);
-
-    return response()->json([
-      'status' => 'success'
-    ]);
+    return $this->returnSuccess();
   }
 }

@@ -47,7 +47,7 @@ class MessengerController extends Controller
     $chats = $this->chat::user(Auth::user())
       ->withCount('unreadMessages')
       ->get();
-    return response()->json([
+    return $this->returnSuccess([
       'chats' => $chats,
     ]);
   }
@@ -65,9 +65,7 @@ class MessengerController extends Controller
     $currentUser = Auth::user();
 
     if ($currentUser->id == $user->id) {
-      return response()->json([
-        'error' => 'You can not sent message to yourself'
-      ], 403);
+      return $this->returnError(__('You can not sent message to yourself'), 403);
     }
 
     // Manage the chat
@@ -87,8 +85,7 @@ class MessengerController extends Controller
     // Send message
     $message = $chat->sendMessage($request->input('text'), $request->file('attachment'));
 
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'message' => $message,
     ]);
   }
@@ -108,8 +105,7 @@ class MessengerController extends Controller
     if ($chat) {
       $chat->delete();
     }
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'deleted' => !!$chat,
     ]);
   }
@@ -129,13 +125,11 @@ class MessengerController extends Controller
       ->first();
 
     if (!$chat) {
-      return response()->json([
-        'error' => "'Chat doesn't exist'",
-      ], 403);
+      return $this->returnError(__("Chat doesn't exist"), 403);
     }
     $messages = $chat->messages()->paginate(20);
 
-    return response()->json([
+    return $this->returnSuccess([
       'messages' => $messages,
       'chat' => $chat,
     ]);
@@ -154,16 +148,14 @@ class MessengerController extends Controller
     $chat = $this->chat::user($user)->user(Auth::user())->first();
 
     if (!$chat) {
-      return response()->json([
-        'error' => "'Chat doesn't exist'",
-      ], 403);
+      return $this->returnError(__("Chat doesn't exist"), 403);
     }
 
     $messages = $this->message::search("*".$request->input('keyword', '')."*")
       ->where('chat_id', $chat->id)
       ->paginate(20);
 
-    return response()->json([
+    return $this->returnSuccess([
       'messages' => $messages,
       'keyword' => "*".$request->input('keyword', '')."*"
     ]);
@@ -183,13 +175,10 @@ class MessengerController extends Controller
       ->user($currentUser)
       ->first();
     if (!$chat) {
-      return response()->json([
-        'error' => 'Chat not found'
-      ], 404);
+      return $this->returnError(__('Chat not found'), 404);
     }
     $count = $chat->markAsRead($currentUser);
-    return response()->json([
-      'status' => 'success',
+    return $this->returnSuccess([
       'count' => !!$count,
       'chat' => $chat,
     ]);
