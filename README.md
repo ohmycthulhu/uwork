@@ -1355,6 +1355,9 @@ speciality can change name and price, but not category.
             GET
         </td>
         <td>
+          {
+            category_id: Int|null
+          }
         </td>
         <td>
             {

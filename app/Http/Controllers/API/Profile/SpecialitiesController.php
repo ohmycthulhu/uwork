@@ -15,6 +15,7 @@ use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -69,9 +70,11 @@ class SpecialitiesController extends Controller
   /**
    * Method to get information about specialities
    *
+   * @param Request $request
+   *
    * @return JsonResponse
    */
-  public function get(): JsonResponse
+  public function get(Request $request): JsonResponse
   {
     // Check if user has profile
     $profile = $this->getProfile();
@@ -81,7 +84,11 @@ class SpecialitiesController extends Controller
       return $this->returnError(__('User does not have profile'), 403);
     }
 
-    $specialities = $profile->specialities()->get();
+    $query = $profile->specialities();
+    if ($categoryId = $request->input('category_id')) {
+      $query->category($categoryId);
+    }
+    $specialities = $query->get();
 
     // Return all specialities of the profile
     return $this->returnSuccess([
