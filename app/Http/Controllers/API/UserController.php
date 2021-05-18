@@ -146,8 +146,10 @@ class UserController extends Controller
     $profile = $user->profile()->first();
 
     try {
-      // Delete profile if exists
-      $profile->delete();
+      if ($profile) {
+        // Delete profile if exists
+        $profile->delete();
+      }
 
       // Delete user
       $user->delete();
