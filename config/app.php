@@ -63,6 +63,10 @@ return [
 
   'asset_url' => env('ASSET_URL', null),
 
+  'front' => [
+    'auth_url' => env('FRONT_URL', 'http://127.0.0.1:3000')
+  ],
+
   /*
   |--------------------------------------------------------------------------
   | Application Timezone

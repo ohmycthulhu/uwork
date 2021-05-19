@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\API\BotMiddleware;
 use App\Http\Middleware\ApiTokenMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
@@ -66,6 +67,10 @@ class Kernel extends HttpKernel
       ApiTokenMiddleware::class,
       SubstituteBindings::class,
     ],
+
+    'bot' => [
+      BotMiddleware::class,
+    ]
   ];
 
   /**

@@ -21,7 +21,7 @@ class Notification extends Model
     ];
 
     public $translatable = [
-      'title', 'description',
+//      'title', 'description',
     ];
 
 //    protected $appends = ['isRead'];

@@ -21,14 +21,14 @@ Route::group([
 ], function ($router) {
   // Get list of all categories
   $router->get('/', 'API\\CategoriesController@index')
-    ->name('api.categories.all');
+    ->name('categories.all');
 
   $router->get('/search', 'API\\SearchController@searchCategories')
-    ->name('api.categories.search');
+    ->name('categories.search');
 
   // Get category information
   $router->get('/{slug}', 'API\\CategoriesController@bySlug')
-    ->name('api.categories.slug');
+    ->name('categories.slug');
 });
 
 /**
@@ -39,44 +39,44 @@ Route::group([
   'prefix' => 'regions'
 ], function ($router) {
   $router->get('/', 'API\\LocationController@regions')
-    ->name('api.regions.all');
+    ->name('regions.all');
   $router->get('/{id}', 'API\\LocationController@regionById')
-    ->name('api.regions.id');
+    ->name('regions.id');
   $router->get('/{id}/cities', 'API\\LocationController@regionCities')
-    ->name('api.regions.id.cities');
+    ->name('regions.id.cities');
 });
 
 // Cities information
 Route::get('/cities/{id}', 'API\\LocationController@cityById')
-  ->name('api.cities.id');
+  ->name('cities.id');
 Route::get('/cities/{id}/districts', 'API\\LocationController@cityDistricts')
-  ->name('api.cities.id.districts');
+  ->name('cities.id.districts');
 
 /*
  * Authentication methods
  */
 // Route to set phone number
 Route::post('/phones', 'API\\AuthenticationController@promptPhone')
-  ->name('api.phones');
+  ->name('phones');
 Route::post('/register', 'API\\AuthenticationController@register')
-  ->name('api.register');
+  ->name('register');
 Route::post('/verify/{uuid}', 'API\\AuthenticationController@verifyPhoneNumber')
-  ->name('api.verify');
+  ->name('verify');
 //Route::post('/resend/{phone}', 'API\\AuthenticationController@resendVerification')
-//  ->name('api.resend');
+//  ->name('resend');
 Route::post('/login', 'API\\AuthenticationController@login')
-  ->name('api.login');
+  ->name('login');
 Route::post('/passwords', 'API\\AuthenticationController@resetPassword')
-  ->name('api.reset');
+  ->name('reset');
 Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
-  ->name('api.reset.set');
+  ->name('reset.set');
 
 /*
  * Authenticated routes
  */
 Route::group([
   'middleware' => 'auth:api',
-  'as' => 'api.user.',
+  'as' => 'user.',
   'prefix' => '/user',
 ], function (Illuminate\Routing\Router $router) {
   $router->get('/', 'API\\AuthenticationController@user')
@@ -207,7 +207,7 @@ Route::group([
 
 // Messenger
 Route::group([
-  'as' => 'api.chats.',
+  'as' => 'chats.',
   'prefix' => '/chats',
   'middleware' => 'auth:api',
 ], function (\Illuminate\Routing\Router $router) {
@@ -232,7 +232,7 @@ Route::group([
 
 // Other profiles
 Route::group([
-  'as' => 'api.profiles.',
+  'as' => 'profiles.',
   'prefix' => '/profiles'
 ], function (Illuminate\Routing\Router $router) {
   $router->get('/', 'API\\SearchController@search')
@@ -270,23 +270,23 @@ Route::group([
 });
 
 Route::get('autocomplete', 'API\\SearchController@getAutocomplete')
-  ->name('api.autocomplete');
+  ->name('autocomplete');
 
 /*
  * File routes
  */
 Route::post('/files', 'API\\FileController@uploadImage')
-  ->name('api.files');
+  ->name('files');
 
 /*
  * Info routes
  */
 Route::get('/info', 'API\\InfoController@index')
-  ->name('api.info');
+  ->name('info');
 Route::get('/info/about', 'API\\InfoController@about')
-  ->name('api.info.about');
+  ->name('info.about');
 Route::get('/info/faq', 'API\\InfoController@faq')
-  ->name('api.info.faq');
+  ->name('info.faq');
 
 /**
  * Routes for upvoting and downvoting info parts
@@ -306,17 +306,17 @@ Route::group([
 
 // Help categories
 Route::get('/help-categories', 'API\\InfoController@getHelpCategories')
-  ->name('api.helpCategories.all');
+  ->name('helpCategories.all');
 Route::get('/help-categories/{slug}', 'API\\InfoController@getHelpCategory')
-  ->name('api.helpCategories.slug');
+  ->name('helpCategories.slug');
 Route::get('/help-items/{slug}', 'API\\InfoController@getHelpItem')
-  ->name('api.helpItems.slug');
+  ->name('helpItems.slug');
 
 // Communication routes
 Route::get('/appeal-reasons', 'API\\CommunicationController@appealReasons')
-  ->name('api.appealReasons');
+  ->name('appealReasons');
 Route::post('/appeals', 'API\\CommunicationController@create')
-  ->name('api.appeals.create');
+  ->name('appeals.create');
 
 // Complaints
 Route::get('/complaint-types', function () {
@@ -325,10 +325,6 @@ Route::get('/complaint-types', function () {
   ]);
 });
 
-// Testing routes
-// TODO: Remove
-Route::post('/test/upload', function (\Illuminate\Http\Request $request) {
-  $file = $request->file('image');
-  $image = \App\Facades\MediaFacade::upload($file, 'unknown');
-  return response()->json(compact('image'));
-});
+// Login tokens
+Route::post('/tokens/{uuid}', 'API\\BotController@verifyToken')
+  ->name('tokens.verify');

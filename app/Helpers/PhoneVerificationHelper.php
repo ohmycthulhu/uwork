@@ -100,6 +100,19 @@ class PhoneVerificationHelper
   }
 
   /**
+   * Method to generate trusted verification uuid
+   *
+   * @param string $phone
+   *
+   * @return string
+  */
+  public function setVerifiedPhone(string $phone): string {
+    $uuid = Str::uuid();
+    $this->storeVerified->set($uuid, ['phone' => $phone]);
+    return $uuid;
+  }
+
+  /**
    * Method to check existence of $uuid
    *
    * @param string $uuid

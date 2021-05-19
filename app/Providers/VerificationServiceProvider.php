@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\BotLoginHelper;
 use App\Helpers\PhoneVerificationHelper;
 use App\Helpers\ResetPasswordHelper;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +26,11 @@ class VerificationServiceProvider extends ServiceProvider
     $this->app->bind('reset-password', function () {
       $isNexmoEnabled = !config('nexmo.is_disabled');
       return new ResetPasswordHelper($isNexmoEnabled);
+    });
+
+    // Register bot login facade
+    $this->app->bind('bot-login-facade', function () {
+      return new BotLoginHelper();
     });
   }
 

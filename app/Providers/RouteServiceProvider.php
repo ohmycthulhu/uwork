@@ -46,7 +46,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapBotRoutes();
     }
 
     /**
@@ -73,8 +73,22 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('api')
+            ->as('api.')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Define the routes for bots
+     *
+     * @return void
+    */
+    protected function mapBotRoutes() {
+      Route::prefix('bot')
+        ->as('bot.')
+        ->middleware('bot')
+        ->namespace($this->namespace)
+        ->group(base_path('routes/bot.php'));
     }
 }
