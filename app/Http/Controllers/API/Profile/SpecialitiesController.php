@@ -304,12 +304,8 @@ class SpecialitiesController extends Controller
         if (!$catPath) {
           return null;
         }
-        $parts = array_filter(explode(' ', $catPath), 'strlen');
-        if (sizeof($parts) > $level) {
-          return null;
-        } else {
-          return $parts[$level - 1];
-        }
+        $parts = array_values(array_filter(explode(' ', $catPath), 'strlen'));
+        return sizeof($parts) > $level ? $parts[$level - 1] : null;
       })
       ->filter(function ($x) { return $x; });
 
