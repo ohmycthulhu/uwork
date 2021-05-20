@@ -21,11 +21,11 @@ class BotController extends Controller
    * @return JsonResponse
   */
   public function createToken(CreateLoginTokenRequest $request): JsonResponse {
-    $phone = $request->input('phone');
+    $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
     $token = BotLoginFacade::generateToken($phone);
     return $this->returnSuccess([
       'token' => $token,
-      'url' => config('front.auth_url').'/?token='.$token,
+      'url' => config('app.front.auth_url').'/?token='.$token,
     ]);
   }
 
