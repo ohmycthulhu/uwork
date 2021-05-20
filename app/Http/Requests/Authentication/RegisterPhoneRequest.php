@@ -14,7 +14,7 @@ class RegisterPhoneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required|string|min:7|unique:users,phone',
+            'phone' => 'required|string|min:7',
         ];
     }
 }

@@ -16,8 +16,10 @@ use App\Models\User\ProfileSpeciality;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SpecialitiesController extends Controller
 {
@@ -286,46 +288,74 @@ class SpecialitiesController extends Controller
   /**
    * Route to get categories for specialities
    *
-   * @param LoadSpecialitiesCategoriesRequest $request
+   * @param Request $request
    *
    * @return JsonResponse
   */
-  public function getCategories(LoadSpecialitiesCategoriesRequest $request): JsonResponse {
+  public function getCategories(Request $request): JsonResponse {
     $profile = $this->getProfile();
 
-    if (!$profile) {
-      return $this->returnError(__('No profile found'), 404);
+    $level = $request->input('level', 1);
+    if ($profile) {
+      $categoryIds = $profile->specialities()
+        ->pluck('category_path')
+        ->map(function ($catPath) use ($level) {
+          if (!$catPath) {
+            return null;
+          }
+          $parts = array_values(array_filter(explode(' ', $catPath), 'strlen'));
+          return sizeof($parts) > $level ? $parts[$level - 1] : null;
+        })
+        ->filter(function ($x) {
+          return $x;
+        });
+    } else {
+      $categoryIds = new Collection();
     }
 
-    $level = $request->input('level', 1);
-    $categoryIds = $profile->specialities()
-      ->pluck('category_path')
-      ->map(function ($catPath) use ($level) {
-        if (!$catPath) {
-          return null;
-        }
-        $parts = array_values(array_filter(explode(' ', $catPath), 'strlen'));
-        return sizeof($parts) > $level ? $parts[$level - 1] : null;
-      })
-      ->filter(function ($x) { return $x; });
+    $occurrences = Category::query()
+      ->top()
+      ->get()
+      ->reduce(function ($acc, $c) { $acc[$c->id] = ['category' => $c, 'count' => 0]; return $acc; }, []);
 
-    $categories = Category::query()
-      ->whereIn('id', $categoryIds)
-      ->get();
-
-    $occurrences = [];
     foreach ($categoryIds as $categoryId) {
       if (key_exists($categoryId, $occurrences)) {
         $occurrences[$categoryId]['count']++;
-      } else {
-        $occurrences[$categoryId] = [
-          'count' => 1,
-          'category' => $categories->find($categoryId),
-        ];
       }
     }
 
     $result = array_values($occurrences);
     return $this->returnSuccess(compact('result'));
+  }
+
+  /**
+   * Route to get subcategories by parent id
+   *
+   * @param int $categoryId
+   *
+   * @return JsonResponse
+  */
+  public function getSubcategories(int $categoryId): JsonResponse {
+    $profile = $this->getProfile();
+    $specialities = $profile ? $profile->specialities()
+      ->category($categoryId)
+      ->pluck('category_path') : new Collection();
+
+    $subcategories = Category::query()
+      ->parent($categoryId)
+      ->get();
+
+    $result = [];
+    foreach ($subcategories as $category) {
+      $result[$category->id] = [
+        'category' => $category,
+        'count' => $specialities->filter(function ($s) use ($category){
+          return str_contains($s, " {$category->id} ");
+        })->count(),
+        'total' => $category->servicesCount,
+      ];
+    }
+
+    return $this->returnSuccess(['result' => array_values($result)]);
   }
 }

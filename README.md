@@ -788,6 +788,10 @@ Registration is performed in 3 steps:
     For verifying phone, send any 6 letter code string to verification route.
 </i>
 </p>
+<p>
+  If user with the exact phone number is deleted from the system,
+  then on verifying API will restore him and return token for authorization.
+</p>
 <table>
 <thead>
 <tr>
@@ -813,7 +817,7 @@ Registration is performed in 3 steps:
 <td>POST</td>
 <td>Finishes registration</td>
 <td>{code: String}</td>
-<td>{status: String|null, user: User|null, errors: String[]|null, error: String}</td>
+<td>{status: String|null, user: User|null, errors: String[]|null, error: String, token: String|null}</td>
 </tr>
 <tr>
 <td>/api/register</td>
@@ -862,6 +866,11 @@ Registration is performed in 3 steps:
     UUID is valid for 4 hours and removed after first set.
 </p>
 <p>
+    For login or registration via messenger, you should send request to
+    /api/tokens/verify/{uuid} . If user exists, then user and token is returned.
+    Otherwise, verification_uuid is returned for registration.
+</p>
+<p>
 <i>
     Note: For development purposes, code is verification is disabled.
     For verifying phone, send any 6 letter code string to verification route.
@@ -898,6 +907,27 @@ Registration is performed in 3 steps:
                 errors: String[]|null,
                 user: User|null,
                 access_token: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/tokens/verify/{uuid}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                user: User|null,
+                access_token: String|null,
+                verification_uuid: String|null,
             }
         </td>
     </tr>
@@ -1369,6 +1399,23 @@ speciality can change name and price, but not category.
     <tr>
         <td>
             /api/user/profile/specialities/categories
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                result: CategoryOccurrence[]|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/categories/{parentId}
         </td>
         <td>
             GET

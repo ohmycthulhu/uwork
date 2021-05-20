@@ -166,4 +166,34 @@ class Category extends Model implements Slugable
     public function getIsShownAttribute(): bool {
       return !$this->is_hidden;
     }
+
+    /**
+     * Attribute to load list of services
+     *
+     * @return Collection
+    */
+    public function getServicesAttribute(): Collection {
+      return $this->getServicesQuery()
+        ->get();
+    }
+
+    /**
+     * Attribute to get number of services
+     *
+     * @return int
+    */
+    public function getServicesCountAttribute(): int {
+      return $this->getServicesQuery()
+        ->count();
+    }
+
+    /**
+     * Method to create query for services
+     *
+     * @return Builder
+    */
+    public function getServicesQuery(): Builder {
+      return CategoryService::query()
+        ->category($this->id);
+    }
 }

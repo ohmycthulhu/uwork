@@ -20,7 +20,7 @@ class RegistrationFormRequest extends FormRequest
       'password' => 'required|string',
       'email' => 'nullable|unique:users|email',
       'verification_uuid' => 'required|string|min:11',
-      'avatar' => 'nullable|file',
+      'avatar' => 'nullable|image',
       'birthdate' => 'nullable|date',
       'is_male' => 'nullable|boolean',
       'region_id' => 'nullable|numeric|exists:regions,id',

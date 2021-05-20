@@ -45,6 +45,10 @@ class AuthenticationController extends Controller
     public function promptPhone(RegisterPhoneRequest $request): JsonResponse {
       $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
+      if ($this->user::query()->phone($phone)->first()) {
+        return $this->returnError(__('Phone is already occupied'), 403);
+      }
+
       // Generate verification uuid
       $uuid = PhoneVerificationFacade::createSession(null, null, null, $phone);
 
@@ -131,7 +135,6 @@ class AuthenticationController extends Controller
       $modelId = $verification['data']['id'];
       $modelClass = $verification['data']['class'];
       $phone = $verification['data']['phone'];
-      $model = null;
       if ($modelClass) {
         $model = $modelClass::query()->find($modelId);
 
@@ -143,8 +146,19 @@ class AuthenticationController extends Controller
       $flag = $modelClass ? PhoneVerificationHelper::DELETE_ON_SUCCESS : PhoneVerificationHelper::SAVE_ON_SUCCESS;
       PhoneVerificationFacade::checkCode($uuid, $code, $flag);
 
+      // If there are deleted accounts with the same number,
+      // Restore and generate the token
+      if ($user = $this->user::onlyTrashed()->phone($phone)->first()) {
+        $user->restore();
+        if ($profile = $user->profile->withTrashed()->first()) {
+          $profile->restore();
+        }
+        $token = Auth::login($user);
+      }
+
       return $this->returnSuccess([
-        'user' => $model,
+        'user' => $user ?? $model ?? null,
+        'token' => $token,
       ]);
     }
 

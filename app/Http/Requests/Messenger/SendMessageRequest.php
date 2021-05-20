@@ -15,7 +15,7 @@ class SendMessageRequest extends FormRequest
   {
     return [
       'text' => 'required_without_all:attachment|string',
-      'attachment' => 'required_without_all:text|file'
+      'attachment' => 'required_without_all:text|image'
     ];
   }
 }
