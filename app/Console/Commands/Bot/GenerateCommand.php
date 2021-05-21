@@ -43,6 +43,9 @@ class GenerateCommand extends Command
     $name = $this->option('name');
 
     Bot::createBot($token, $name);
+
+    echo ($name ? $name."\t" : "")."$token\n";
+
     return 0;
   }
 

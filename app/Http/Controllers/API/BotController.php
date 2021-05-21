@@ -47,6 +47,7 @@ class BotController extends Controller
         'verification_uuid' => $verificationUuid,
         'access_token' => $jwtToken,
         'user' => $user,
+        'phone' => $phone,
       ]);
     } else {
       return $this->returnError(__('UUID not exists'), 404);

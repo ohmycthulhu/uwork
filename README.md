@@ -926,8 +926,9 @@ Registration is performed in 3 steps:
                 errors: String[]|null,
                 error: String|null,
                 user: User|null,
+                phone: String|null,
                 access_token: String|null,
-                verification_uuid: String|null,
+                verification_uuid: String|null
             }
         </td>
     </tr>
