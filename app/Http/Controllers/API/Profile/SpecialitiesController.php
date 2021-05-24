@@ -347,8 +347,10 @@ class SpecialitiesController extends Controller
 
     $result = [];
     foreach ($subcategories as $category) {
+      /* @var Category $category */
       $result[$category->id] = [
         'category' => $category,
+        'services' => $category->services,
         'count' => $specialities->filter(function ($s) use ($category){
           return str_contains($s, " {$category->id} ");
         })->count(),
