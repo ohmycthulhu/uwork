@@ -137,7 +137,7 @@ class SearchController extends Controller
 
       $categories = $query->execute()
       ->models()
-      ->load('parent');
+      ->load(['parent', 'children']);
     return $this->returnSuccess([
       'categories' => $categories
     ]);
