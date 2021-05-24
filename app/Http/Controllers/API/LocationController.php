@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegionsLoadRequest;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
@@ -37,10 +38,16 @@ class LocationController extends Controller
   /**
    * Get all regions
    *
+   * @param RegionsLoadRequest $request
+   *
    * @return JsonResponse
    */
-  public function regions(): JsonResponse {
-    $regions = $this->region::query()->with('cities')->get();
+  public function regions(RegionsLoadRequest $request): JsonResponse {
+    $query = $this->region::query();
+    if ($request->input('detailed', true)) {
+      $query->with('cities');
+    }
+    $regions = $query->get();
 
     return $this->returnSuccess(['regions' => $regions]);
   }

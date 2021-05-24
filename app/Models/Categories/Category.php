@@ -143,6 +143,18 @@ class Category extends Model implements Slugable
     }
 
     /**
+     * Scope to get certain id
+     *
+     * @param Builder $query
+     * @param int $id
+     *
+     * @return Builder
+    */
+    public function scopeId(Builder $query, int $id): Builder {
+      return $query->where('id', $id);
+    }
+
+    /**
      * Get array of searchable columns
      *
      * @return array

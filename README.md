@@ -614,6 +614,25 @@
 </tr>
 <tr>
     <td>
+        /api/categories/{id}
+    </td>
+    <td>
+        GET
+    </td>
+    <td>
+        Returns category information if exists.
+        If there is error, returns error with status 404.
+        The default nesting level is 2, but can be controlled by passing level argument.
+    </td>
+    <td>
+        {
+            categories: Category|null,
+            error: String|null
+        }
+    </td>
+</tr>
+<tr>
+    <td>
         /api/categories/{slug}
     </td>
     <td>
@@ -682,7 +701,8 @@
             GET
         </td>
         <td>
-            Returns all available regions, with attached cities
+            Returns all available regions, with attached cities.
+            Use detailed = 0 to get regions without cities. 
         </td>
         <td>
             {

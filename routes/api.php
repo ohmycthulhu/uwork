@@ -26,6 +26,11 @@ Route::group([
   $router->get('/search', 'API\\SearchController@searchCategories')
     ->name('categories.search');
 
+  // Get category information by id
+  $router->get('/{id}', 'API\\CategoriesController@byId')
+    ->where('id', '[0-9]+')
+    ->name('categories.id');
+
   // Get category information
   $router->get('/{slug}', 'API\\CategoriesController@bySlug')
     ->name('categories.slug');

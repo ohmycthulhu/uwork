@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GetCategoryByIdRequest;
 use App\Models\Categories\Category;
 use App\Utils\CacheAccessor;
 use Illuminate\Http\JsonResponse;
@@ -84,5 +85,34 @@ class CategoriesController extends Controller
     }
 
     return $this->returnSuccess(['category' => $category]);
+  }
+
+  /**
+   * Returns category information by id
+   * User can regulate the nesting level
+   *
+   * @param GetCategoryByIdRequest $request
+   * @param int $id
+   *
+   * @return JsonResponse
+  */
+  public function byId(GetCategoryByIdRequest $request, int $id): JsonResponse {
+    $query = $this->category::query()
+      ->id($id);
+
+    $children = join(
+      '.',
+      array_fill(0, $request->input('level', 2), 'children')
+    );
+
+    $query->with(['parent', $children]);
+
+    $category = $query->first();
+
+    if ($category) {
+      return $this->returnSuccess(compact('category'));
+    } else {
+      return $this->returnError(__('Category not found'), 404);
+    }
   }
 }
