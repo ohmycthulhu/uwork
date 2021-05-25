@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
@@ -34,6 +35,36 @@ class ProfileSpeciality extends Model implements HasMedia
   protected $with = [
     'category', 'media',
   ];
+
+  /**
+   * Method to map specialities to include full category path
+   *
+   * @param Collection $specialities
+   *
+   * @return Collection
+  */
+  public static function includeCategoriesPath(Collection $specialities): Collection {
+    // Get unique ids for categories
+    $categoriesIds = $specialities->reduce(function (array $acc, ProfileSpeciality $speciality) {
+      return array_unique(array_merge($acc, $speciality->getCategoryPathIdsAttribute()));
+    }, []);
+
+    // Load categories into memory
+    $categories = Category::query()
+      ->whereIn('id', $categoriesIds)
+      ->get()
+      ->reduce(function (array $acc, Category $category) { $acc[$category->id] = $category; return $acc; }, []);
+
+    // Map categories' ids list into categories list
+    return $specialities->map(function (ProfileSpeciality $speciality) use ($categories) {
+      $categories = array_map(
+        function ($id) use ($categories) { return $categories[$id] ?? null; },
+        $speciality->getCategoryPathIdsAttribute()
+      );
+      return array_merge($speciality->toArray(), ['categories' => $categories]);
+    });
+  }
+
 
   /**
    * Method to update speciality
@@ -179,5 +210,17 @@ class ProfileSpeciality extends Model implements HasMedia
     return !!$this->favouriteBy()
       ->find(Auth::id())
       ->first();
+  }
+
+  /**
+   * Attribute to get category path as an array
+   *
+   * @return array
+  */
+  public function getCategoryPathIdsAttribute(): array {
+    if (!$this->category_path) {
+      return [];
+    }
+    return explode('  ', trim($this->category_path));
   }
 }

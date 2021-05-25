@@ -158,7 +158,7 @@ class AuthenticationController extends Controller
 
       return $this->returnSuccess([
         'user' => $user ?? $model ?? null,
-        'token' => $token,
+        'token' => $token ?? null,
       ]);
     }
 

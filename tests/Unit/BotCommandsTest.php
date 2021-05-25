@@ -36,7 +36,6 @@ class BotCommandsTest extends TestCase
 
       // Try enabling and disabling the tokens
       Artisan::call("bot-token:disable", ['token' => $token]);
-      var_dump(Bot::query()->token($token)->get());
       $this->assertNotEmpty(Bot::query()->token($token)->state(0)->get());
 
 

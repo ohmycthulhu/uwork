@@ -104,7 +104,7 @@ class ProfileController extends Controller
       $user,
       Profile::class,
       $profile->id,
-      ['en' => 'Профиль отправлен на проверку', 'ru' => 'Профиль отправлен на проверку'],
+      'Профиль отправлен на проверку',
       null
     );
 
@@ -178,7 +178,7 @@ class ProfileController extends Controller
         $user,
         Profile::class,
         $profile->id,
-        ['en' => 'Профиль отправлен на проверку', 'ru' => 'Профиль отправлен на проверку'],
+        'Профиль отправлен на проверку',
         null
       );
     }

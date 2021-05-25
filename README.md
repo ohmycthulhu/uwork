@@ -1453,6 +1453,45 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
+            /api/user/profile/specialities/categories/{categoryId}
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+          {
+            price: Number|null,
+            name: String|null,
+            description: String|null
+          }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                result: CategoryOccurrence[]|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            /api/user/profile/specialities/categories/{categoryId}
+        </td>
+        <td>
+            DELETE
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                result: CategoryOccurrence[]|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/user/profile/specialities
         </td>
         <td>
@@ -1476,15 +1515,35 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
+            /api/user/profile/specialities/{categoryId}
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+        </td>
+        <td>
+            {
+              error: String|null,
+              status: String|null,
+              speciality: Speciality|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/user/profile/specialities/{specialityId}
         </td>
         <td>
-            PUT
+            PUT, POST
         </td>
         <td>
             {
                 price: Number|null,
                 name: String|null,
+                description: String|null,
+                images_remove: Array&lt;ID&gt;|null,
+                images_add: Array&lt;ID&gt;|null
             }
         </td>
         <td>

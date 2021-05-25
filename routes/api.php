@@ -134,13 +134,24 @@ Route::group([
         ->name('list');
 
       // Get grouped specialities
-      $router->get('/categories', 'API\\Profile\\SpecialitiesController@getCategories');
+      $router->get('/categories', 'API\\Profile\\SpecialitiesController@getCategories')
+        ->name('categories');
 
       // Get grouped specialities
-      $router->get('/categories/{categoryId}', 'API\\Profile\\SpecialitiesController@getSubcategories');
+      $router->get('/categories/{categoryId}', 'API\\Profile\\SpecialitiesController@getSubcategories')
+        ->name('categories.id');
+
+      $router->post('/categories/{category}', 'API\\Profile\\SpecialitiesController@createMultiple')
+        ->name('categories.add');
+
+      $router->delete('/categories/{category}', 'API\\Profile\\SpecialitiesController@deleteMultiple')
+        ->name('categories.remove');
+
+      $router->get('{category}', 'API\\Profile\\SpecialitiesController@getByCategory')
+        ->name('getByCategory');
 
       // Update specialities
-      $router->put('/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
+      $router->match(['put', 'post'], '/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
         ->name('update');
 
       // Delete specialities

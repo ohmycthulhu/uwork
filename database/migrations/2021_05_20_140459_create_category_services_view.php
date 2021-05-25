@@ -13,8 +13,9 @@ class CreateCategoryServicesView extends Migration
      */
     public function up()
     {
+      $this->down();
       \Illuminate\Support\Facades\DB::statement("
-        CREATE OR REPLACE
+        CREATE
             VIEW category_services AS
         SELECT
             c.*

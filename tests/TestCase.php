@@ -35,7 +35,10 @@ abstract class TestCase extends BaseTestCase
      * @return User\Profile
     */
     protected function createProfile(User $user): User\Profile {
+      /* @var User\Profile $profile */
       $profile = $user->profile()->create(factory(User\Profile::class)->make()->toArray());
+
+      $profile->confirm();
 
       if (Category::query()->count() <= 0) {
         factory(Category::class, 10)->create();

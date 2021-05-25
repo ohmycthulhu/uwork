@@ -128,7 +128,7 @@ class SearchTest extends TestCase
 
     $this->assertEmpty(array_filter($profiles, function ($profile) use ($priceMin, $priceMax) {
       return !empty(array_filter($profile['specialities'], function ($spec) use ($priceMin, $priceMax) {
-        return $spec->price < $priceMin || $spec->price > $priceMax;
+        return $spec['price'] < $priceMin || $spec['price'] > $priceMax;
       }));
     }));
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Profile;
 
 use App\Http\Requests\FormRequest;
 
-class CreateSpecialityFormRequest extends FormRequest
+class CreateSpecialityFormRequest extends CreateMultipleSpecialityFormRequest
 {
   /**
    * Get the validation rules that apply to the request.
@@ -13,11 +13,8 @@ class CreateSpecialityFormRequest extends FormRequest
    */
   public function rules(): array
   {
-    return [
-      'price' => 'required|numeric|min:1|max:999999',
-      'name' => 'nullable|string',
-      'description' => 'nullable|string',
+    return array_merge(parent::rules(), [
       'category_id' => 'required|exists:App\Models\Categories\Category,id'
-    ];
+    ]);
   }
 }

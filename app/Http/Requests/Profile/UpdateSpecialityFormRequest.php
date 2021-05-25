@@ -17,6 +17,12 @@ class UpdateSpecialityFormRequest extends FormRequest
       'name' => 'nullable|string',
       'price' => 'required|numeric|min:1|max:999999',
       'description' => 'nullable|string',
+
+      'images_remove' => 'nullable|array',
+      'images_remove.*' => 'required|numeric',
+
+      'images_add' => 'nullable|array',
+      'images_add.*' => 'required|image',
     ];
   }
 }

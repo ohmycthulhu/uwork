@@ -6,6 +6,7 @@ use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Common\UpdateImageRequest;
 use App\Http\Requests\Common\UploadImageRequest;
+use App\Http\Requests\Profile\CreateMultipleSpecialityFormRequest;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
 use App\Http\Requests\Profile\LoadSpecialitiesCategoriesRequest;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
@@ -23,6 +24,12 @@ use Illuminate\Support\Str;
 
 class SpecialitiesController extends Controller
 {
+  protected $category;
+
+  public function __construct(Category $category)
+  {
+    $this->category = $category;
+  }
 
   /**
    * Method to create speciality
@@ -90,12 +97,36 @@ class SpecialitiesController extends Controller
     if ($categoryId = $request->input('category_id')) {
       $query->category($categoryId);
     }
-    $specialities = $query->get();
+
+    $specialities = ProfileSpeciality::includeCategoriesPath($query->get());
 
     // Return all specialities of the profile
     return $this->returnSuccess([
       'specialities' => $specialities,
     ]);
+  }
+
+  /**
+   * Method to get information about speciality by category id
+   *
+   * @param Category $category
+   *
+   * @return JsonResponse
+  */
+  public function getByCategory(Category $category): JsonResponse {
+    // Check if user has profile
+    $profile = $this->getProfile();
+
+    // If not, return error
+    if (!$profile) {
+      return $this->returnError(__('User does not have profile'), 403);
+    }
+
+    $speciality = $profile->specialities()
+      ->category($category->id)
+      ->first();
+
+    return $this->returnSuccess(compact('speciality'));
   }
 
   /**
@@ -130,6 +161,25 @@ class SpecialitiesController extends Controller
       $request->input('name'),
       $request->input('description')
     );
+
+    // Add images
+    $imagesToAdd = $request->file('images_add', []);
+    foreach ($imagesToAdd as $file) {
+      MediaFacade::upload(
+        $file,
+        null,
+        ProfileSpeciality::class,
+        $speciality->id
+      );
+    }
+
+    // Remove images
+    $imagesToRemove = $request->input('images_remove', []);
+    if ($imagesToRemove) {
+      $speciality->media()->whereIn('id', $imagesToRemove)->delete();
+    }
+
+    $speciality->load('media');
 
     // Return the result
     return $this->returnSuccess([
@@ -359,5 +409,78 @@ class SpecialitiesController extends Controller
     }
 
     return $this->returnSuccess(['result' => array_values($result)]);
+  }
+
+  /**
+   * Route to add all category services
+   *
+   * @param CreateMultipleSpecialityFormRequest $request
+   * @param Category $category
+   *
+   * @return JsonResponse
+  */
+  public function createMultiple(CreateMultipleSpecialityFormRequest $request, Category $category): JsonResponse {
+    // Check if user has profile
+    $profile = $this->getProfile();
+
+    // If not, return error
+    if (!$profile) {
+      return $this->returnError(__('User does not have profile'), 403);
+    }
+
+    // Search if user has exact same speciality
+    $existingSpecialities = $profile->specialities()
+      ->category($category->id)
+      ->pluck('id');
+
+    $services = $category->getServicesAttribute();
+    if ($services) {
+      $serviceIds = $services->pluck('id');
+    } else {
+      $serviceIds = [$category->id];
+    }
+
+    // Create speciality
+    $specialities = [];
+    foreach ($serviceIds as $categoryId) {
+      if (!$existingSpecialities->contains($categoryId)) {
+        $specialities[] = $profile->addSpeciality(
+          $categoryId,
+          $request->input('price'),
+          $request->input('name'),
+          $request->input('description'),
+        );
+      }
+    }
+
+    // Return result
+    return $this->returnSuccess([
+      'specialities' => $specialities,
+    ]);
+  }
+
+  /**
+   * Route to delete multiple specialities
+   *
+   * @param Category $category
+   *
+   * @return JsonResponse
+  */
+  public function deleteMultiple(Category $category): JsonResponse {
+    // Check if user has profile
+    $profile = $this->getProfile();
+
+    // If not, return error
+    if (!$profile) {
+      return $this->returnError(__('User does not have profile'), 403);
+    }
+
+    $profile->specialities()
+      ->category($category->id)
+      ->delete();
+
+    $specialities = $profile->specialities()->get();
+
+    return $this->returnSuccess(['specialities' => $specialities]);
   }
 }

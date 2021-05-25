@@ -267,7 +267,7 @@ class Profile extends Model
       $this->user()->first(),
       static::class,
       $this->id,
-      ['en' => 'Profile was approved', 'ru' => 'Профиль подтверждён'],
+      'Профиль подтверждён',
       null
     );
     return $this;
@@ -286,7 +286,7 @@ class Profile extends Model
       $this->user()->first(),
       static::class,
       $this->id,
-      ['en' => 'Profile was rejected', 'ru' => 'Профиль отклонён'],
+      'Профиль отклонён',
       null
     );
     return $this;
@@ -525,7 +525,7 @@ class Profile extends Model
     // Filter only by confirmed
 //    $query->mustNot(['match' => ['id' => ""]]);
     $query->must(['match' => ['isConfirmed' => "1"]]);
-    $query->minimumShouldMatch(1);
+    $query->minimumShouldMatch(empty($categories) ? 0 : 1);
 
     if ($searchColumn) {
       $query->sort($searchColumn, $searchDir);
