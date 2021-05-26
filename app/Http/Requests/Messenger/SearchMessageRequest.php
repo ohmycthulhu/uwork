@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Messenger;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class SearchMessageRequest extends FormRequest
+class SearchMessageRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

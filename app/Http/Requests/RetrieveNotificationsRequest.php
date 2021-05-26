@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class RetrieveNotificationsRequest extends FormRequest
+class RetrieveNotificationsRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

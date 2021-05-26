@@ -188,13 +188,16 @@ class ProfileSpeciality extends Model implements HasMedia
    * Scope for searching flexible by category
    *
    * @param Builder $query
-   * @param int $categoryId
+   * @param ?int $categoryId
    *
    * @return Builder
    */
-  public function scopeCategory(Builder $query, int $categoryId): Builder
+  public function scopeCategory(Builder $query, ?int $categoryId): Builder
   {
-    return $query->where('category_path', 'LIKE', "% $categoryId %");
+    if ($categoryId) {
+      $query->where('category_path', 'LIKE', "% $categoryId %");
+    }
+    return $query;
   }
 
   /**

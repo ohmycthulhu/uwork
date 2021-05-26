@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Profile;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class UpdateProfileRequest extends FormRequest
+class UpdateProfileRequest extends ApiRequest
 {
   /**
    * Get the validation rules that apply to the request.

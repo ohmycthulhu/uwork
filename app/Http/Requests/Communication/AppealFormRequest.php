@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Communication;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 use Illuminate\Support\Facades\Auth;
 
-class AppealFormRequest extends FormRequest
+class AppealFormRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

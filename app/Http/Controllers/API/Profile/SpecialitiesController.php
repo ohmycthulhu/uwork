@@ -9,6 +9,7 @@ use App\Http\Requests\Common\UploadImageRequest;
 use App\Http\Requests\Profile\CreateMultipleSpecialityFormRequest;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
 use App\Http\Requests\Profile\LoadSpecialitiesCategoriesRequest;
+use App\Http\Requests\Profile\SearchSpecialityCategoriesController;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
 use App\Models\Categories\Category;
 use App\Models\Media\Image;
@@ -338,43 +339,13 @@ class SpecialitiesController extends Controller
   /**
    * Route to get categories for specialities
    *
-   * @param Request $request
-   *
    * @return JsonResponse
   */
-  public function getCategories(Request $request): JsonResponse {
+  public function getCategories(): JsonResponse {
     $profile = $this->getProfile();
 
-    $level = $request->input('level', 1);
-    if ($profile) {
-      $categoryIds = $profile->specialities()
-        ->pluck('category_path')
-        ->map(function ($catPath) use ($level) {
-          if (!$catPath) {
-            return null;
-          }
-          $parts = array_values(array_filter(explode(' ', $catPath), 'strlen'));
-          return sizeof($parts) > $level ? $parts[$level - 1] : null;
-        })
-        ->filter(function ($x) {
-          return $x;
-        });
-    } else {
-      $categoryIds = new Collection();
-    }
-
-    $occurrences = Category::query()
-      ->top()
-      ->get()
-      ->reduce(function ($acc, $c) { $acc[$c->id] = ['category' => $c, 'count' => 0]; return $acc; }, []);
-
-    foreach ($categoryIds as $categoryId) {
-      if (key_exists($categoryId, $occurrences)) {
-        $occurrences[$categoryId]['count']++;
-      }
-    }
-
-    $result = array_values($occurrences);
+    $categories = Category::query()->top()->get();
+    $result = Category::addServicesFields($categories, $profile, null, false, false);
     return $this->returnSuccess(compact('result'));
   }
 
@@ -387,28 +358,39 @@ class SpecialitiesController extends Controller
   */
   public function getSubcategories(int $categoryId): JsonResponse {
     $profile = $this->getProfile();
-    $specialities = $profile ? $profile->specialities()
-      ->category($categoryId)
-      ->pluck('category_path') : new Collection();
 
     $subcategories = Category::query()
       ->parent($categoryId)
       ->get();
 
-    $result = [];
-    foreach ($subcategories as $category) {
-      /* @var Category $category */
-      $result[$category->id] = [
-        'category' => $category,
-        'services' => $category->services,
-        'count' => $specialities->filter(function ($s) use ($category){
-          return str_contains($s, " {$category->id} ");
-        })->count(),
-        'total' => $category->servicesCount,
-      ];
-    }
+    $result = Category::addServicesFields($subcategories, $profile, $categoryId, true, true);
 
-    return $this->returnSuccess(['result' => array_values($result)]);
+    return $this->returnSuccess(compact('result'));
+  }
+
+  /**
+   * Route to search through the categories
+   *
+   * @param SearchSpecialityCategoriesController $request
+   *
+   * @return JsonResponse
+  */
+  public function searchCategories(SearchSpecialityCategoriesController $request): JsonResponse {
+    // Get profile
+    $profile = $this->getProfile();
+
+    // Extract parameters
+    $keyword = $request->input('keyword');
+    $parentId = $request->input('parent_id');
+    $size = $request->input('size', 15);
+
+    // Search categories
+    $categories = Category::searchByName($keyword, $parentId, $size);
+
+    // Map categories
+    $result = Category::addServicesFields($categories, $profile, $parentId, true, false);
+
+    return $this->returnSuccess(compact('result'));
   }
 
   /**

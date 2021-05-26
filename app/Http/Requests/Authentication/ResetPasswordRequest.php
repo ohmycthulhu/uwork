@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Authentication;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class ResetPasswordRequest extends FormRequest
+class ResetPasswordRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

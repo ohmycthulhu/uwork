@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Profile;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class RandomProfilesRequest extends FormRequest
+class RandomProfilesRequest extends ApiRequest
 {
   /**
    * Get the validation rules that apply to the request.

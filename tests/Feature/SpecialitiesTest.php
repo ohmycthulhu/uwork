@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Categories\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -56,6 +57,8 @@ class SpecialitiesTest extends TestCase
     $this->assertEquals($updateForm['name'], $speciality->name);
     $this->assertEquals($updateForm['price'], $speciality->price);
 
+    $this->checkCategoriesRoutes();
+
     // Delete speciality
     $this->delete(route('api.user.profile.specialities.delete', ['specialityId' => $speciality['id']]))
       ->assertOk();
@@ -65,6 +68,38 @@ class SpecialitiesTest extends TestCase
 
     // Clear database
     $this->clearDatabase();
+  }
+
+  /**
+   * Method to check speciality categories routes
+   *
+   * @return void
+  */
+  protected function checkCategoriesRoutes() {
+    /* @var Collection $topCategories */
+    $topCategories = Category::query()->top()->get();
+
+    $categories = $this->get(route('user.profile.specialities.categories'))
+      ->assertOk()
+      ->json('result');
+
+    foreach ($topCategories as $category) {
+      $found = false;
+      for ($i = 0; $i < sizeof($categories) && !$found; $i++) {
+        $found = $categories[$i]['category']['id'] == $category->id;
+      }
+      $this->assertTrue($found);
+    }
+
+    foreach ($topCategories as $category) {
+      $this->get(route('user.profile.specialities.categories.id', ['category' => $category->id]))
+        ->assertOk();
+    }
+
+    $category = $topCategories->random()->id;
+    $name = explode(' ', $category->name)[0];
+    $this->get(route('user.profile.specialities.categories.search', ['keyword' => $name]))
+      ->assertOk();
   }
 
   /**

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\User;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class ChangeUserInfoRequest extends FormRequest
+class ChangeUserInfoRequest extends ApiRequest
 {
   /**
    * Get the validation rules that apply to the request.

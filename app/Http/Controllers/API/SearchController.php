@@ -120,26 +120,11 @@ class SearchController extends Controller
    * @return JsonResponse
    */
   public function searchCategories(Request $request): JsonResponse {
-    $keyword = Str::lower($request->input('keyword', ''));
+    $keyword = $request->input('keyword', '');
     $parentCategory = $request->input('parent_id');
-    $keyword = str_replace(" ", "*", trim(strtolower($keyword)));
-    $query = $this->category::boolSearch()
-      ->size(10);
+    $categories = $this->category::searchByName($keyword, $parentCategory, 10);
+    $categories->load(['parent', 'children']);
 
-    if ($keyword) {
-      $query->should(['wildcard' => ['name' => "*$keyword*"]])
-        ->minimumShouldMatch(1);
-    }
-
-    if ($parentCategory) {
-      $query->must(['wildcard' => ['category_path' => "*$parentCategory*"]]);
-    }
-
-      $categories = $query->execute()
-      ->models()
-      ->load(['parent', 'children']);
-    return $this->returnSuccess([
-      'categories' => $categories
-    ]);
+    return $this->returnSuccess(compact('categories'));
   }
 }

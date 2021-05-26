@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+if (!defined('REGEX_ID')) {
+  define("REGEX_ID", '[0-9]+');
+}
+
 /**
  * Categories routes
  */
@@ -28,7 +32,7 @@ Route::group([
 
   // Get category information by id
   $router->get('/{id}', 'API\\CategoriesController@byId')
-    ->where('id', '[0-9]+')
+    ->where('id', REGEX_ID)
     ->name('categories.id');
 
   // Get category information
@@ -46,8 +50,10 @@ Route::group([
   $router->get('/', 'API\\LocationController@regions')
     ->name('regions.all');
   $router->get('/{id}', 'API\\LocationController@regionById')
+    ->where('id', REGEX_ID)
     ->name('regions.id');
   $router->get('/{id}/cities', 'API\\LocationController@regionCities')
+    ->where('id', REGEX_ID)
     ->name('regions.id.cities');
 });
 
@@ -55,6 +61,7 @@ Route::group([
 Route::get('/cities/{id}', 'API\\LocationController@cityById')
   ->name('cities.id');
 Route::get('/cities/{id}/districts', 'API\\LocationController@cityDistricts')
+  ->where('id', REGEX_ID)
   ->name('cities.id.districts');
 
 /*
@@ -137,37 +144,50 @@ Route::group([
       $router->get('/categories', 'API\\Profile\\SpecialitiesController@getCategories')
         ->name('categories');
 
+      // Search the category
+      $router->get('/categories/search', 'API\\Profile\\SpecialitiesController@searchCategories')
+        ->name('categories.search');
+
       // Get grouped specialities
       $router->get('/categories/{categoryId}', 'API\\Profile\\SpecialitiesController@getSubcategories')
+        ->where('categoryId', REGEX_ID)
         ->name('categories.id');
 
       $router->post('/categories/{category}', 'API\\Profile\\SpecialitiesController@createMultiple')
+        ->where('category', REGEX_ID)
         ->name('categories.add');
 
       $router->delete('/categories/{category}', 'API\\Profile\\SpecialitiesController@deleteMultiple')
+        ->where('category', REGEX_ID)
         ->name('categories.remove');
 
       $router->get('{category}', 'API\\Profile\\SpecialitiesController@getByCategory')
+        ->where('category', REGEX_ID)
         ->name('getByCategory');
 
       // Update specialities
       $router->match(['put', 'post'], '/{specialityId}', 'API\\Profile\\SpecialitiesController@update')
+        ->where('specialityId', REGEX_ID)
         ->name('update');
 
       // Delete specialities
       $router->delete('/{specialityId}', 'API\\Profile\\SpecialitiesController@delete')
+        ->where('specialityId', REGEX_ID)
         ->name('delete');
 
       // Upload image to speciality
       $router->post('/{specialityId}/images', 'API\\Profile\\SpecialitiesController@uploadImage')
+        ->where('specialityId', REGEX_ID)
         ->name('images.upload');
 
       // Remove image
       $router->delete('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@removeImage')
+        ->where(['specialityId' => REGEX_ID, 'imageId' => REGEX_ID])
         ->name('images.delete');
 
       // Reorder image
       $router->put('/{specialityId}/images/{imageId}', 'API\\Profile\\SpecialitiesController@updateImage')
+        ->where(['specialityId' => REGEX_ID, 'imageId' => REGEX_ID])
         ->name('images.update');
     });
   });
@@ -183,10 +203,12 @@ Route::group([
 
     // Route to add service as favourite
     $router->post('/{serviceId}', 'API\\FavouritesController@add')
+      ->where(['serviceId' => REGEX_ID])
       ->name('add');
 
     // Route to remove service from services
     $router->delete('/{serviceId}', 'API\\FavouritesController@remove')
+      ->where(['serviceId' => REGEX_ID])
       ->name('remove');
   });
 
@@ -205,10 +227,12 @@ Route::group([
 
     // Route to update
     $router->put('/{cardId}', 'API\\CardsController@update')
+      ->where(['cardId' => REGEX_ID])
       ->name('update');
 
     // Route to delete
     $router->delete('/{cardId}', 'API\\CardsController@delete')
+      ->where(['cardId' => REGEX_ID])
       ->name('delete');
   });
 
@@ -234,18 +258,23 @@ Route::group([
     ->name('list');
 
   $router->get('/{user}', 'API\\MessengerController@getMessages')
+    ->where(['user' => REGEX_ID])
     ->name('get');
 
   $router->put('/{user}', 'API\\MessengerController@markRead')
+    ->where(['user' => REGEX_ID])
     ->name('read');
 
   $router->post('/{user}', 'API\\MessengerController@sendMessage')
+    ->where(['user' => REGEX_ID])
     ->name('create');
 
   $router->delete('/{user}', 'API\\MessengerController@deleteChat')
+    ->where(['user' => REGEX_ID])
     ->name('delete');
 
   $router->get('/{user}/search', 'API\\MessengerController@search')
+    ->where(['user' => REGEX_ID])
     ->name('search');
 });
 
@@ -259,8 +288,10 @@ Route::group([
   $router->get('/random', 'API\\ProfileController@getRandom')
     ->name('random');
   $router->get('/{id}', 'API\\ProfileController@getById')
+    ->where(['id' => REGEX_ID])
     ->name('id');
   $router->post('/{profile}/views', 'API\\Profile\\ViewsController@add')
+    ->where(['profile' => REGEX_ID])
     ->name('views.create');
 
   // Complaints
@@ -269,7 +300,8 @@ Route::group([
 
   $router->group([
     'prefix' => '/{profile}',
-    'as' => 'reviews.'
+    'as' => 'reviews.',
+    'where' => ['profile' => REGEX_ID]
   ], function (Illuminate\Routing\Router $router) {
     $router->get('/reviews', 'API\\Profile\\ReviewsController@getById')
       ->name('get');
@@ -279,11 +311,13 @@ Route::group([
       ->name('create')
       ->middleware('auth:api');
     $router->post('/reviews/{review}', 'API\\Profile\\ReviewsController@reply')
+      ->where('review', REGEX_ID)
       ->name('reply');
     $router->delete('/reviews', 'API\\Profile\\ReviewsController@delete')
       ->name('delete');
     // Complaints
     $router->post('/reviews/{review}/complaints', 'API\\Profile\\ReviewsController@createComplaint')
+      ->where('review', REGEX_ID)
       ->name('complaints.create');
   });
 });

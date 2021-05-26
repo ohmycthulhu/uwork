@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Profile\Views;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class ReplyReviewRequest extends FormRequest
+class ReplyReviewRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

@@ -1453,6 +1453,28 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
+            /api/user/profile/specialities/categories/search
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+          {
+            keyword: String,
+            parent_id: ID|null,
+            size: Number|null
+          }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                status: String|null,
+                result: CategoryOccurrence[]|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/user/profile/specialities/categories/{categoryId}
         </td>
         <td>

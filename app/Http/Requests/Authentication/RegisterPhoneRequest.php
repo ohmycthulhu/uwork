@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Authentication;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class RegisterPhoneRequest extends FormRequest
+class RegisterPhoneRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Card;
 
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class CreateCardFormRequest extends FormRequest
+class CreateCardFormRequest extends ApiRequest
 {
   /**
    * Get the validation rules that apply to the request.
