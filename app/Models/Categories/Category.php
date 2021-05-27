@@ -101,12 +101,12 @@ class Category extends Model implements Slugable
 
     return $categories->map(function (Category $category) use ($addTotal, $addServicesList, $countCallback, $isSelectedCallback) {
       $total = $addTotal ? $category->getServicesCountAttribute() : null;
-      $services = $addServicesList ? $category->getServicesCountAttribute() : null;
+      $services = $addServicesList ? $category->getServicesAttribute() : null;
       $count = $countCallback($category);
       return array_merge(
         ['category' => $category],
-        $total != null ? compact('total') : [],
-        $services != null ? compact('services') : [],
+        $total !== null ? compact('total') : [],
+        $services !== null ? compact('services') : [],
         [
           'count' => $count,
           'selected' => $isSelectedCallback($category, $count, $total),
