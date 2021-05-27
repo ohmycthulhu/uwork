@@ -49,9 +49,8 @@ class Category extends Resource
   {
     return [
       ID::make(__('ID'), 'id')->sortable(),
-      Text::make(__('Name'), 'name')->translatable(),
+      Text::make(__('Name'), 'name'),
       Text::make(__('Slug'), 'slug')
-        ->translatable()
         ->onlyOnDetail(),
       Image::make(__('Icon Default'), 'icon_default')->hideFromIndex(),
       Image::make(__('Icon Selected'), 'icon_selected')->hideFromIndex(),

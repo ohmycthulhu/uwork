@@ -7,17 +7,13 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Translatable\HasTranslations;
 
 class City extends Model
 {
-  use SoftDeletes, HasTranslations;
+  use SoftDeletes;
 
   // Fillable
   protected $fillable = ['name', 'google_id'];
-
-  // Translatable
-  public $translatable = ['name'];
 
   protected $visible = ['id', 'name', 'region', 'region_id', 'districts'];
 

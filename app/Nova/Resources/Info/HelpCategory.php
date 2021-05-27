@@ -48,8 +48,7 @@ class HelpCategory extends Resource
       ID::make(__('ID'), 'id')->sortable(),
 
       Text::make(__('Name'), 'name')
-        ->sortable()
-        ->translatable(),
+        ->sortable(),
 
       Text::make(__('Slug'), 'slug')
         ->sortable()

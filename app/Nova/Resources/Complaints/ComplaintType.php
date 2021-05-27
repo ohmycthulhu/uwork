@@ -47,8 +47,7 @@ class ComplaintType extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
 
-          Text::make(__('Name'), 'name')->sortable()
-            ->translatable(),
+          Text::make(__('Name'), 'name')->sortable(),
 
           HasMany::make(__('Complaints'), 'complaints', Complaint::class),
         ];

@@ -16,7 +16,7 @@ trait SlugableTrait
 
     public function getSlugTranslatable(): bool
     {
-        return true;
+        return false;
     }
 
     public function scopeSlug(Builder $query, string $slug): Builder {

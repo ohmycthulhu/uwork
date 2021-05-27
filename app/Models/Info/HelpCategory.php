@@ -8,15 +8,12 @@ use App\Models\Traits\SlugableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Translatable\HasTranslations;
 
 class HelpCategory extends Model implements Slugable
 {
-    use SoftDeletes, HasTranslations, SlugableTrait;
+    use SoftDeletes, SlugableTrait;
 
     protected $fillable = ['name', 'order'];
-
-    public $translatable = ['name', 'slug'];
 
     public static $slugRoute = 'api.helpCategories.slug';
 

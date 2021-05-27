@@ -6,17 +6,13 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Translatable\HasTranslations;
 
 class Region extends Model
 {
-  use SoftDeletes, HasTranslations;
+  use SoftDeletes;
 
   // Fillable
   protected $fillable = ['name', 'google_id'];
-
-  // Translatable
-  public $translatable = ['name'];
 
   protected $visible = ['id', 'name', 'cities'];
 

@@ -6,17 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Translatable\HasTranslations;
 
 class District extends Model
 {
-  use SoftDeletes, HasTranslations;
+  use SoftDeletes;
 
   protected $fillable = ['name'];
 
   protected $visible = ['id', 'name', 'city', 'city_id'];
-
-  public $translatable = ['name'];
 
   /**
    * Scopes

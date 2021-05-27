@@ -7,17 +7,14 @@ use App\Models\Traits\SlugableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Translatable\HasTranslations;
 
 class HelpItem extends Model implements Slugable
 {
-  use SoftDeletes, HasTranslations, SlugableTrait;
+  use SoftDeletes, SlugableTrait;
 
   protected $fillable = [
     'name', 'text', 'order'
   ];
-
-  public $translatable = ['name', 'text', 'slug'];
 
   public static $slugRoute = 'api.helpItems.slug';
 

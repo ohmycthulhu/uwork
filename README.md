@@ -1456,7 +1456,7 @@ speciality can change name and price, but not category.
             /api/user/profile/specialities/categories/search
         </td>
         <td>
-            POST
+            GET
         </td>
         <td>
           {

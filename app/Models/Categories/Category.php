@@ -14,23 +14,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Spatie\Translatable\HasTranslations;
 
 class Category extends Model implements Slugable
 {
-  use SoftDeletes, HasTranslations, SlugableTrait, Searchable, CustomSearch;
+  use SoftDeletes, SlugableTrait, Searchable, CustomSearch;
 
   // Route to specific category
   public static $slugRoute = 'api.categories.slug';
 
   protected $fillable = ['name', 'icon_default', 'icon_selected'];
-
-  /**
-   * Translatable fields
-   */
-  public $translatable = [
-    'name', 'slug'
-  ];
 
   protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_hidden', 'is_shown', 'category_path'];
 
@@ -101,24 +93,23 @@ class Category extends Model implements Slugable
             return str_contains($path, " {$category->id} ");
           })->count();
         };
-        $isSelectedCallback = function (Category $category) use ($specialities) {
-          return $specialities->has($category->id);
+        $isSelectedCallback = function (Category $category, int $count, ?int $total) use ($specialities) {
+          return !$total ? $specialities->has($category->id) : ($total <= $count);
         };
       }
     }
 
     return $categories->map(function (Category $category) use ($addTotal, $addServicesList, $countCallback, $isSelectedCallback) {
+      $total = $addTotal ? $category->getServicesCountAttribute() : null;
+      $services = $addServicesList ? $category->getServicesCountAttribute() : null;
+      $count = $countCallback($category);
       return array_merge(
         ['category' => $category],
-        $addTotal ? [
-          'total' => $category->getServicesCountAttribute(),
-        ] : [],
-        $addServicesList ? [
-          'services' => $category->getServicesAttribute(),
-        ] : [],
+        $total != null ? compact('total') : [],
+        $services != null ? compact('services') : [],
         [
-          'count' => $countCallback($category),
-          'selected' => $isSelectedCallback($category),
+          'count' => $count,
+          'selected' => $isSelectedCallback($category, $count, $total),
         ]
       );
     });

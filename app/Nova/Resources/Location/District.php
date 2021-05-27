@@ -30,9 +30,7 @@ class District extends LocationResource
 
       BelongsTo::make(__('City'), 'city', City::class)
         ->sortable(),
-      Text::make(__('Name'), 'name')
-        ->translatable()
-        ->sortable()->sortable(),
+      Text::make(__('Name'), 'name')->sortable(),
       Text::make(__('Place ID'), 'google_id')
         ->nullable()->sortable(),
 

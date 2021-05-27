@@ -31,7 +31,6 @@ class City extends LocationResource
       BelongsTo::make(__('Region'), 'region', Region::class)
         ->sortable(),
       Text::make(__('Name'), 'name')
-        ->translatable()
         ->sortable(),
       Text::make(__('Place ID'), 'google_id')
         ->nullable()->sortable(),

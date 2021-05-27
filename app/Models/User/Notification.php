@@ -9,19 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Translatable\HasTranslations;
 
 class Notification extends Model
 {
-    use SoftDeletes, HasTranslations;
+    use SoftDeletes;
 
     protected $fillable = [
       'user_id', 'notifiable_id', 'notifiable_type',
       'title', 'description', 'read_at',
-    ];
-
-    public $translatable = [
-//      'title', 'description',
     ];
 
 //    protected $appends = ['isRead'];

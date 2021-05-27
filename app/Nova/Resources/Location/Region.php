@@ -26,8 +26,7 @@ class Region extends LocationResource
   {
     return [
       ID::make(__('ID'), 'id')->sortable(),
-      Text::make(__('Name'), 'name')
-        ->translatable()->sortable(),
+      Text::make(__('Name'), 'name')->sortable(),
       Text::make(__('Place ID'), 'google_id')
         ->nullable()->sortable(),
       HasMany::make(__('Cities'), 'cities', City::class)

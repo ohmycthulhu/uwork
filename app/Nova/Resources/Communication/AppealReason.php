@@ -47,7 +47,7 @@ class AppealReason extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
 
-          Text::make(__('Name'), 'name')->sortable()->translatable(),
+          Text::make(__('Name'), 'name')->sortable(),
 
           HasMany::make(__('Appeals'), 'appeals', Appeal::class),
         ];

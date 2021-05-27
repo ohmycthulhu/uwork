@@ -53,8 +53,7 @@ class HelpItem extends Resource
       BelongsTo::make(__('Category'), 'category', HelpCategory::class),
 
       Text::make(__('Name'), 'name')
-        ->sortable()
-        ->translatable(),
+        ->sortable(),
 
       Text::make(__('Slug'), 'slug')
         ->sortable()
@@ -67,8 +66,7 @@ class HelpItem extends Resource
         }),
 
       Froala::make(__('Text'), 'text')
-        ->hideFromIndex()
-        ->translatable(),
+        ->hideFromIndex(),
     ];
   }
 
