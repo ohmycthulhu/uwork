@@ -14,6 +14,7 @@
     "User already has a profile": "У пользователя уже есть профиль",
     "Profile not exists": "Профиль не существует",
     "Profile not found": "Профиль не найден",
+    "This category can not be used as service": "Данная категория не может быть расценена как услуга",
     "Error on creating complaint": "Ошибка при создании жалобы",
     "You can't view own profile": "Вы не можете просмотреть свой профиль",
     "User does not have profile": "У пользователя нет профиля",

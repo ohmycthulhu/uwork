@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Categories\CategoryService;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Database\Seeder;
@@ -26,10 +27,11 @@ class ProfileSeeder extends Seeder
           $profile = $user->profile()->first() ??
             $user->profile()->create($p);
 
-          foreach ($categories->shuffle()->slice(0, 3) as $category) {
+          $services = CategoryService::query()->get();
+          foreach ($services->shuffle()->slice(0, 3) as $service) {
             /* @var ProfileSpeciality $speciality */
             $speciality = $profile->addSpeciality(
-              $category->id,
+              $service->id,
               rand(100, 5000) / 10,
               Str::random(),
             );

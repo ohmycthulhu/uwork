@@ -14,7 +14,7 @@ class ImageUploadRequest extends ApiRequest
   public function rules(): array
   {
     return [
-      'image' => 'required|image',
+      'image' => 'required|image|max:10485760',
       'collection' => 'nullable|string'
     ];
   }

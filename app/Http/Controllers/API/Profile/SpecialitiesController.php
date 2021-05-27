@@ -49,6 +49,13 @@ class SpecialitiesController extends Controller
       return $this->returnError(__('User does not have profile'), 403);
     }
 
+    // Check if category can be used to create
+    /* @var ?Category $category */
+    $category = $this->category::find($request->input('category_id'));
+    if (!$category || $category->servicesCount > 0) {
+      return $this->returnError(__('This category can not be used as service'), 403);
+    }
+
     // Search if user has exact same speciality
     $exactSpec = $profile->specialities()
       ->exact($request->input('name'), $request->input('category_id'))
@@ -416,7 +423,7 @@ class SpecialitiesController extends Controller
       ->pluck('id');
 
     $services = $category->getServicesAttribute();
-    if ($services) {
+    if (sizeof($services) > 0) {
       $serviceIds = $services->pluck('id');
     } else {
       $serviceIds = [$category->id];

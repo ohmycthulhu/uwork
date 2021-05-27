@@ -159,12 +159,12 @@ class Profile extends Model
    *
    * @param int $categoryId
    * @param float $price
-   * @param string $name
+   * @param ?string $name
    * @param ?string $description
    *
    * @return Model|\Illuminate\Database\Eloquent\Model
    */
-  public function addSpeciality(int $categoryId, float $price, string $name, ?string $description = null): Model
+  public function addSpeciality(int $categoryId, float $price, ?string $name = null, ?string $description = null): Model
   {
     return $this->specialities()
       ->create(['category_id' => $categoryId, 'price' => $price, 'name' => $name, 'description' => $description]);
