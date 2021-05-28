@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\ApiRequest;
+use App\Rules\PasswordRule;
 
 class ChangePasswordRequest extends ApiRequest
 {
@@ -15,7 +16,7 @@ class ChangePasswordRequest extends ApiRequest
   {
     return [
       'current_password' => 'required|string',
-      'password' => 'required|string',
+      'password' => ['required', 'string', 'min:6', new PasswordRule],
     ];
   }
 }

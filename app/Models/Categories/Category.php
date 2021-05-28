@@ -37,7 +37,7 @@ class Category extends Model implements Slugable
    *
    * @return Collection
    */
-  public static function searchByName(string $name, ?int $parentId = null, int $size = 10): Collection
+  public static function searchByName(string $name, ?int $parentId = null, int $size = 10)/*: Collection*/
   {
     $nameToSearch = Str::lower(trim(($name)));
     $keyword = str_replace(" ", "*", $nameToSearch);
@@ -112,6 +112,32 @@ class Category extends Model implements Slugable
           'selected' => $isSelectedCallback($category, $count, $total),
         ]
       );
+    });
+  }
+
+  /**
+   * Method to add breadcrumb to categories
+   *
+   * @param Collection $categories
+   *
+   * @return Collection
+  */
+  public static function appendBreadcrumbs(Collection $categories): Collection {
+    $parentCategoriesIds = $categories->reduce(function (Collection $acc, Category $category) {
+      return $acc->merge($category->getCategoryPathIdsAttribute())->unique();
+    }, new Collection());
+    $parentCategories = static::query()
+      ->whereIn('id', $parentCategoriesIds)
+      ->get();
+
+    return $categories->map(function (Category $category) use ($parentCategories) {
+      $category->breadcrumb = array_map(
+        function (int $id) use ($parentCategories) {
+          return $parentCategories->find($id);
+        },
+        $category->getCategoryPathIdsAttribute()
+      );
+      return $category;
     });
   }
 
@@ -283,5 +309,17 @@ class Category extends Model implements Slugable
   {
     return CategoryService::query()
       ->category($this->id);
+  }
+
+  /**
+   * Attribute to get category path as an array
+   *
+   * @return array
+   */
+  public function getCategoryPathIdsAttribute(): array {
+    if (!$this->category_path) {
+      return [];
+    }
+    return explode('  ', trim($this->category_path));
   }
 }

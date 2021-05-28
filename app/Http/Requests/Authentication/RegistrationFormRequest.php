@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Authentication;
 
 use App\Http\Requests\ApiRequest;
+use App\Rules\PasswordRule;
 
 class RegistrationFormRequest extends ApiRequest
 {
@@ -17,7 +18,7 @@ class RegistrationFormRequest extends ApiRequest
       'first_name' => 'required|string|min:3|max:60',
       'last_name' => 'required|string|min:3|max:60',
       'father_name' => 'required|string|min:3|max:60',
-      'password' => 'required|string',
+      'password' => ['required', 'string', 'min:6', new PasswordRule()],
       'email' => 'nullable|unique:users|email',
       'verification_uuid' => 'required|string|min:11',
       'avatar' => 'nullable|image|max:10485760',

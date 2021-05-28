@@ -417,7 +417,7 @@ class SpecialitiesController extends Controller
     // Search if user has exact same speciality
     $existingSpecialities = $profile->specialities()
       ->category($category->id)
-      ->pluck('id');
+      ->pluck('category_id');
 
     $services = $category->getServicesAttribute();
     if (sizeof($services) > 0) {

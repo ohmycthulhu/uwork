@@ -95,6 +95,9 @@ return [
     'attribute-name' => [
       'rule-name' => 'custom-message',
     ],
+    'password' => [
+      'password-rule' => 'Пароль должен содержать хотя бы одну заглавную букву'
+    ]
   ],
 
   /*
