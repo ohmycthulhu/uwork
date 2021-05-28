@@ -2,10 +2,10 @@
 
 namespace App\Models\Profile;
 
+use App\Models\Model;
 use App\Models\Traits\HasComplaints;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;

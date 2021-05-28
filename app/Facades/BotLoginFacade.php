@@ -4,8 +4,6 @@
 namespace App\Facades;
 
 
-use App\Models\Media\Image;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Facade;
 
 /**

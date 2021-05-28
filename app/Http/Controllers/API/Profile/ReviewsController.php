@@ -4,8 +4,8 @@ namespace App\Http\Controllers\API\Profile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CreateComplaintRequest;
-use App\Http\Requests\Profile\Views\CreateReviewFormRequest;
 use App\Http\Requests\Profile\ReviewsRetrieveRequest;
+use App\Http\Requests\Profile\Views\CreateReviewFormRequest;
 use App\Http\Requests\Profile\Views\ReplyReviewRequest;
 use App\Models\Profile\Review;
 use App\Models\User;

@@ -4,7 +4,6 @@ namespace App\Nova\Actions\Profiles;
 
 use App\Models\User\Profile;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;

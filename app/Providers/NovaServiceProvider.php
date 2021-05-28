@@ -22,8 +22,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
         NovaSettings::addSettingsFields([
-          Froala::make(__('About Us'), 'about_us')
-            ->translatable(),
+          Froala::make(__('About Us'), 'about_us'),
 
           Text::make(__('Phone'), 'phone'),
 

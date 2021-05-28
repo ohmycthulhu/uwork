@@ -8,10 +8,6 @@ use App\Http\Requests\Common\ImageUploadRequest;
 use App\Models\Media\Image;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Spatie\MediaLibrary\Models\Media;
 
 class FileController extends Controller
 {

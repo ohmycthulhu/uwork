@@ -6,8 +6,6 @@ use App\Models\Categories\Category;
 use App\Models\Media\Image;
 use App\Models\Model;
 use App\Models\User;
-use ElasticScoutDriverPlus\CustomSearch;
-use ElasticScoutDriverPlus\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
@@ -123,7 +120,8 @@ class ProfileSpeciality extends Model implements HasMedia
    */
   public function media(): MorphMany
   {
-    return $this->morphMany(Image::class, 'model');
+    return $this->morphMany(Image::class, 'model')
+      ->orderBy('order_column');
   }
 
   /**

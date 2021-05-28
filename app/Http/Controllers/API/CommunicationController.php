@@ -7,7 +7,6 @@ use App\Http\Requests\Communication\AppealFormRequest;
 use App\Models\Communication\Appeal;
 use App\Models\Communication\AppealReason;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CommunicationController extends Controller

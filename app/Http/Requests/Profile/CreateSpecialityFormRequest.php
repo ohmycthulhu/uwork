@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Profile;
 
-use App\Http\Requests\ApiRequest;
-
 class CreateSpecialityFormRequest extends CreateMultipleSpecialityFormRequest
 {
   /**

@@ -83,7 +83,10 @@ class MediaHelper
       throw $e;
     }
 
-    $this->createResponsiveImages($media, config('images.sizes'));
+    $media->order_column = $media->id;
+    $media->responsive_images = $this->createResponsiveImages($media, config('images.sizes'));
+
+    $media->save();
 
     return $media;
   }
@@ -94,9 +97,9 @@ class MediaHelper
    * @param Image $image
    * @param array $sizes
    *
-   * @return Image
+   * @return String
   */
-  protected function createResponsiveImages(Image $image, array $sizes): Image {
+  protected function createResponsiveImages(Image $image, array $sizes): string {
     $responsive = [];
     foreach ($sizes as $type => $size) {
       $res = $this->convertImage($image, $size['w'], $size['h']);
@@ -104,9 +107,7 @@ class MediaHelper
         $responsive[$type] = "{$image->id}/" . $this->generatePath($size['w'], $size['h']);
       }
     }
-    $image->responsive_images = json_encode($responsive);
-    $image->save();
-    return $image;
+    return json_encode($responsive);
   }
 
   /**
@@ -118,7 +119,7 @@ class MediaHelper
    *
    * @return bool
    */
-  protected function convertImage(Image $imageModel, int $width, int $height) {
+  protected function convertImage(Image $imageModel, int $width, int $height): bool {
     try {
       $path = Storage::disk($imageModel->disk)
         ->get("{$imageModel->id}/{$imageModel->file_name}");

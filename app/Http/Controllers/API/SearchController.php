@@ -11,7 +11,6 @@ use App\Models\User\ProfileSpeciality;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class SearchController extends Controller
 {

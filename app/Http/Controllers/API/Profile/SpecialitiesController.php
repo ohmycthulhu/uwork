@@ -8,7 +8,6 @@ use App\Http\Requests\Common\UpdateImageRequest;
 use App\Http\Requests\Common\UploadImageRequest;
 use App\Http\Requests\Profile\CreateMultipleSpecialityFormRequest;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
-use App\Http\Requests\Profile\LoadSpecialitiesCategoriesRequest;
 use App\Http\Requests\Profile\SearchSpecialityCategoriesController;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
 use App\Models\Categories\Category;
@@ -18,10 +17,8 @@ use App\Models\User\ProfileSpeciality;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class SpecialitiesController extends Controller
 {

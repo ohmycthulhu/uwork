@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Facades\SearchFacade;
-use App\Models\Categories\Category;
 use App\Models\User\ProfileSpeciality;
 
 class ProfileSpecialityObserver
