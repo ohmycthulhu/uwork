@@ -516,12 +516,11 @@ class Profile extends Model
     }
 
     if ($userId) {
-      $userConstraints = ["user_id" => $userId];
+      $userConstraints = ['match' => ["user_id" => $userId]];
       $query->mustNot($userConstraints);
     }
 
     // Filter only by confirmed
-//    $query->mustNot(['match' => ['id' => ""]]);
     $query->must(['match' => ['isConfirmed' => "1"]]);
     $query->minimumShouldMatch(empty($categories) ? 0 : 1);
 
