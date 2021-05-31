@@ -299,6 +299,19 @@ class AuthenticationController extends Controller
     }
 
     /**
+     * Method to refresh access token
+     *
+     * @return JsonResponse
+    */
+    public function refreshToken(): JsonResponse {
+      $access_token = auth()->refresh();
+      $ttl = auth()->factory()->getTTL() * 60;
+      $user = auth()->user();
+
+      return $this->returnSuccess(compact('user', 'ttl', 'access_token'));
+    }
+
+    /**
      * Check if user exists
      *
      * @param ?string $email

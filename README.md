@@ -932,6 +932,25 @@ Registration is performed in 3 steps:
     </tr>
     <tr>
         <td>
+            /api/refresh
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {}
+        </td>
+        <td>
+            {
+                error: String|null,
+                user: User|null,
+                access_token: String|null,
+                ttl: Number|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/tokens/verify/{uuid}
         </td>
         <td>

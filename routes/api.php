@@ -78,6 +78,9 @@ Route::post('/verify/{uuid}', 'API\\AuthenticationController@verifyPhoneNumber')
 //  ->name('resend');
 Route::post('/login', 'API\\AuthenticationController@login')
   ->name('login');
+Route::post('/refresh', 'API\\AuthenticationController@refreshToken')
+  ->name('refresh')
+  ->middleware('auth:api');
 Route::post('/passwords', 'API\\AuthenticationController@resetPassword')
   ->name('reset');
 Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')

@@ -48,7 +48,8 @@ class ResetPasswordHelper
    * @return string
   */
   public function createSession(User $user, bool $withEmail, bool $withPhone): string {
-    $uuid = Str::random(5);
+    $uuid = Str::uuid();
+    $code = Str::random(6);
 
     $data = $this->generateData($user);
 
