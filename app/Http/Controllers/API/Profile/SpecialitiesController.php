@@ -75,6 +75,15 @@ class SpecialitiesController extends Controller
       $request->input('description'),
     );
 
+    if ($images = $request->input('images')) {
+      MediaFacade::attachImages(
+        ProfileSpeciality::class,
+        $speciality->id,
+        $images
+      );
+      $speciality->load('media');
+    }
+
     // Return result
     return $this->returnSuccess([
       'speciality' => $speciality,
@@ -348,7 +357,7 @@ class SpecialitiesController extends Controller
   public function getCategories(): JsonResponse {
     $profile = $this->getProfile();
 
-    $categories = Category::query()->top()->get();
+    $categories = Category::query()->top()->alphabetical()->get();
     $result = Category::addServicesFields($categories, $profile, null, false, false);
     return $this->returnSuccess(compact('result'));
   }
@@ -365,6 +374,7 @@ class SpecialitiesController extends Controller
 
     $subcategories = Category::query()
       ->parent($categoryId)
+      ->alphabetical()
       ->get();
 
     $result = Category::addServicesFields($subcategories, $profile, $categoryId, true, true);

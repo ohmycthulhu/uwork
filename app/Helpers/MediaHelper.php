@@ -6,6 +6,7 @@ namespace App\Helpers;
 use App\Models\Media\Image;
 use Exception;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -89,6 +90,29 @@ class MediaHelper
     $media->save();
 
     return $media;
+  }
+
+  /**
+   * Method to attach existing images
+   *
+   * @param string $class
+   * @param int    $id
+   * @param array  $images
+   *
+   * @return Collection
+  */
+  public function attachImages(
+    string $class,
+    int $id,
+    array $images
+  ): Collection {
+    $query = $this->image::query()
+      ->empty()
+      ->ids($images);
+
+    $query->update(['model_type' => $class, 'model_id' => $id]);
+
+    return $query->get();
   }
 
   /**

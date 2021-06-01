@@ -333,8 +333,8 @@ Route::get('autocomplete', 'API\\SearchController@getAutocomplete')
 /*
  * File routes
  */
-Route::post('/files', 'API\\FileController@uploadImage')
-  ->name('files');
+Route::post('/images', 'API\\FileController@uploadImage')
+  ->name('images');
 
 /*
  * Info routes

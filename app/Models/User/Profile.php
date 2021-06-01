@@ -24,6 +24,8 @@ use Laravel\Scout\Searchable;
 class Profile extends Model
 {
   const SORT_PRICE = 'price_avg';
+  const SORT_DISTRICT = 'district';
+  const SORT_RATING = 'rating';
 
   use SoftDeletes, Searchable, CustomSearch, HasComplaints;
 
@@ -445,6 +447,8 @@ class Profile extends Model
       'regionId' => $this->region_id,
       'cityId' => $this->city_id,
       'districtId' => $this->district_id,
+      'district' => $this->district ? $this->district->name : null,
+      'rating' => $this->rating,
       'userId' => $this->user_id,
       'specialities' => $specialitiesInfo,
       'isConfirmed' => $this->confirmed_at ? 1 : 0,
@@ -452,6 +456,36 @@ class Profile extends Model
       'price_min' => $prices->min(),
       'price_max' => $prices->max()
     ];
+  }
+
+  /**
+   * Get sorting column
+   *
+   * @param ?string $sortingColumn
+   *
+   * @return ?string
+  */
+  protected static function getSortingColumn(?string $sortingColumn): ?string {
+    if (!$sortingColumn) {
+      return null;
+    }
+    switch (strtolower($sortingColumn)) {
+      case 'price': return static::SORT_PRICE;
+      case 'district': return static::SORT_DISTRICT;
+      case 'rating': return static::SORT_RATING;
+      default: return null;
+    }
+  }
+
+  /**
+   * Get sorting direction
+   *
+   * @param ?string $sortingDir
+   *
+   * @return string
+  */
+  protected static function getSortingDir(?string $sortingDir): string {
+    return $sortingDir && strtolower($sortingDir) == 'desc' ? 'desc' : 'asc';
   }
 
   /**
@@ -463,6 +497,10 @@ class Profile extends Model
    * @param ?int $cityId ,
    * @param ?int $districtId ,
    * @param ?int $userId ,
+   * @param float|null $priceMin
+   * @param float|null $priceMax
+   * @param ?string $searchColumn
+   * @param ?string $searchDir
    * @param ?int $page
    * @param int $amount
    *
@@ -477,8 +515,8 @@ class Profile extends Model
     ?int $userId,
     ?float $priceMin,
     ?float $priceMax,
-    $searchColumn = null,
-    $searchDir = 'asc',
+    ?string $searchColumn = null,
+    ?string $searchDir = 'asc',
     ?int $page = 1,
     int $amount = 5
   ): Paginator
@@ -524,8 +562,11 @@ class Profile extends Model
     $query->must(['match' => ['isConfirmed' => "1"]]);
     $query->minimumShouldMatch(empty($categories) ? 0 : 1);
 
-    if ($searchColumn) {
-      $query->sort($searchColumn, $searchDir);
+    $sortingColumn = static::getSortingColumn($searchColumn);
+    $sortingDir = static::getSortingColumn($searchDir);
+
+    if ($sortingColumn) {
+      $query->sort($sortingColumn, $sortingDir);
     }
 
     /* Perform search */

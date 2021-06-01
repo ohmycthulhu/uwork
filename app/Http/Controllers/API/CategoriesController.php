@@ -61,7 +61,6 @@ class CategoriesController extends Controller
   protected function loadCategories(): Collection
   {
     return $this->category::query()
-      ->with(['children.children'])
       ->top()
       ->get();
   }

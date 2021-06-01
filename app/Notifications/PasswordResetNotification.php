@@ -14,21 +14,23 @@ class PasswordResetNotification extends Notification
 
   protected $hasEmail;
   protected $hasPhone;
-  protected $code;
+  protected $code, $uuid;
 
   /**
    * Create a new notification instance.
    *
    * @param bool $hasEmail
    * @param bool $hasPhone
+   * @param string $uuid
    * @param string $code
    *
    * @return void
    */
-  public function __construct(bool $hasEmail, bool $hasPhone, string $code)
+  public function __construct(bool $hasEmail, bool $hasPhone, string $uuid, string $code)
   {
     $this->hasEmail = $hasEmail;
     $this->hasPhone = $hasPhone;
+    $this->uuid = $uuid;
     $this->code = $code;
   }
 
@@ -74,6 +76,7 @@ class PasswordResetNotification extends Notification
   {
     return [
       'code' => $this->code,
+      'uuid' => $this->uuid,
     ];
   }
 

@@ -66,7 +66,7 @@ abstract class TestCase extends BaseTestCase
     $categories = $this->createCategories();
     $regions = $this->createRegions();
 
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < 20; $i++) {
       $user = $this->createUser();
       $profile = $this->createProfile($user);
       $profile->specialities()

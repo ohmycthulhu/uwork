@@ -15,7 +15,7 @@ class NotificationsTest extends TestCase
   /** Amount of notifications for testing
    * @var int $notificationsCount
    */
-  protected $notificationsCount = 10;
+  protected $notificationsCount = 11;
 
   /**
    * Test facade and database
@@ -38,7 +38,7 @@ class NotificationsTest extends TestCase
         'Example'
       );
     }
-    $this->assertEquals($this->notificationsCount, $user->notifications()->count());
+    $this->assertEquals($this->notificationsCount + 1, $user->notifications()->count());
 
     // Get notifications through facade and check the amount
     $this->assertEquals(
@@ -102,7 +102,7 @@ class NotificationsTest extends TestCase
     Auth::login($user);
     // Retrieve notifications and check the amount
     $this->assertEquals(
-      $this->notificationsCount,
+      $this->notificationsCount + 1,
       $this->get(route('api.user.notifications.get'))
         ->assertOk()
         ->json('notifications.total')

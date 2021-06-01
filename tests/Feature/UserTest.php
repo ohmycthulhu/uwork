@@ -223,6 +223,10 @@ class UserTest extends TestCase
     Notification::assertSentTo($user, PasswordResetNotification::class, function ($notification) use ($user, $form) {
       // Get token and set new password
       $uuid = $notification->toArray($user)['uuid'];
+      $code = $notification->toArray($user)['code'];
+
+      $this->post(route('api.reset.verify'), ['uuid' => $uuid, 'code' => $code])
+        ->assertOk();
 
       $this->post(route('api.reset.set', ['uuid' => $uuid]), $form)
         ->assertOk();

@@ -8,23 +8,8 @@ use App\Utils\CacheAccessor;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
-class ResetPasswordHelper
+class ResetPasswordHelper extends VerificationHelperBase
 {
-
-  /**
-   * Indicate if Nexmo is enabled
-   *
-   * @var bool
-   */
-  protected $isNexmoEnabled;
-
-  /**
-   * Indicates whether verification is active or not
-   *
-   * @var bool
-  */
-  protected $verificationEnabled;
-
   /**
    * Cache storage
    *
@@ -35,13 +20,13 @@ class ResetPasswordHelper
   /**
    * Creates instance of helper
    *
-   * @param bool $nexmoEnabled
    * @param bool $isVerificationEnabled
+   * @param bool $nexmoEnabled
    */
-  public function __construct(bool $nexmoEnabled, bool $isVerificationEnabled)
+  public function __construct(bool $isVerificationEnabled, bool $nexmoEnabled)
   {
-    $this->isNexmoEnabled = $nexmoEnabled;
-    $this->verificationEnabled = $isVerificationEnabled;
+    parent::__construct($isVerificationEnabled, $nexmoEnabled);
+
     $this->store = new CacheAccessor("password-reset", null, 240);
   }
 
@@ -57,13 +42,13 @@ class ResetPasswordHelper
    * @return string
   */
   public function createSession(User $user, bool $withEmail, bool $withPhone): string {
-    $uuid = Str::uuid();
-    $code = Str::random(6);
+    $uuid = $this->generateUUID();
+    $code = $this->generateCode();
 
     $data = $this->generateData($user, $code);
 
     if ($this->isNexmoEnabled) {
-      Notification::send($user, new PasswordResetNotification($withEmail, $withPhone, $uuid));
+      Notification::send($user, new PasswordResetNotification($withEmail, $withPhone, $uuid, $code));
     }
 
     $this->store->set($uuid, $data);
@@ -88,10 +73,11 @@ class ResetPasswordHelper
    *
    * @param string $uuid
    * @param string $code
+   * @param int    $successFlag
    *
    * @return bool
   */
-  public function verifyUUID(string $uuid, string $code): bool {
+  public function checkCode(string $uuid, string $code, int $successFlag = self::NOTHING_ON_SUCCESS): bool {
     // Retrieve the data
     $data = $this->store->get($uuid);
 
@@ -132,7 +118,6 @@ class ResetPasswordHelper
       'verified' => false,
     ];
   }
-
 
   /**
    * Method to remove from cache

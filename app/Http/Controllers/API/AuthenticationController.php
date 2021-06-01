@@ -151,7 +151,8 @@ class AuthenticationController extends Controller
       // Restore and generate the token
       if ($user = $this->user::onlyTrashed()->phone($phone)->first()) {
         $user->restore();
-        if ($profile = $user->profile->withTrashed()->first()) {
+        $user->load(['profile', 'district', 'city', 'region']);
+        if ($profile = $user->profile()->withTrashed()->first()) {
           $profile->restore();
         }
         $token = Auth::login($user);
@@ -214,6 +215,7 @@ class AuthenticationController extends Controller
       if (!$this->checkUserExists($email, $phone)) {
         return $this->returnError(__('User not exists'), 404);
       }
+      $params['phone'] = $phone;
 
       // Try to log in
       $token = auth()->attempt($params);
@@ -285,7 +287,7 @@ class AuthenticationController extends Controller
       $code = $request->input('code');
 
       // Try verifying the code
-      $verificationResult = ResetPasswordFacade::verifyUUID($uuid, $code);
+      $verificationResult = ResetPasswordFacade::checkCode($uuid, $code);
 
       // Return the result
       if ($verificationResult) {

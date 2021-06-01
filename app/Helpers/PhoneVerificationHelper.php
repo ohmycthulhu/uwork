@@ -9,26 +9,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Nutnet\LaravelSms\SmsSender;
 
-class PhoneVerificationHelper
+class PhoneVerificationHelper extends VerificationHelperBase
 {
-  const NOTHING_ON_SUCCESS = 0;
-  const SAVE_ON_SUCCESS = 1;
-  const DELETE_ON_SUCCESS = 2;
-
-  /**
-   * Indicates if verification is being done or ignored
-   *
-   * @var bool
-   */
-  protected $verificationEnabled;
-
-  /**
-   * Indicate if Nexmo is enabled
-   *
-   * @var bool
-   */
-  protected $isNexmoEnabled;
-
   /**
    * Store accessor for verification
    * @var CacheAccessor
@@ -55,8 +37,7 @@ class PhoneVerificationHelper
    */
   public function __construct(bool $verificationEnabled, bool $nexmoEnabled)
   {
-    $this->verificationEnabled = $verificationEnabled;
-    $this->isNexmoEnabled = $nexmoEnabled;
+    parent::__construct($verificationEnabled, $nexmoEnabled);
 
     $this->storeVerifying = new CacheAccessor("phone-verifying", null, 10);
     $this->storeVerified = new CacheAccessor("phone-verified", null, 30);
@@ -76,9 +57,9 @@ class PhoneVerificationHelper
    */
   public function createSession(?User $user, ?string $class, ?int $id, string $phone): string
   {
-    $uuid = Str::uuid();
+    $uuid = $this->generateUUID();
 
-    $code = Str::random(6);
+    $code = $this->generateCode();
 
     $data = $this->generateData($class, $id, $phone, $code);
 

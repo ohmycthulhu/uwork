@@ -19,6 +19,8 @@ final class CreateProfilesIndex implements MigrationInterface
         $mapping->keyword("regionId");
         $mapping->keyword("cityId");
         $mapping->keyword("districtId");
+        $mapping->keyword("district");
+        $mapping->float("rating");
         $mapping->keyword('userId');
         $mapping->object("specialities");
         $mapping->float('price_min');

@@ -51,8 +51,8 @@ class SearchController extends Controller
     $priceMin = $request->input('price_min');
     $priceMax = $request->input('price_max');
 
-    $sortColumn = strtolower($request->input('sort_by', '')) == 'price' ? $this->profile::SORT_PRICE : null;
-    $sortDir = strtolower($request->input('sort_dir', 'asc')) == 'asc' ? 'asc' : 'desc';
+    $sortColumn = $request->input('sort_by', '');
+    $sortDir = $request->input('sort_dir', 'asc');
 
     $specQuery = $this->profile::completeSearch(
       $categoryId,

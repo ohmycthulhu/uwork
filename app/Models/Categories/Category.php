@@ -50,7 +50,7 @@ class Category extends Model implements Slugable
     }
 
     if ($parentId) {
-      $query->must(['wildcard' => ['category_path' => "*$parentId*"]]);
+      $query->must(['match' => ['category_path' => $parentId]]);
     }
 
     return $query->execute()
@@ -93,8 +93,8 @@ class Category extends Model implements Slugable
             return str_contains($path, " {$category->id} ");
           })->count();
         };
-        $isSelectedCallback = function (Category $category, int $count, ?int $total) use ($specialities) {
-          return !$total ? $specialities->has($category->id) : ($total <= $count);
+        $isSelectedCallback = function (Category $category, int $count) use ($specialities) {
+          return $count > 0 || $specialities->has($category->id);
         };
       }
     }
@@ -109,7 +109,7 @@ class Category extends Model implements Slugable
         $services !== null ? compact('services') : [],
         [
           'count' => $count,
-          'selected' => $isSelectedCallback($category, $count, $total),
+          'selected' => $isSelectedCallback($category, $count),
         ]
       );
     });
@@ -131,13 +131,13 @@ class Category extends Model implements Slugable
       ->get();
 
     return $categories->map(function (Category $category) use ($parentCategories) {
-      $category->breadcrumb = array_map(
+      $breadcrumb = array_map(
         function (int $id) use ($parentCategories) {
           return $parentCategories->find($id);
         },
         $category->getCategoryPathIdsAttribute()
       );
-      return $category;
+      return array_merge($category->toArray(), compact('breadcrumb'));
     });
   }
 
@@ -225,6 +225,17 @@ class Category extends Model implements Slugable
   public function scopeChild(Builder $query): Builder
   {
     return $query->whereNotNull('parent_id');
+  }
+
+  /**
+   * Scope to order the categories
+   *
+   * @param Builder $query
+   *
+   * @return Builder
+  */
+  public function scopeAlphabetical(Builder $query): Builder {
+    return $query->orderBy('name');
   }
 
   /**

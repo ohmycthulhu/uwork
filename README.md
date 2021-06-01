@@ -1571,6 +1571,7 @@ speciality can change name and price, but not category.
               category_id: Number,
               price: Number,
               name: String,
+              images: Array&lt;ID&gt;|null
             }
         </td>
         <td>
@@ -1664,6 +1665,28 @@ speciality can change name and price, but not category.
     </tr>
     <tr>
         <td>
+            /api/images
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+              image: File
+            }
+        </td>
+        <td>
+            {
+              errors: String[]|null,
+              error: String|null,
+              status: String|null,
+              media: Image|null,
+              url: String|null,
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/user/profile/specialities/{specialityId}/images/{imageId}
         </td>
         <td>
@@ -1700,7 +1723,7 @@ speciality can change name and price, but not category.
         </td>
     </tr>
     </tbody>
-    </table>
+  </table>
 
 
 <a id="reviews-and-views" name="reviews-and-views"></a>
@@ -1939,7 +1962,7 @@ Specification
                 sort_by: "price"|null,
                 sort_dir: "asc"|"desc"|null,
                 price_min: Number|null,
-                price_max: Number|null,
+                price_max: Number|null
             }
         </td>
         <td>

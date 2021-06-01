@@ -4,6 +4,7 @@
 namespace App\Facades;
 
 
+use App\Helpers\VerificationHelperBase;
 use App\Models\User;
 use Illuminate\Support\Facades\Facade;
 
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @method static string   createSession(User $user, bool $withEmail, bool $withPhone)
  * @method static int|null checkUUID(string $uuid)
- * @method static bool     verifyUUID(string $uuid, string $code)
+ * @method static bool     checkCode(string $uuid, string $code, int $successFlag = VerificationHelperBase::NOTHING_ON_SUCCESS)
  * @method static string   removeUuid(string $uuid)
  *
 */

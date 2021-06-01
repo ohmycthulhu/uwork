@@ -30,9 +30,9 @@ class FileTest extends TestCase
     ];
 
     // Send image to API
-    $this->post(route('api.files'))
+    $this->post(route('api.images'))
       ->assertStatus(403);
-    $fileModel = $this->post(route('api.files'), $form)
+    $fileModel = $this->post(route('api.images'), $form)
       ->assertOk()
       ->json('media');
 

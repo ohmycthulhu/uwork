@@ -12,7 +12,9 @@ class CreateSpecialityFormRequest extends CreateMultipleSpecialityFormRequest
   public function rules(): array
   {
     return array_merge(parent::rules(), [
-      'category_id' => 'required|exists:App\Models\Categories\Category,id'
+      'category_id' => 'required|exists:App\Models\Categories\Category,id',
+      'images' => 'nullable|array',
+      'images.*' => 'required|numeric|min:1',
     ]);
   }
 }
