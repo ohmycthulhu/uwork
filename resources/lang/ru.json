@@ -2,6 +2,8 @@
     "Phone is not verified": "Мобильный телефон не подтверждён",
     "Phone is already occupied": "Мобильный телефон уже используется",
     "UUID not exists": "ID подтверждения не актуальный",
+    "UUID is invalid or not confirmed": "ID недействительный или же не подтверждён",
+    "Provided UUID or code is invalid": "Указанный код неверный",
     "Code is incorrect": "Код неправильный",
     "Phone number is blocked. Try again in a hour": "Мобильный телефон заблокирован. Попробуй снова через час",
     "User not exists": "Пользователь не существует",

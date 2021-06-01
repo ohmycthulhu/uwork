@@ -12,6 +12,7 @@ use App\Http\Requests\Authentication\RegisterPhoneRequest;
 use App\Http\Requests\Authentication\RegistrationFormRequest;
 use App\Http\Requests\Authentication\ResetPasswordRequest;
 use App\Http\Requests\User\SetPasswordRequest;
+use App\Http\Requests\VerifyPasswordResetRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -272,6 +273,29 @@ class AuthenticationController extends Controller
     }
 
     /**
+     * Method for verifying password reset code
+     *
+     * @param VerifyPasswordResetRequest $request
+     *
+     * @return JsonResponse
+    */
+    public function verifyPasswordReset(VerifyPasswordResetRequest $request): JsonResponse {
+      // Extract uuid and code
+      $uuid = $request->input('uuid');
+      $code = $request->input('code');
+
+      // Try verifying the code
+      $verificationResult = ResetPasswordFacade::verifyUUID($uuid, $code);
+
+      // Return the result
+      if ($verificationResult) {
+        return $this->returnSuccess();
+      } else {
+        return $this->returnError(__('Provided UUID or code is invalid'), 404);
+      }
+    }
+
+    /**
      * Method to set password
      *
      * @param SetPasswordRequest $request
@@ -283,7 +307,7 @@ class AuthenticationController extends Controller
       $userId = ResetPasswordFacade::checkUUID($uuid);
 
       if (!$userId) {
-        return $this->returnError('UUID is invalid', 403);
+        return $this->returnError(__('UUID is invalid or not confirmed'), 403);
       }
 
       $password = $request->input('password');

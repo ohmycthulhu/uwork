@@ -891,6 +891,14 @@ Registration is performed in 3 steps:
     Otherwise, verification_uuid is returned for registration.
 </p>
 <p>
+  To reset the password do the following:
+</p>
+<ol>
+<li>Send request to /api/passwords with using the phone or email address. Use will receive the code and you will get uuid</li>
+<li>To verify the uuid, send 6 symbol code to /api/passwords/verify using the uuid and code. If result is 200, everything is okay</li>
+<li>Send request with new password to /api/passwords/{uuid}. If uuid is verified, new password will be set</li>
+</ol>
+<p>
 <i>
     Note: For development purposes, code is verification is disabled.
     For verifying phone, send any 6 letter code string to verification route.
@@ -995,6 +1003,27 @@ Registration is performed in 3 steps:
     </tr>
     <tr>
         <td>
+            /api/passwords/verify
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {
+                uuid: String,
+                code: String
+            }
+        </td>
+        <td>
+            {
+                errors: String[]|null,
+                error: String|null,
+                status: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/passwords/{uuid}
         </td>
         <td>
@@ -1003,7 +1032,6 @@ Registration is performed in 3 steps:
         <td>
             {
                 password: String
-                password_confirmation: String
             }
         </td>
         <td>

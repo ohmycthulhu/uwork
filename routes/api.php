@@ -83,6 +83,8 @@ Route::post('/refresh', 'API\\AuthenticationController@refreshToken')
   ->middleware('auth:api');
 Route::post('/passwords', 'API\\AuthenticationController@resetPassword')
   ->name('reset');
+Route::post('/passwords/verify', 'API\\AuthenticationController@verifyPasswordReset')
+  ->name('reset.verify');
 Route::post('/passwords/{uuid}', 'API\\AuthenticationController@setPassword')
   ->name('reset.set');
 

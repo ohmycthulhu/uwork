@@ -25,7 +25,7 @@ class VerificationServiceProvider extends ServiceProvider
     // Register reset password facade
     $this->app->bind('reset-password', function () {
       $isNexmoEnabled = !config('nexmo.is_disabled');
-      return new ResetPasswordHelper($isNexmoEnabled);
+      return new ResetPasswordHelper(config('app.code_check_enabled'), $isNexmoEnabled);
     });
 
     // Register bot login facade

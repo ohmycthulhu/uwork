@@ -14,22 +14,22 @@ class PasswordResetNotification extends Notification
 
   protected $hasEmail;
   protected $hasPhone;
-  protected $uuid;
+  protected $code;
 
   /**
    * Create a new notification instance.
    *
    * @param bool $hasEmail
    * @param bool $hasPhone
-   * @param string $uuid
+   * @param string $code
    *
    * @return void
    */
-  public function __construct(bool $hasEmail, bool $hasPhone, string $uuid)
+  public function __construct(bool $hasEmail, bool $hasPhone, string $code)
   {
     $this->hasEmail = $hasEmail;
     $this->hasPhone = $hasPhone;
-    $this->uuid = $uuid;
+    $this->code = $code;
   }
 
   /**
@@ -60,7 +60,7 @@ class PasswordResetNotification extends Notification
   {
     return (new MailMessage)
       ->line('To reset the password, use following code:')
-      ->line($this->uuid)
+      ->line($this->code)
       ->line('Thank you for using our application!');
   }
 
@@ -73,7 +73,7 @@ class PasswordResetNotification extends Notification
   public function toArray($notifiable)
   {
     return [
-      'uuid' => $this->uuid,
+      'code' => $this->code,
     ];
   }
 
@@ -84,6 +84,6 @@ class PasswordResetNotification extends Notification
    * @return NutnetSmsMessage
   */
   public function toNutnetSms($notifable): array {
-    return new NutnetSmsMessage("Use following code to reset password: {$this->uuid}");
+    return new NutnetSmsMessage("Use following code to reset password: {$this->code}");
   }
 }
