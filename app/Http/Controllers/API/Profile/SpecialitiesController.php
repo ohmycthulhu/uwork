@@ -81,8 +81,9 @@ class SpecialitiesController extends Controller
         $speciality->id,
         $images
       );
-      $speciality->load('media');
     }
+
+    $speciality->load('media');
 
     // Return result
     return $this->returnSuccess([
@@ -438,14 +439,30 @@ class SpecialitiesController extends Controller
 
     // Create speciality
     $specialities = [];
+    $addedImages = false;
     foreach ($serviceIds as $categoryId) {
       if (!$existingSpecialities->contains($categoryId)) {
-        $specialities[] = $profile->addSpeciality(
+        $speciality = $profile->addSpeciality(
           $categoryId,
           $request->input('price'),
           $request->input('name'),
           $request->input('description'),
         );
+
+        if (!$addedImages) {
+          if ($images = $request->input('images', [])) {
+            MediaFacade::attachImages(
+              ProfileSpeciality::class,
+              $speciality->id,
+              $images
+            );
+          }
+          $addedImages = true;
+        }
+
+        $speciality->load('media');
+
+        $specialities[] = $speciality;
       }
     }
 

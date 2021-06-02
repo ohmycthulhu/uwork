@@ -1531,7 +1531,8 @@ speciality can change name and price, but not category.
           {
             price: Number|null,
             name: String|null,
-            description: String|null
+            description: String|null,
+            images: Array&lt;ID&gt;|null,
           }
         </td>
         <td>

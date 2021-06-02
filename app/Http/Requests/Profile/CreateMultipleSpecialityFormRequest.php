@@ -17,6 +17,8 @@ class CreateMultipleSpecialityFormRequest extends FormRequest
           'price' => 'required|numeric|min:1|max:999999',
           'name' => 'nullable|string',
           'description' => 'nullable|string',
+          'images' => 'nullable|array',
+          'images.*' => 'required|numeric|min:1',
         ];
     }
 }
