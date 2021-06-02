@@ -5,6 +5,7 @@ namespace App\Models\Location;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class District extends Model
@@ -14,6 +15,29 @@ class District extends Model
   protected $fillable = ['name'];
 
   protected $visible = ['id', 'name', 'city', 'city_id'];
+
+  /**
+   * Relations
+   */
+
+  /**
+   * Relation to city
+   *
+   * @return BelongsTo
+   */
+  public function city(): BelongsTo
+  {
+    return $this->belongsTo(City::class, 'city_id');
+  }
+
+  /**
+   * Relation to subways
+   *
+   * @return HasMany
+   */
+  public function subways(): HasMany {
+    return $this->hasMany(Subway::class, 'district_id');
+  }
 
   /**
    * Scopes
@@ -30,19 +54,5 @@ class District extends Model
   public function scopeName(Builder $query, string $name): Builder
   {
     return $query->where('name', "like", "%\"$name\"%");
-  }
-
-  /**
-   * Relations
-   */
-
-  /**
-   * Relation to city
-   *
-   * @return BelongsTo
-   */
-  public function city(): BelongsTo
-  {
-    return $this->belongsTo(City::class, 'city_id');
   }
 }

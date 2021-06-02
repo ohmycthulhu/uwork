@@ -49,7 +49,7 @@ class LocationController extends Controller
     }
     $regions = $query->get();
 
-    return $this->returnSuccess(['regions' => $regions]);
+    return $this->returnSuccess(compact('regions'));
   }
 
   /**
@@ -65,7 +65,7 @@ class LocationController extends Controller
       return $this->returnError(__('Region not found'), 404);
     }
 
-    return $this->returnSuccess(['region' => $region]);
+    return $this->returnSuccess(compact('region'));
   }
 
   /**
@@ -82,7 +82,7 @@ class LocationController extends Controller
     }
     $cities = $region->cities()->with('districts')->get();
 
-    return $this->returnSuccess(['cities' => $cities]);
+    return $this->returnSuccess(compact('cities'));
   }
 
   /**
@@ -93,13 +93,13 @@ class LocationController extends Controller
    * @return JsonResponse
    */
   public function cityById(int $id): JsonResponse {
-    $city = $this->city::query()->with('districts')->find($id);
+    $city = $this->city::query()->with(['districts', 'subways'])->find($id);
 
     if (!$city) {
       return $this->returnError(__('City not found'), 404);
     }
 
-    return $this->returnSuccess(['city' => $city]);
+    return $this->returnSuccess(compact('city'));
   }
 
   /**
@@ -118,6 +118,25 @@ class LocationController extends Controller
 
     $districts = $city->districts()->get();
 
-    return $this->returnSuccess(['districts' => $districts]);
+    return $this->returnSuccess(compact('districts'));
+  }
+
+  /**
+   * Gets subways in city
+   *
+   * @param int $id
+   *
+   * @return JsonResponse
+   */
+  public function citySubways(int $id): JsonResponse {
+    $city = $this->city::query()->find($id);
+
+    if (!$city) {
+      return $this->returnError(__('City not found'), 404);
+    }
+
+    $subways = $city->subways()->get();
+
+    return $this->returnSuccess(compact('subways'));
   }
 }

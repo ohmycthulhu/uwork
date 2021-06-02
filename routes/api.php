@@ -63,6 +63,9 @@ Route::get('/cities/{id}', 'API\\LocationController@cityById')
 Route::get('/cities/{id}/districts', 'API\\LocationController@cityDistricts')
   ->where('id', REGEX_ID)
   ->name('cities.id.districts');
+Route::get('/cities/{id}/subways', 'API\\LocationController@citySubways')
+  ->where('id', REGEX_ID)
+  ->name('cities.id.subways');
 
 /*
  * Authentication methods

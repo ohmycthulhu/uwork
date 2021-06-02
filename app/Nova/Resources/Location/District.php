@@ -4,6 +4,7 @@ namespace App\Nova\Resources\Location;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 
@@ -33,6 +34,7 @@ class District extends LocationResource
       Text::make(__('Name'), 'name')->sortable(),
       Text::make(__('Place ID'), 'google_id')
         ->nullable()->sortable(),
+      HasMany::make(__('Subways'), 'subways', Subway::class),
 
     ];
   }

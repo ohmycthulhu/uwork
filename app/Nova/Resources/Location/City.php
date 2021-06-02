@@ -34,7 +34,8 @@ class City extends LocationResource
         ->sortable(),
       Text::make(__('Place ID'), 'google_id')
         ->nullable()->sortable(),
-      HasMany::make(__('Districts'), 'districts', District::class)
+      HasMany::make(__('Districts'), 'districts', District::class),
+      HasMany::make(__('Subways'), 'subways', Subway::class),
     ];
   }
 }

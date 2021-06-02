@@ -42,6 +42,15 @@ class City extends Model
   }
 
   /**
+   * Relation to subways
+   *
+   * @return HasMany
+  */
+  public function subways(): HasMany {
+    return $this->hasMany(Subway::class, 'city_id');
+  }
+
+  /**
    * Scopes
    */
 
