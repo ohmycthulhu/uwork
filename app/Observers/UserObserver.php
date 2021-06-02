@@ -19,6 +19,7 @@ class UserObserver
       $profile->region_id = $user->region_id;
       $profile->city_id = $user->city_id;
       $profile->district_id = $user->district_id;
+      $profile->subway_id = $user->subway_id;
       $profile->save();
     }
   }

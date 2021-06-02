@@ -6,6 +6,7 @@ use App\Nova\Resource;
 use App\Nova\Resources\Location\City;
 use App\Nova\Resources\Location\District;
 use App\Nova\Resources\Location\Region;
+use App\Nova\Resources\Location\Subway;
 use App\Nova\Resources\Profile\Review;
 use App\Nova\Resources\User\Profile;
 use Illuminate\Http\Request;
@@ -80,6 +81,7 @@ class User extends Resource
       BelongsTo::make(__('Region'), 'region', Region::class),
       BelongsTo::make(__('City'), 'city', City::class),
       BelongsTo::make(__('District'), 'district', District::class),
+      BelongsTo::make(__('Subway'), 'subway', Subway::class),
 
       HasOne::make(__('Profile'), 'profile', Profile::class),
       HasMany::make(__('Reviews'), 'reviews', Review::class),

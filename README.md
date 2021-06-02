@@ -49,18 +49,10 @@
 </thead>
 <tbody>
 <tr>
-    <td>TString</td>
-    <td>{lang: String}, lang = 'en'|'ru'</td>
-    <td>
-        Translatable string,
-        contains several strings in various languages
-    </td>
-</tr>
-<tr>
     <td>Category</td>
     <td>{
-            name: TString,
-            slug: TString,
+            name: String,
+            slug: String,
             id: Int,
             icon_default: String|null,
             icon_active: String|null,
@@ -81,8 +73,8 @@
     <td>FAQ</td>
     <td>{
             id: Int,
-            question: TString,
-            answer: TString,
+            question: String,
+            answer: String,
             order: Int
         }
     </td>
@@ -91,7 +83,7 @@
 <tr>
     <td>Region</td>
     <td>{
-            name: TString,
+            name: String,
             id: Int,
             cities: City[]
         }
@@ -102,7 +94,7 @@
     <td>City</td>
     <td>{
             id: Int,
-            name: TString,
+            name: String,
             region_id: Int,
             region: Region,
             districts: District[]
@@ -114,12 +106,25 @@
     <td>District</td>
     <td>{
             id: Int,
-            name: TString,
+            name: String,
             city_id: Int,
             city: City
         }
     </td>
     <td>Entity representing certain district</td>
+</tr>
+<tr>
+    <td>Subway</td>
+    <td>{
+            id: Int,
+            name: String,
+            color: String|null,
+            identifier: String|null,
+            city_id: Int,
+            district_id: Int|null,
+        }
+    </td>
+    <td>Entity representing certain subway</td>
 </tr>
 <tr>
     <td>User</td>
@@ -135,6 +140,7 @@
             region_id: Int|null,
             city_id: Int|null,
             district_id: Int|null
+            subway_id: Int|null
         }
     </td>
     <td>User model</td>
@@ -144,7 +150,7 @@
     <td>{
             id: Int,
             path: String,
-            responsive_image_urls: Dictionary&ltString,String&gt,
+            responsive_image_urls: Dictionary&lString,String&gt,
             model: T1,
             model_type: String,
             model_id: Int,
@@ -290,8 +296,8 @@
             notifiable_type: Number,
             notifiable_id: Number,
             read_at: Datetime|null,
-            title: TString,
-            description: TString|null
+            title: String,
+            description: String|null
         }
     </td>
     <td>Model represents notification element</td>
@@ -344,8 +350,8 @@
     <td>HelpCategory</td>
     <td>{
             id: int,
-            name: TString,
-            slug: TString,
+            name: String,
+            slug: String,
             order: Number|null,
             top_items: HelpItem[]|null,
             items: HelpItem[]|null,
@@ -358,10 +364,10 @@
     <td>HelpItem</td>
     <td>{
             id: int,
-            name: TString,
-            slug: TString,
+            name: String,
+            slug: String,
             order: Number|null,
-            text: TString,
+            text: String,
             help_category_id: Number
         }
     </td>
@@ -454,7 +460,7 @@
     </td>
     <td>
         {
-            about_us: TString
+            about_us: String
         }
     </td>
 </tr>
@@ -675,13 +681,14 @@
 ## Locations
 
 <div>
-    Information about location is divided into 3 groups:
+    Information about location is divided into 4 groups:
     <ul>
         <li>Regions</li>
         <li>Cities</li>
         <li>Districts</li>
+        <li>Subways</li>
     </ul>
-    They are hierarchily connected,
+    They are hierarchy connected,
     so each region has multiple cities, each city multiple districts.
     <hr />
     Available endpoints listed below
@@ -774,6 +781,22 @@
             }
         </td>
     </tr>
+    <tr>
+        <td>
+            /api/cities/{id}/subways
+        </td>
+        <td>
+            GET
+        </td>
+        <td>
+            Returns information subways of specific city
+        </td>
+        <td>
+            {
+                subways: District[]
+            }
+        </td>
+    </tr>
     </tbody>
     </table>
 </div>
@@ -855,6 +878,7 @@ Registration is performed in 3 steps:
   region_id: Number|null,
   city_id: Number|null,
   district_id: Number|null,
+  subway_id: Number|null,
   password: String,
   password_confirmation: String
 }</td>
@@ -1190,6 +1214,7 @@ To delete avatar, send DELETE request to /api/user/avatar.
                 region_id: Int|null,
                 city_id: Int|null,
                 district_id: Int|null
+                subway_id: Int|null
             }
         </td>
         <td>
@@ -1923,7 +1948,7 @@ Specification
         category
     </li>
     <li>
-        Location - consists of region_id, city_id and district_id. 
+        Location - consists of region_id, city_id, district_id and subway_id. 
         By leaving one empty profile are not being filtered by the field.
     </li>
 </ul>
@@ -1958,6 +1983,7 @@ Specification
                 region_id: int|null,
                 city_id: int|null,
                 district_id: int|null,
+                subway_id: int|null,
                 per_page: int|null,
                 page: int|null,
                 sort_by: "price"|null,

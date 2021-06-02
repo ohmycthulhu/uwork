@@ -8,6 +8,7 @@ use App\Models\Categories\Category;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
+use App\Models\Location\Subway;
 use App\Models\Model;
 use App\Models\Profile\ProfileView;
 use App\Models\Profile\Review;
@@ -32,7 +33,7 @@ class Profile extends Model
   // Fillable fields
   protected $fillable = [
     'about', 'phone', 'picture', 'reviews_count', 'rating',
-    'views_count', 'open_count',
+    'views_count', 'open_count', 'subway_id',
   ];
 
   // Hidden fields
@@ -255,6 +256,15 @@ class Profile extends Model
   }
 
   /**
+   * Location Subway
+   *
+   * @return BelongsTo
+  */
+  public function subway(): BelongsTo {
+    return $this->belongsTo(Subway::class, 'subway_id');
+  }
+
+  /**
    * Confirm the profile
    *
    * @return $this
@@ -448,6 +458,7 @@ class Profile extends Model
       'cityId' => $this->city_id,
       'districtId' => $this->district_id,
       'district' => $this->district ? $this->district->name : null,
+      'subwayId' => $this->subway_id,
       'rating' => $this->rating,
       'userId' => $this->user_id,
       'specialities' => $specialitiesInfo,
@@ -512,6 +523,7 @@ class Profile extends Model
     ?int $regionId,
     ?int $cityId,
     ?int $districtId,
+    ?int $subwayId,
     ?int $userId,
     ?float $priceMin,
     ?float $priceMax,
@@ -525,7 +537,9 @@ class Profile extends Model
 
     $locations = [];
     /* Prepare location constraints */
-    if ($districtId) {
+    if ($subwayId) {
+      $locations['subwayId'] = $subwayId;
+    } elseif ($districtId) {
       $locations["districtId"] = $districtId;
     } elseif ($cityId) {
       $locations["cityId"] = $cityId;

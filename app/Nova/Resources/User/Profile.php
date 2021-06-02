@@ -10,6 +10,7 @@ use App\Nova\Resources\Complaints\Complaint;
 use App\Nova\Resources\Location\City;
 use App\Nova\Resources\Location\District;
 use App\Nova\Resources\Location\Region;
+use App\Nova\Resources\Location\Subway;
 use App\Nova\Resources\Profile\Review;
 use App\Nova\Resources\User;
 use Illuminate\Http\Request;
@@ -84,6 +85,7 @@ class Profile extends Resource
       BelongsTo::make(__('Region'), 'region', Region::class)->onlyOnDetail(),
       BelongsTo::make(__('City'), 'city', City::class)->onlyOnDetail(),
       BelongsTo::make(__('District'), 'district', District::class)->onlyOnDetail(),
+      BelongsTo::make(__('Subway'), 'subway', Subway::class)->onlyOnDetail(),
 
       HasMany::make(__('Specialities'), 'specialities', ProfileSpeciality::class),
       HasMany::make(__('Reviews'), 'reviews', Review::class),

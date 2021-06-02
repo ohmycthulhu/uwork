@@ -19,6 +19,7 @@ class ProfileSearchRequest extends ApiRequest
       'region_id' => 'nullable|numeric',
       'city_id' => 'nullable|numeric',
       'district_id' => 'nullable|numeric',
+      'subway_id' => 'nullable|numeric',
       'per_page' => 'nullable|numeric',
       'categories' => 'nullable|array',
       'categories.*' => 'numeric',

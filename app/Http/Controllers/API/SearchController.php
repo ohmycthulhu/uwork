@@ -60,6 +60,7 @@ class SearchController extends Controller
       $request->input('region_id'),
       $request->input('city_id'),
       $request->input('district_id'),
+      $request->input('subway_id'),
       Auth::id(),
       $priceMin,
       $priceMax,

@@ -27,6 +27,7 @@ class RegistrationFormRequest extends ApiRequest
       'region_id' => 'nullable|numeric|exists:regions,id',
       'city_id' => 'nullable|numeric|exists:cities,id',
       'district_id' => 'nullable|numeric|exists:districts,id',
+      'subway_id' => 'nullable|numeric|exists:subways,id',
     ];
   }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
+use App\Models\Location\Subway;
 use App\Models\Messenger\Chat;
 use App\Models\Payment\Card;
 use App\Models\Profile\Review;
@@ -34,7 +35,7 @@ class User extends Authenticatable implements JWTSubject
   protected $fillable = [
     'first_name', 'last_name', 'father_name',
     'email', 'phone', 'password',
-    'region_id', 'city_id', 'district_id',
+    'region_id', 'city_id', 'district_id', 'subway_id',
     'birthdate', 'is_male',
   ];
 
@@ -231,6 +232,15 @@ class User extends Authenticatable implements JWTSubject
   */
   public function district(): BelongsTo {
     return $this->belongsTo(District::class, 'district_id');
+  }
+
+  /**
+   * Relation to subway
+   *
+   * @return BelongsTo
+  */
+  public function subway(): BelongsTo {
+    return $this->belongsTo(Subway::class, 'subway_id');
   }
 
   /**
