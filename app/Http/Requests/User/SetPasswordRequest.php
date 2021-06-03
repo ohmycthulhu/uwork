@@ -15,7 +15,7 @@ class SetPasswordRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'password' => ['required', 'string', new PasswordRule],
+            'password' => ['required', 'string', 'min:6', new PasswordRule],
         ];
     }
 }

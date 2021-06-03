@@ -911,7 +911,7 @@ Registration is performed in 3 steps:
 </p>
 <p>
     For login or registration via messenger, you should send request to
-    /api/tokens/verify/{uuid} . If user exists, then user and token is returned.
+    /api/tokens/{uuid} . If user exists, then user and token is returned.
     Otherwise, verification_uuid is returned for registration.
 </p>
 <p>
@@ -983,7 +983,7 @@ Registration is performed in 3 steps:
     </tr>
     <tr>
         <td>
-            /api/tokens/verify/{uuid}
+            /api/tokens/{uuid}
         </td>
         <td>
             POST
