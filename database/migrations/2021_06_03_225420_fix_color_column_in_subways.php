@@ -15,6 +15,8 @@ class FixColorColumnInSubways extends Migration
     {
         Schema::table('subways', function (Blueprint $table) {
             $table->dropColumn('color');
+        });
+        Schema::table('subways', function (Blueprint $table) {
             $table->string('color')->nullable();
         });
     }
@@ -28,6 +30,8 @@ class FixColorColumnInSubways extends Migration
     {
         Schema::table('subways', function (Blueprint $table) {
           $table->dropColumn('color');
+        });
+        Schema::table('subways', function (Blueprint $table) {
           $table->char('color', 9)->nullable();
         });
     }
