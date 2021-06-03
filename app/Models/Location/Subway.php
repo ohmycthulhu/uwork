@@ -11,7 +11,7 @@ class Subway extends Model
     use SoftDeletes;
 
     protected $fillable = [
-      'name', 'color', 'identifier', 'district_id',
+      'name', 'color', 'line', 'identifier', 'district_id',
     ];
 
     /**

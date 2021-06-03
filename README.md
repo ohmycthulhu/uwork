@@ -120,6 +120,7 @@
             name: String,
             color: String|null,
             identifier: String|null,
+            line: String|null,
             city_id: Int,
             district_id: Int|null,
         }

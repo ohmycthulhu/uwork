@@ -30,6 +30,9 @@ class Subway extends LocationResource
 
           Text::make(__('Name'), 'name')->sortable(),
 
+          Text::make(__('Line'), 'line')->sortable(),
+          Text::make(__('Color'), 'color')->sortable(),
+
           BelongsTo::make(__('City'), 'city', City::class)->sortable(),
           BelongsTo::make(__('District'), 'district', District::class)->sortable(),
         ];
