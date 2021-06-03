@@ -880,8 +880,7 @@ Registration is performed in 3 steps:
   city_id: Number|null,
   district_id: Number|null,
   subway_id: Number|null,
-  password: String,
-  password_confirmation: String
+  password: String
 }</td>
 <td>{user: User|null, token: String|null, errors: String[]|null, error: String}</td>
 </tr>
@@ -1274,7 +1273,6 @@ To delete avatar, send DELETE request to /api/user/avatar.
             {
                 current_password: String,
                 password: String,
-                password_confirmation: String
             }
         </td>
         <td>

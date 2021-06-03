@@ -178,13 +178,11 @@ class SpecialitiesController extends Controller
     );
 
     // Add images
-    $imagesToAdd = $request->file('images_add', []);
-    foreach ($imagesToAdd as $file) {
-      MediaFacade::upload(
-        $file,
-        null,
+    if ($imagesToAdd = $request->input('images_add', [])) {
+      MediaFacade::attachImages(
         ProfileSpeciality::class,
-        $speciality->id
+        $speciality->id,
+        $imagesToAdd,
       );
     }
 

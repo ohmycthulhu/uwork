@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\ApiRequest;
+use App\Rules\PasswordRule;
 
 class SetPasswordRequest extends ApiRequest
 {
@@ -14,7 +15,7 @@ class SetPasswordRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'password' => 'required|string',
+            'password' => ['required', 'string', new PasswordRule],
         ];
     }
 }

@@ -22,7 +22,7 @@ class UpdateSpecialityFormRequest extends ApiRequest
       'images_remove.*' => 'required|numeric',
 
       'images_add' => 'nullable|array',
-      'images_add.*' => 'required|image|max:10485760',
+      'images_add.*' => 'required|numeric|min:1',
     ];
   }
 }
