@@ -48,6 +48,11 @@ class FileController extends Controller
       return $this->returnError(__($e->getMessage()), 505);
     }
 
+    if ($order = $request->input('order')) {
+      $media->order_column = $order;
+      $media->save();
+    }
+
     return $this->returnSuccess([
       'id' => $media->id,
       'media' => $media,

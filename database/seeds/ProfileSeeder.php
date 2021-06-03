@@ -8,7 +8,21 @@ use Illuminate\Support\Str;
 
 class ProfileSeeder extends Seeder
 {
-    /**
+  /* @var array $images */
+  protected $images;
+
+  public function __construct()
+  {
+    $this->images = [
+      storage_path("images/example_1.jpg"),
+      storage_path("images/example_2.jpg"),
+      storage_path("images/example_3.jpg"),
+      storage_path("images/example_4.jpg"),
+    ];
+
+  }
+
+  /**
      * Run the database seeds.
      *
      * @return void
@@ -16,7 +30,9 @@ class ProfileSeeder extends Seeder
     public function run()
     {
         $users = \App\Models\User::all();
-        $categories = \App\Models\Categories\Category::all();
+      $services = CategoryService::query()->get();
+      $minImagesCount = 1;
+      $maxImagesCount = sizeof($this->images);
 
         foreach ($users as $user) {
           $p = factory(\App\Models\User\Profile::class)
@@ -27,7 +43,6 @@ class ProfileSeeder extends Seeder
           $profile = $user->profile()->first() ??
             $user->profile()->create($p);
 
-          $services = CategoryService::query()->get();
           foreach ($services->shuffle()->slice(0, 3) as $service) {
             /* @var ProfileSpeciality $speciality */
             $speciality = $profile->addSpeciality(
@@ -36,7 +51,7 @@ class ProfileSeeder extends Seeder
               Str::random(),
             );
 
-            for ($i = rand(1, 4); $i > 0; $i--) {
+            for ($i = rand($minImagesCount, $maxImagesCount); $i > 0; $i--) {
               $this->addImageToSpeciality($speciality);
             }
           }
@@ -70,9 +85,11 @@ class ProfileSeeder extends Seeder
      * @return ProfileSpeciality
     */
     protected function addImageToSpeciality(ProfileSpeciality $speciality): ProfileSpeciality {
-      \Illuminate\Support\Facades\File::copy(storage_path("images/example.jpg"), storage_path("images/example1.jpg"));
+      $srcImage = $this->images[array_rand($this->images)];
+      $destImage = storage_path("images/example_dest.jpg");
+      \Illuminate\Support\Facades\File::copy($srcImage, $destImage);
       $image = new \Illuminate\Http\UploadedFile(
-        storage_path('images/example1.jpg'),
+        $destImage,
         "example.jpg",
         "images/jpeg",
       null

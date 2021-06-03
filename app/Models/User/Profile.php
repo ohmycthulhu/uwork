@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Facades\MediaFacade;
 use App\Facades\NotificationFacade;
 use App\Facades\SearchFacade;
 use App\Models\Categories\Category;
@@ -162,13 +163,24 @@ class Profile extends Model
    * @param float $price
    * @param ?string $name
    * @param ?string $description
+   * @param ?array $images
    *
    * @return Model|\Illuminate\Database\Eloquent\Model
    */
-  public function addSpeciality(int $categoryId, float $price, ?string $name = null, ?string $description = null): Model
+  public function addSpeciality(int $categoryId, float $price, ?string $name = null, ?string $description = null, ?array $images = null): Model
   {
-    return $this->specialities()
+    $speciality = $this->specialities()
       ->create(['category_id' => $categoryId, 'price' => $price, 'name' => $name, 'description' => $description]);
+
+    if ($images) {
+      MediaFacade::attachImages(
+        ProfileSpeciality::class,
+        $speciality->id,
+        $images
+      );
+    }
+
+    return $speciality;
   }
 
   /**

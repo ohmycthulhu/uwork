@@ -21,6 +21,8 @@ class CreateProfileRequest extends ApiRequest
       'specialities.*.price' => 'nullable|numeric',
       'specialities.*.name' => 'nullable|string',
       'specialities.*.description' => 'nullable|string',
+      'specialities.*.images' => 'nullable|array',
+      'specialities.*.images.*' => 'required|numeric|min:1',
     ];
   }
 }

@@ -87,6 +87,7 @@ class ProfileController extends Controller
         $speciality['price'] ?? null,
         $speciality['name'] ?? '',
         $speciality['description'] ?? '',
+        $speciality['images'] ?? null,
       );
     }
 

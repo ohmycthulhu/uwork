@@ -1343,7 +1343,7 @@ Specification
 <tr>
 <td>SpecialityForm</td>
 <td>
-{ category_id: Int, price: Float|null, name: String|null }	
+{ category_id: Int, price: Float|null, name: String|null, images: Array&lt;ID&gt;|null }	
 </td>
 </tr>
 </tbody>
@@ -1697,7 +1697,8 @@ speciality can change name and price, but not category.
         </td>
         <td>
             {
-              image: File
+              image: File,
+              order: Number|null,
             }
         </td>
         <td>

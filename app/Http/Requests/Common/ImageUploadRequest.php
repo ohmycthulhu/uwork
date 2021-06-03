@@ -15,7 +15,8 @@ class ImageUploadRequest extends ApiRequest
   {
     return [
       'image' => 'required|image|max:10485760',
-      'collection' => 'nullable|string'
+      'collection' => 'nullable|string',
+      'order'
     ];
   }
 }
