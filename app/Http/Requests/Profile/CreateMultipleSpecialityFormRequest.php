@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Profile;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ApiRequest;
 
-class CreateMultipleSpecialityFormRequest extends FormRequest
+class CreateMultipleSpecialityFormRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.

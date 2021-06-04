@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categories\Category;
+use App\Models\Categories\CategoryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -126,7 +127,7 @@ class SpecialitiesTest extends TestCase
     return [
       'name' => Str::random(8) . " " . Str::random(8),
       'price' => rand(100, 600) / 10.0,
-      'category_id' => Category::query()->inRandomOrder()->first()->id,
+      'category_id' => CategoryService::query()->inRandomOrder()->first()->id,
     ];
   }
 

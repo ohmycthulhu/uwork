@@ -31,5 +31,6 @@
         <server name="NEXMO_KEY" value="ajsdh7ahs"/>
         <server name="NEXMO_SECRET" value="Sud7hsHS5sMA"/>
         <server name="API_RESTRICTION_TOKEN" value=""/>
+        <server name="ELASTIC_HOST" value="127.0.0.1:9201"/>
     </php>
 </phpunit>

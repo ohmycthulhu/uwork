@@ -11,6 +11,7 @@ use App\Models\User\ProfileSpeciality;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -63,6 +64,7 @@ abstract class TestCase extends BaseTestCase
   protected function fillDatabase()
   {
     Notification::fake();
+    Artisan::call("elastic:migrate:refresh");
     $categories = $this->createCategories();
     $regions = $this->createRegions();
 
@@ -89,6 +91,8 @@ abstract class TestCase extends BaseTestCase
       $profile->save();
       $profile->confirm();
     }
+
+    User\Profile::query()->get()->each->save();
   }
 
   /**
