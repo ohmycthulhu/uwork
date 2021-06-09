@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return date('Y-m-d H:i:s');
 });
+
+Route::get('/exception', function () {
+  throw new \Exception("Exception!");
+});
