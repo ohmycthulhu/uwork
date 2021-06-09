@@ -870,7 +870,7 @@ Registration is performed in 3 steps:
 <td>{
   first_name: String,
   last_name: String,
-  father_name: String,
+  father_name: String|null,
   email: String|null,
   verification_uuid: String,
   is_male: Boolean|null,
