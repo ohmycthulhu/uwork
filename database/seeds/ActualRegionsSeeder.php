@@ -67,7 +67,7 @@ class ActualRegionsSeeder extends Seeder
           ]);
 
         // Create district for each city
-        $districtsInfo = $cityInfo->districts;
+        $districtsInfo = $cityInfo->districts ?? [];
         foreach ($districtsInfo as $districtInfo) {
           $districtName = $districtInfo->name;
           if (!$city->districts()->name($districtName)->first()) {

@@ -67,7 +67,7 @@ class SearchController extends Controller
       $sortColumn,
       $sortDir,
       $page,
-      15
+      $request->input('per_page', 15)
     );
 
     $profiles = $specQuery->models();

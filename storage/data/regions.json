@@ -9725,6 +9725,226 @@
           ]
         }
       ]
+    },
+    {
+      "id": null,
+      "name": "Еврейская АО",
+      "parent_id": null,
+      "short_name": "край",
+      "cities": [
+        {
+          "id": null,
+          "name": "Биробиджан",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Облучье",
+          "parent_id": null,
+          "short_name": "г"
+        }
+      ]
+    },
+    {
+      "id": null,
+      "name": "Ненецкий АО",
+      "parent_id": null,
+      "short_name": "край",
+      "cities": [
+        {
+          "id": null,
+          "name": "Нарьян-Мар",
+          "parent_id": null,
+          "short_name": "г"
+        }
+      ]
+    },
+    {
+      "id": null,
+      "name": "Ханты-Мансийский АО - Югра",
+      "parent_id": null,
+      "short_name": "край",
+      "cities": [
+        {
+          "id": null,
+          "name": "Сургут",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Нижневартовск",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Нефтеюганск",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Ханты-Мансийск",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Белоярский",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Когалым",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Лангепас",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Лянтор",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Мегион",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Нягань",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Покачи",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Пыть-Ях",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Радужный (Ханты-Мансийский АО - Югра)",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Советский",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Урай",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Югорск",
+          "parent_id": null,
+          "short_name": "г"
+        }
+      ]
+    },
+    {
+      "id": null,
+      "name": "Чукотский АО",
+      "parent_id": null,
+      "short_name": "край",
+      "cities": [
+        {
+          "id": null,
+          "name": "Анадырь",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Билибино",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Певек",
+          "parent_id": null,
+          "short_name": "г"
+        }
+      ]
+    },
+    {
+      "id": null,
+      "name": "Ямало-Ненецкий АО",
+      "parent_id": null,
+      "short_name": "край",
+      "cities": [
+        {
+          "id": null,
+          "name": "Новый Уренгой",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Ноябрьск",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Губкинский",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Лабытнанги",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Муравленко",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Надым",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Салехард",
+          "parent_id": null,
+          "short_name": "г"
+        },
+        {
+          "id": null,
+          "name": "Тарко-Сале",
+          "parent_id": null,
+          "short_name": "г"
+        }
+      ]
     }
   ]
 }

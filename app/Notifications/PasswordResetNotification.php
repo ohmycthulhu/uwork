@@ -61,9 +61,8 @@ class PasswordResetNotification extends Notification
   public function toMail($notifiable)
   {
     return (new MailMessage)
-      ->line('To reset the password, use following code:')
-      ->line($this->code)
-      ->line('Thank you for using our application!');
+      ->line('Чтобы восстановить пароль, используейте следующий код: ')
+      ->line($this->code);
   }
 
   /**
@@ -87,6 +86,6 @@ class PasswordResetNotification extends Notification
    * @return NutnetSmsMessage
   */
   public function toNutnetSms($notifable): array {
-    return new NutnetSmsMessage("Use following code to reset password: {$this->code}");
+    return new NutnetSmsMessage("Чтобы восстановить пароль, используейте следующий код:{$this->code}");
   }
 }

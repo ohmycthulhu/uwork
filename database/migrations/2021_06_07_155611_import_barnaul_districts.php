@@ -27,6 +27,10 @@ class ImportBarnaulDistricts extends Migration
           ->where('name', $city['name'])
           ->first();
 
+        if (!$c) {
+          return;
+        }
+
         $c->districts()
           ->whereNotIn('name', $districts)
           ->forceDelete();
