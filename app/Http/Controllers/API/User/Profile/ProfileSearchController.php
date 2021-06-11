@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\User\Profile;
 
 use App\Facades\SearchFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ProfileSearchRequest;
+use App\Http\Requests\Profile\RandomProfilesRequest;
 use App\Http\Requests\SearchCategoriesRequest;
 use App\Models\Categories\Category;
 use App\Models\User\Profile;
@@ -14,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class SearchController extends Controller
+class ProfileSearchController extends Controller
 {
   protected $category;
   protected $profile;
@@ -99,35 +100,42 @@ class SearchController extends Controller
   }
 
   /**
-   * Method to get autocomplete suggestions
+   * Method to get random profiles
    *
-   * @param Request $request
+   * @param RandomProfilesRequest $request
    *
    * @return JsonResponse
    */
-  public function getAutocomplete(Request $request): JsonResponse {
-    $keyword = $request->input('keyword', 'NULL');
-    $suggestions = SearchFacade::getAutocomplete($keyword);
+  public function getRandom(RandomProfilesRequest $request): JsonResponse {
+    $amount = $request->input('amount', 10);
+    $categoryId = $request->input('category_id');
+    $category = $categoryId ? $this->category::find($categoryId) : null;
+
+    if ($categoryId && !$category) {
+      return $this->returnError(__('Category not found'), 404);
+    }
+
+    $query = ProfileSpeciality::query();
+
+    if ($categoryId) {
+      $query->category($categoryId);
+    }
+    $profileIds = $query->groupBy('profile_id')
+      ->limit($amount)
+      ->inRandomOrder()
+      ->whereHas('profile', function ($query) {
+        return $query->public();
+      })
+      ->pluck('profile_id');
+
+    $profiles = $this->profile::query()
+      ->whereIn('id', $profileIds)
+      ->with(['region', 'district', 'city', 'user', 'specialities'])
+      ->get();
 
     return $this->returnSuccess([
-      'suggestions' => $suggestions,
+      'profiles' => $profiles,
+      'category' => $category,
     ]);
-  }
-
-  /**
-   * Method search category
-   *
-   * @param SearchCategoriesRequest $request
-   *
-   * @return JsonResponse
-   */
-  public function searchCategories(SearchCategoriesRequest $request): JsonResponse {
-    $keyword = $request->input('keyword', '');
-    $parentCategory = $request->input('parent_id');
-    $categories = $this->category::searchByName($keyword, $parentCategory, 10);
-    $categories->load(['parent', 'children']);
-    $categories = Category::appendBreadcrumbs($categories);
-
-    return $this->returnSuccess(compact('categories'));
   }
 }

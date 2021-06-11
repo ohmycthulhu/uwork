@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Info;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Communication\AppealFormRequest;

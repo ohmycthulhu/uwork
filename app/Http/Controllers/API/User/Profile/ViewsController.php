@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Profile;
+namespace App\Http\Controllers\API\User\Profile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\Views\AddViewRequest;

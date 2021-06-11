@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return date('Y-m-d H:i:s');
-});
+Route::get('/', 'Web\\HomeController@index');
 
-Route::get('/exception', function () {
-  throw new \Exception("Exception!");
-});
+Route::get('/exception', 'Web\\HomeController@error');

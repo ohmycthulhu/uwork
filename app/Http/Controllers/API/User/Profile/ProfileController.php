@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\User\Profile;
 
 use App\Facades\NotificationFacade;
 use App\Facades\PhoneVerificationFacade;
@@ -214,46 +214,6 @@ class ProfileController extends Controller
 
     return $this->returnSuccess([
       'profile' => $profile
-    ]);
-  }
-
-  /**
-   * Method to get random profiles
-   *
-   * @param RandomProfilesRequest $request
-   *
-   * @return JsonResponse
-  */
-  public function getRandom(RandomProfilesRequest $request): JsonResponse {
-    $amount = $request->input('amount', 10);
-    $categoryId = $request->input('category_id');
-    $category = $categoryId ? $this->category::find($categoryId) : null;
-
-    if ($categoryId && !$category) {
-      return $this->returnError(__('Category not found'), 404);
-    }
-
-    $query = ProfileSpeciality::query();
-
-    if ($categoryId) {
-      $query->category($categoryId);
-    }
-    $profileIds = $query->groupBy('profile_id')
-      ->limit($amount)
-      ->inRandomOrder()
-      ->whereHas('profile', function ($query) {
-        return $query->public();
-      })
-      ->pluck('profile_id');
-
-    $profiles = $this->profile::query()
-      ->whereIn('id', $profileIds)
-      ->with(['region', 'district', 'city', 'user', 'specialities'])
-      ->get();
-
-    return $this->returnSuccess([
-      'profiles' => $profiles,
-      'category' => $category,
     ]);
   }
 

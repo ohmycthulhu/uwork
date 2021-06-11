@@ -13,7 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'tokens', 'as' => 'tokens.'], function (\Illuminate\Routing\Router $router) {
-  $router->post('/', 'API\\Common\\BotController@createToken')
-    ->name('create');
-});
+if (!defined('REGEX_ID')) {
+  define("REGEX_ID", '[0-9]+');
+}
+Route::post('/', 'ProfileController@create')
+  ->name('create');
+Route::get('/', 'ProfileController@get')
+  ->name('get');
+Route::post('/update', 'ProfileController@update')
+  ->name('update');
+Route::put('/images/{imageId}', 'ProfileController@setImageSpeciality')
+  ->name('images.update');
+
+Route::get('/reviews', 'ReviewsController@get')
+  ->name('reviews.get');

@@ -23,7 +23,7 @@ class SearchTest extends TestCase
   public function testSearch()
   {
     // Create profiles, regions, cities and districts
-    $this->fillDatabase();
+    $this->fillDatabase(true);
 
     $this->get(route('api.profiles.search'))
       ->assertOk()
@@ -137,7 +137,7 @@ class SearchTest extends TestCase
 
   public function testRandom () {
     // Fill database
-    $this->fillDatabase();
+    $this->fillDatabase(true);
 
     // Send empty request to random
     $this->get(route('api.profiles.random'))

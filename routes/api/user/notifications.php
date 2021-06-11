@@ -13,7 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'tokens', 'as' => 'tokens.'], function (\Illuminate\Routing\Router $router) {
-  $router->post('/', 'API\\Common\\BotController@createToken')
-    ->name('create');
-});
+if (!defined('REGEX_ID')) {
+  define("REGEX_ID", '[0-9]+');
+}
+
+/*
+ * Authenticated routes
+ */
+Route::get('/', 'NotificationsController@get')
+  ->name('get');
+Route::match(['post', 'put'], '/', 'NotificationsController@markRead')
+  ->name('read');

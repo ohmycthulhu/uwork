@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\User;
 
 use App\Facades\NotificationFacade;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ReadNotificationsRequest;
 use App\Http\Requests\RetrieveNotificationsRequest;
 use App\Models\User;

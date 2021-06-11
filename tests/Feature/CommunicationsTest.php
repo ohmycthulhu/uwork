@@ -49,7 +49,6 @@ class CommunicationsTest extends TestCase
           $form->email
         );
       } catch (Exception $exception) {
-          var_dump($exception);
           $this->assertFalse(true);
       }
       $this->assertDatabaseCount('appeals', $amount);
@@ -71,7 +70,6 @@ class CommunicationsTest extends TestCase
         $form->email
       );
     } catch (Exception $exception) {
-      var_dump($exception);
       $this->assertFalse(true);
     }
     // Try to spam by creating appeals

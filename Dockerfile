@@ -65,6 +65,7 @@ RUN php artisan key:generate && \
     php artisan jwt:secret -f
 
 RUN php artisan storage:link
+RUN php artisan route:cache
 
 RUN chmod a+rw storage -R
 RUN php artisan config:clear

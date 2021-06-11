@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Common;
 
 use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;

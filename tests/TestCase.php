@@ -59,12 +59,16 @@ abstract class TestCase extends BaseTestCase
   /**
    * Method to fill database
    *
+   * @param bool $emptySearch
+   *
    * @return void
    */
-  protected function fillDatabase()
+  protected function fillDatabase(bool $emptySearch = false)
   {
     Notification::fake();
-    Artisan::call("elastic:migrate:refresh");
+    if ($emptySearch) {
+      Artisan::call("elastic:migrate:refresh");
+    }
     $categories = $this->createCategories();
     $regions = $this->createRegions();
 

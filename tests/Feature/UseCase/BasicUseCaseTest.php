@@ -28,7 +28,7 @@ class BasicUseCaseTest extends TestCase
   */
   public function testBasic() {
     // Fill database
-    $this->fillDatabase();
+    $this->fillDatabase(true);
 
     // Perform search by category
     $profile = $this->searchRandomProfile();
@@ -73,7 +73,6 @@ class BasicUseCaseTest extends TestCase
       $result = $this->get(route('api.profiles.search'))
         ->assertOk()
         ->json('result');
-      var_dump($result);
       $data = $result['data'];
       $profileId = $data[0]['id'];
 

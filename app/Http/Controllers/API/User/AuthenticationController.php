@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\User;
 
 use App\Facades\PhoneVerificationFacade;
 use App\Facades\ResetPasswordFacade;

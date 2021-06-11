@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Profile;
+namespace App\Http\Controllers\API\User\Profile;
 
 use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
@@ -27,6 +27,21 @@ class SpecialitiesController extends Controller
   public function __construct(Category $category)
   {
     $this->category = $category;
+  }
+
+  /**
+   * Method to get profile of current user
+   *
+   * @return ?Profile
+   */
+  protected function getProfile(): ?Profile
+  {
+    $user = Auth::user();
+    if (!$user) {
+      return null;
+    }
+
+    return $user->profile()->first();
   }
 
   /**
@@ -88,6 +103,70 @@ class SpecialitiesController extends Controller
     // Return result
     return $this->returnSuccess([
       'speciality' => $speciality,
+    ]);
+  }
+
+  /**
+   * Route to add all category services
+   *
+   * @param CreateMultipleSpecialityFormRequest $request
+   * @param Category $category
+   *
+   * @return JsonResponse
+   */
+  public function createMultiple(CreateMultipleSpecialityFormRequest $request, Category $category): JsonResponse {
+    // Check if user has profile
+    $profile = $this->getProfile();
+
+    // If not, return error
+    if (!$profile) {
+      return $this->returnError(__('User does not have profile'), 403);
+    }
+
+    // Search if user has exact same speciality
+    $existingSpecialities = $profile->specialities()
+      ->category($category->id)
+      ->pluck('category_id');
+
+    $services = $category->getServicesAttribute();
+    if (sizeof($services) > 0) {
+      $serviceIds = $services->pluck('id');
+    } else {
+      $serviceIds = [$category->id];
+    }
+
+    // Create speciality
+    $specialities = [];
+    $addedImages = false;
+    foreach ($serviceIds as $categoryId) {
+      if (!$existingSpecialities->contains($categoryId)) {
+        $speciality = $profile->addSpeciality(
+          $categoryId,
+          $request->input('price'),
+          $request->input('name'),
+          $request->input('description'),
+        );
+
+        if (!$addedImages) {
+          if ($images = $request->input('images', [])) {
+            MediaFacade::attachImages(
+              ProfileSpeciality::class,
+              $speciality->id,
+              $images
+            );
+          }
+          $addedImages = true;
+        }
+
+        $speciality->load('media');
+
+        $specialities[] = $speciality;
+      }
+    }
+
+    // Return result
+    return $this->returnSuccess([
+      'specialities' => $specialities,
     ]);
   }
 
@@ -235,19 +314,30 @@ class SpecialitiesController extends Controller
     ]);
   }
 
+
   /**
-   * Method to get profile of current user
+   * Route to delete multiple specialities
    *
-   * @return ?Profile
+   * @param Category $category
+   *
+   * @return JsonResponse
    */
-  protected function getProfile(): ?Profile
-  {
-    $user = Auth::user();
-    if (!$user) {
-      return null;
+  public function deleteMultiple(Category $category): JsonResponse {
+    // Check if user has profile
+    $profile = $this->getProfile();
+
+    // If not, return error
+    if (!$profile) {
+      return $this->returnError(__('User does not have profile'), 403);
     }
 
-    return $user->profile()->first();
+    $profile->specialities()
+      ->category($category->id)
+      ->delete();
+
+    $specialities = $profile->specialities()->get();
+
+    return $this->returnSuccess(['specialities' => $specialities]);
   }
 
   /**
@@ -346,152 +436,5 @@ class SpecialitiesController extends Controller
     return $this->returnSuccess([
       'image' => $image,
     ]);
-  }
-
-  /**
-   * Route to get categories for specialities
-   *
-   * @return JsonResponse
-  */
-  public function getCategories(): JsonResponse {
-    $profile = $this->getProfile();
-
-    $categories = Category::query()->top()->alphabetical()->get();
-    $result = Category::addServicesFields($categories, $profile, null, false, false);
-    return $this->returnSuccess(compact('result'));
-  }
-
-  /**
-   * Route to get subcategories by parent id
-   *
-   * @param int $categoryId
-   *
-   * @return JsonResponse
-  */
-  public function getSubcategories(int $categoryId): JsonResponse {
-    $profile = $this->getProfile();
-
-    $subcategories = Category::query()
-      ->parent($categoryId)
-      ->alphabetical()
-      ->get();
-
-    $result = Category::addServicesFields($subcategories, $profile, $categoryId, true, true);
-
-    return $this->returnSuccess(compact('result'));
-  }
-
-  /**
-   * Route to search through the categories
-   *
-   * @param SearchSpecialityCategoriesController $request
-   *
-   * @return JsonResponse
-  */
-  public function searchCategories(SearchSpecialityCategoriesController $request): JsonResponse {
-    // Get profile
-    $profile = $this->getProfile();
-
-    // Extract parameters
-    $keyword = $request->input('keyword');
-    $parentId = $request->input('parent_id');
-    $size = $request->input('size', 15);
-
-    // Search categories
-    $categories = Category::searchByName($keyword, $parentId, $size);
-
-    // Map categories
-    $result = Category::addServicesFields($categories, $profile, $parentId, true, false);
-
-    return $this->returnSuccess(compact('result'));
-  }
-
-  /**
-   * Route to add all category services
-   *
-   * @param CreateMultipleSpecialityFormRequest $request
-   * @param Category $category
-   *
-   * @return JsonResponse
-  */
-  public function createMultiple(CreateMultipleSpecialityFormRequest $request, Category $category): JsonResponse {
-    // Check if user has profile
-    $profile = $this->getProfile();
-
-    // If not, return error
-    if (!$profile) {
-      return $this->returnError(__('User does not have profile'), 403);
-    }
-
-    // Search if user has exact same speciality
-    $existingSpecialities = $profile->specialities()
-      ->category($category->id)
-      ->pluck('category_id');
-
-    $services = $category->getServicesAttribute();
-    if (sizeof($services) > 0) {
-      $serviceIds = $services->pluck('id');
-    } else {
-      $serviceIds = [$category->id];
-    }
-
-    // Create speciality
-    $specialities = [];
-    $addedImages = false;
-    foreach ($serviceIds as $categoryId) {
-      if (!$existingSpecialities->contains($categoryId)) {
-        $speciality = $profile->addSpeciality(
-          $categoryId,
-          $request->input('price'),
-          $request->input('name'),
-          $request->input('description'),
-        );
-
-        if (!$addedImages) {
-          if ($images = $request->input('images', [])) {
-            MediaFacade::attachImages(
-              ProfileSpeciality::class,
-              $speciality->id,
-              $images
-            );
-          }
-          $addedImages = true;
-        }
-
-        $speciality->load('media');
-
-        $specialities[] = $speciality;
-      }
-    }
-
-    // Return result
-    return $this->returnSuccess([
-      'specialities' => $specialities,
-    ]);
-  }
-
-  /**
-   * Route to delete multiple specialities
-   *
-   * @param Category $category
-   *
-   * @return JsonResponse
-  */
-  public function deleteMultiple(Category $category): JsonResponse {
-    // Check if user has profile
-    $profile = $this->getProfile();
-
-    // If not, return error
-    if (!$profile) {
-      return $this->returnError(__('User does not have profile'), 403);
-    }
-
-    $profile->specialities()
-      ->category($category->id)
-      ->delete();
-
-    $specialities = $profile->specialities()->get();
-
-    return $this->returnSuccess(['specialities' => $specialities]);
   }
 }
