@@ -20,15 +20,15 @@ Route::group([
 });
 
 Route::group([
-  'prefix' => 'cities',
+  'prefix' => 'cities/{id}',
   'as' => 'cities.',
   'where' => ['id' => REGEX_ID]
 ], function (\Illuminate\Routing\Router $router) {
 // Cities information
-  $router->get('/cities/{id}', 'LocationController@cityById')
+  $router->get('/', 'LocationController@cityById')
     ->name('id');
-  $router->get('/cities/{id}/districts', 'LocationController@cityDistricts')
+  $router->get('/districts', 'LocationController@cityDistricts')
     ->name('id.districts');
-  $router->get('/cities/{id}/subways', 'LocationController@citySubways')
+  $router->get('/subways', 'LocationController@citySubways')
     ->name('id.subways');
 });
