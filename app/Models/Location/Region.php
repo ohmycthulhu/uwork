@@ -57,7 +57,7 @@ class Region extends Model
    */
   public function scopeName(Builder $query, string $name): Builder
   {
-    return $query->where('name', "like", "%\"$name\"%");
+    return $query->where('name', "like", $name);
   }
 
   /**

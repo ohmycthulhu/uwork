@@ -2,6 +2,7 @@
 
 namespace App\Models\Location;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,5 +31,29 @@ class Subway extends Model
     */
     public function district(): BelongsTo {
       return $this->belongsTo(District::class, 'district_id');
+    }
+
+    /**
+     * Scope for filtering by name
+     *
+     * @param Builder $query
+     * @param string $name
+     *
+     * @return Builder
+    */
+    public function scopeName(Builder $query, string $name): Builder {
+      return $query->where('name', $name);
+    }
+
+    /**
+     * Scope for filtering by name
+     *
+     * @param Builder $query
+     * @param string $line
+     *
+     * @return Builder
+    */
+    public function scopeLine(Builder $query, string $line): Builder {
+      return $query->where('line', $line);
     }
 }

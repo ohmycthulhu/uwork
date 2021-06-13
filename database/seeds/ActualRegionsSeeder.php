@@ -37,25 +37,26 @@ class ActualRegionsSeeder extends Seeder
 
     // Create regions for each entry
     foreach ($regionsData as $regionInfo) {
-      $googleId = $regionInfo->google_id ?? null;
+      $name = $regionInfo->name ?? null;
 
-      $region = $googleId ? Region::query()->googleId($googleId)->first() : null;
+      $region = Region::query()
+        ->name($name)
+        ->first();
       if ($region) {
-        echo "Region ({$regionInfo->name}) already exists\n";
+        echo "Region ({$name}) already exists\n";
       }
 
       $region = $region ??
         Region::create([
           'name' => $regionInfo->name,
-          'google_id' => $googleId,
+          'google_id' => $regionInfo->google_id ?? null,
         ]);
 
       // Create cities for each region
       $citiesList = $regionInfo->cities;
       foreach ($citiesList as $cityInfo) {
-        $cityGoogleId = $cityInfo->google_id ?? null;
+        $city = $region->cities()->name($cityInfo->name)->first();
 
-        $city = $cityGoogleId ? City::query()->googleId($cityGoogleId)->first() : null;
         if ($city) {
           echo "City ({$cityInfo->name}) already exists\n";
         }
@@ -63,18 +64,52 @@ class ActualRegionsSeeder extends Seeder
         $city = $city ??
           $region->cities()->create([
             'name' => $cityInfo->name,
-            'google_id' => $cityGoogleId,
+            'google_id' => $cityInfo->google_id ?? null,
           ]);
 
         // Create district for each city
         $districtsInfo = $cityInfo->districts ?? [];
-        foreach ($districtsInfo as $districtInfo) {
-          $districtName = $districtInfo->name;
-          if (!$city->districts()->name($districtName)->first()) {
-            $city->districts()->create([
-              'name' => $districtName,
+        $this->createDistricts($city, $districtsInfo);
+
+        // Create subway for each city
+        $subwayInfo = $cityInfo->subway ?? null;
+        if ($subwayInfo) {
+          $this->createSubways($city, $subwayInfo);
+        }
+      }
+    }
+  }
+
+  public function createDistricts(City $city, array $districts)
+  {
+    foreach ($districts as $districtInfo) {
+      $districtName = $districtInfo->name;
+      if (!$city->districts()->name($districtName)->first()) {
+        $city->districts()->create([
+          'name' => $districtName,
+        ]);
+      }
+    }
+  }
+
+  public function createSubways(City $city, array $lines)
+  {
+    foreach ($lines as $line) {
+      $lineName = $line->name;
+      $lineColor = $line->color;
+      foreach ($line->stations as $station) {
+        $existingSubway = $city->subways()
+          ->name($station)
+          ->line($lineName)
+          ->first();
+        if (!$existingSubway) {
+          echo "Creating subway $station\n";
+          $city->subways()
+            ->create([
+              'name' => $station,
+              'line' => $lineName,
+              'color' => $lineColor
             ]);
-          }
         }
       }
     }

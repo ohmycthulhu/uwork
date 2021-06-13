@@ -22,11 +22,13 @@ class CreateSubwaysTable extends Migration
             $table->foreignId('city_id')
               ->nullable()
               ->references('id')
+              ->cascadeOnDelete()
               ->on('cities');
 
             $table->foreignId('district_id')
               ->nullable()
               ->references('id')
+              ->nullOnDelete()
               ->on('districts');
 
             $table->softDeletes();
