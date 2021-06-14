@@ -39,6 +39,8 @@ class User extends Authenticatable implements JWTSubject
     'birthdate', 'is_male',
   ];
 
+  protected $with = ['avatarImage'];
+
   protected $avatarColumn = 'avatar';
 
   protected $casts = [

@@ -3,7 +3,10 @@
 
 namespace App\Models\Traits;
 
+use App\Facades\MediaFacade;
+use App\Models\Media\Image;
 use Exception;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +25,8 @@ trait HasAvatar
    */
   public function setAvatar(UploadedFile $image): self
   {
+    $this->removeAvatar();
+
     if (!Str::startsWith($image->getMimeType(), "image") && false) {
       return $this;
     }
@@ -30,13 +35,20 @@ trait HasAvatar
 
     try {
       Storage::disk('public')
-        ->put("avatars/$fileName", File::get($image));
+        ->put($image->getPath(), "avatars/$fileName");
 
       $this->{$this->avatarColumn} = "avatars/$fileName";
       $this->save();
     } catch (Exception $e) {
       Log::error("Error on saving user avatar - ".$e->getMessage());
     }
+
+    MediaFacade::upload(
+      $image,
+      'avatar',
+      static::class,
+      $this->id
+    );
 
     return $this;
   }
@@ -47,9 +59,22 @@ trait HasAvatar
    * @return $this
   */
   public function removeAvatar(): self {
-    $this->{$this->avatarColumn} = null;
-    $this->save();
+    if ($this->{$this->avatarColumn}) {
+      $this->{$this->avatarColumn} = null;
+      $this->save();
+    }
+    $this->avatarImage()
+      ->delete();
     return $this;
+  }
+
+  /**
+   * Morph image for avatar
+   *
+   * @return MorphOne
+  */
+  public function avatarImage(): MorphOne {
+    return $this->morphOne(Image::class, 'model');
   }
 
   /**

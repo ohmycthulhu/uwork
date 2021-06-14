@@ -36,7 +36,6 @@ RUN docker-php-ext-install \
     exif \
     iconv \
     intl \
-    redis \
     bcmath \
     opcache \
     calendar \
@@ -44,6 +43,11 @@ RUN docker-php-ext-install \
     pdo_mysql \
     gd  \
     zip
+
+# Enable Redis
+RUN pecl install -o -f redis \
+&&  rm -rf /tmp/pear \
+&&  docker-php-ext-enable redis
 
 # 5. Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -138,6 +138,7 @@
             is_male: Boolean|null,
             notification_settings: Dictionary&lt;String, Boolen&gt;,
             avatar_url: String|null,
+            avatar_image: Image|null,
             region_id: Int|null,
             city_id: Int|null,
             district_id: Int|null

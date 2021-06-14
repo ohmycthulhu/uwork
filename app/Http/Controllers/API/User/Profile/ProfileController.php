@@ -210,7 +210,9 @@ class ProfileController extends Controller
       return $this->returnError(__('Profile not found'), 404);
     }
 
-    $profile->load(['specialities.category.parent', 'specialities.media', 'user', 'region', 'city', 'district']);
+    $profile->load(['specialities.category', 'specialities.media', 'user', 'region', 'city', 'district']);
+
+    $profile['specialities'] = ProfileSpeciality::includeCategoriesPath($profile['specialities']);
 
     return $this->returnSuccess([
       'profile' => $profile
