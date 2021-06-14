@@ -25,6 +25,7 @@
         "nutnet/laravel-sms": "^0.10.0",
         "optimistdigital/nova-settings": "^3.1",
         "optimistdigital/nova-translatable": "^1.7",
+        "predis/predis": "^1.1",
         "sentry/sentry-laravel": "^2.6",
         "spatie/eloquent-sortable": "^3.8",
         "spatie/laravel-medialibrary": "^7.0.0",

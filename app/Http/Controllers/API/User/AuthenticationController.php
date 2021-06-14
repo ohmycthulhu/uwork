@@ -234,6 +234,16 @@ class AuthenticationController extends Controller
     }
 
     /**
+     * Method to logout user
+     *
+     * @return JsonResponse
+    */
+    public function logout(): JsonResponse {
+      Auth::logout();
+      return $this->returnSuccess();
+    }
+
+    /**
      * Method to get current user
      *
      * @return JsonResponse

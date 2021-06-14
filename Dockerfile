@@ -34,8 +34,9 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 RUN docker-php-ext-install \
     bz2 \
     exif \
-    intl \
     iconv \
+    intl \
+    redis \
     bcmath \
     opcache \
     calendar \

@@ -30,6 +30,9 @@ Route::post('/verify/{uuid}', 'User\\AuthenticationController@verifyPhoneNumber'
 
 Route::post('/login', 'User\\AuthenticationController@login')
   ->name('login');
+Route::post('/logout', 'User\\AuthenticationController@logout')
+  ->name('logout')
+  ->middleware('auth:api');
 Route::post('/refresh', 'User\\AuthenticationController@refreshToken')
   ->name('refresh')
   ->middleware('auth:api');

@@ -983,6 +983,23 @@ Registration is performed in 3 steps:
     </tr>
     <tr>
         <td>
+            /api/logout
+        </td>
+        <td>
+            POST
+        </td>
+        <td>
+            {}
+        </td>
+        <td>
+            {
+                error: String|null,
+                status: String|null
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
             /api/tokens/{uuid}
         </td>
         <td>
