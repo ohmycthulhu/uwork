@@ -9,6 +9,7 @@ RUN apt-get install -y \
     curl \
     sudo \
     unzip \
+    supervisor \
     libzip-dev \
     libicu-dev \
     libbz2-dev \
