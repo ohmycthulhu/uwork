@@ -35,12 +35,13 @@ trait HasAvatar
 
     try {
       Storage::disk('public')
-        ->put($image->getPath(), "avatars/$fileName");
+        ->copy($image->getPath(), "avatars/$fileName");
 
       $this->{$this->avatarColumn} = "avatars/$fileName";
       $this->save();
     } catch (Exception $e) {
       Log::error("Error on saving user avatar - ".$e->getMessage());
+      throw $e;
     }
 
     MediaFacade::upload(

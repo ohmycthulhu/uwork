@@ -148,11 +148,11 @@ class UserController extends Controller
     try {
       if ($profile) {
         // Delete profile if exists
-        $profile->delete();
+        $profile->forceDelete();
       }
 
       // Delete user
-      $user->delete();
+      $user->forceDelete();
     } catch (\Exception $exception) {
       return $this->returnError(__($exception->getMessage()), 503);
     }

@@ -58,6 +58,16 @@ class BasicUseCaseTest extends TestCase
     $this->assertEquals(1, $p->views_count);
     $this->assertEquals(1, $p->open_count);
 
+    // Delete the account
+    Auth::login(User::find($p->user_id));
+    $this->delete(route('api.user.delete'))->assertOk();
+
+    $this->assertNull(
+      User::query()
+      ->withTrashed()
+      ->where('id', $p->user_id)
+      ->first()
+    );
     // Clear database
     $this->clearDatabase();
     }
@@ -70,13 +80,13 @@ class BasicUseCaseTest extends TestCase
     protected function searchRandomProfile(): Profile {
 //      $category = Category::query()->inRandomOrder()->first();
 
-      $result = $this->get(route('api.profiles.search'))
-        ->assertOk()
-        ->json('result');
-      $data = $result['data'];
-      $profileId = $data[0]['id'];
+//      $result = $this->get(route('api.profiles.search'))
+//        ->assertOk()
+//        ->json('result');
+//      $data = $result['data'];
+//      $profileId = $data[0]['id'];
 
-      return Profile::query()->find($profileId);
+      return Profile::query()->inRandomOrder()->first();
     }
 
     /**
