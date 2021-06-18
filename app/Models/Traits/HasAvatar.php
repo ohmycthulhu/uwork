@@ -35,7 +35,7 @@ trait HasAvatar
 
     try {
       Storage::disk('public')
-        ->copy($image->getPath(), "avatars/$fileName");
+        ->put("avatars/$fileName", $image->getContent());
 
       $this->{$this->avatarColumn} = "avatars/$fileName";
       $this->save();

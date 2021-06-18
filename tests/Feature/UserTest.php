@@ -11,6 +11,7 @@ use App\Utils\CacheAccessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -272,6 +273,7 @@ class UserTest extends TestCase
     $this->assertEquals($name, $user->first_name);
     $this->assertNotNull($user->avatar_url);
     $this->assertFileExists(public_path($user->avatar_path));
+    $this->assertGreaterThan(1e3, File::size(public_path($user->avatar_path)));
 
     $newPassword = Str::random();
     $form = ['current_password' => $newPassword, 'password' => $newPassword, 'password_confirmation' => $newPassword];

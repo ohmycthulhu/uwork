@@ -78,7 +78,7 @@ class MediaHelper
       Storage::disk($diskTarget)
         ->makeDirectory($media->id);
       Storage::disk($diskTarget)
-        ->copy($file->getPath(), "{$media->id}/$fileName");
+        ->put("{$media->id}/$fileName", $file->getContent());
     } catch (Exception $e) {
       $media->forceDelete();
       throw $e;
