@@ -8,6 +8,7 @@
     "Phone number is blocked. Try again in a hour": "Мобильный телефон заблокирован. Попробуй снова через час",
     "User not exists": "Пользователь не существует",
     "Invalid credentials": "Неправильный логин / пароль",
+    "Old phone number is not verified": "Текущий номер телефона не подтверждён",
     "User not found": "Пользователь не найден",
     "Password is incorrect": "Пароль неправильный",
     "Category not found": "Категория не найдена",

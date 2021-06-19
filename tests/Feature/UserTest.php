@@ -2,18 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Facades\PhoneVerificationFacade;
-use App\Helpers\PhoneVerificationHelper;
+use App\Models\Location\City;
 use App\Models\User;
 use App\Notifications\PasswordResetNotification;
 use App\Notifications\VerifyPhoneNotification;
 use App\Utils\CacheAccessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Void_;
@@ -22,6 +19,14 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
   use RefreshDatabase;
+
+  protected $storeVerifying;
+
+  public function __construct(?string $name = null, array $data = [], $dataName = '')
+  {
+    parent::__construct($name, $data, $dataName);
+    $this->storeVerifying = new CacheAccessor("phone-verifying");
+  }
 
   /**
    * Basic test to check basic functionality
@@ -54,7 +59,6 @@ class UserTest extends TestCase
   */
   public function testVerification () {
     Notification::fake();
-    $storeVerifying = new CacheAccessor("phone-verifying");
 
     $phone = "994512318822";
 
@@ -63,26 +67,10 @@ class UserTest extends TestCase
       ->assertStatus(403);
 
     // Send request to set phone
-    $verUuid = $this->post(route('api.phones'), compact('phone'))
-      ->assertOk()
-      ->json('verification_uuid');
-
-    $verCode = $storeVerifying->get($verUuid)['code'];
+    $this->verifyNumber($phone);
 
     // Send request with existing phone
-    $verUuid2 = $this->post(route('api.phones'), compact('phone'))
-      ->assertOk()
-      ->json('verification_uuid');
-
-    $verCode2 = $storeVerifying->get($verUuid2)['code'];
-
-    // Send wrong verification code
-    $this->post(route('api.verify', ['uuid' => $verUuid]), ['code' => $verCode])
-      ->assertOk();
-
-    // Resend code
-    $this->post(route('api.verify', ['uuid' => $verUuid2]), ['code' => $verCode2])
-      ->assertOk();
+    $this->verifyNumber($phone);
   }
 
   /**
@@ -92,35 +80,21 @@ class UserTest extends TestCase
    */
   public function testRegistration()
   {
+    $this->fillDatabase();
     Notification::fake();
-    $storeVerifying = new CacheAccessor("phone-verifying");
 
     // Send request to set mobile phone
     $phone = "994512318822";
 
-    $uuid = $this->post(route('api.phones'), ['phone' => $phone])
-      ->assertOk()
-      ->json('verification_uuid');
-
-    // Send similar request with the same phone
-
-    $uuid2 = $this->post(route('api.phones'), ['phone' => $phone])
-      ->assertOk()
-      ->json('verification_uuid');
-
-    // Verify mobile phones
-    $code1 = $storeVerifying->get($uuid)['code'];
-    $code2 = $storeVerifying->get($uuid2)['code'];
-
-    $this->post(route('api.verify', ['uuid' => $uuid]), ['code' => $code1])
-      ->assertOk();
-    $this->post(route('api.verify', ['uuid' => $uuid2]), ['code' => $code2]);
+    $uuid = $this->verifyNumber($phone);
+    $uuid2 = $this->verifyNumber($phone);
 
     // Send partial requests
     // Send request to register with the first code
     $form = $this->userForm($uuid);
     $this->sendPartialRequests(route('api.register'), $form, [
-      'first_name', 'last_name', 'father_name', 'password', 'verification_uuid'
+      'first_name', 'last_name', 'father_name', 'password', 'verification_uuid',
+      'city_id', 'region_id',
     ]);
     $userId = $this->post(route('api.register'), $form)
       ->assertOk()
@@ -151,12 +125,15 @@ class UserTest extends TestCase
   protected function userForm(string $uuid): array {
     $model = factory(User::class)->make();
     $password = Str::random();
+    $city = City::query()->first();
 
     return array_merge($model->toArray(), [
       'verification_uuid' => $uuid,
       'password' => $password,
       'password_confirmation' => $password,
       'avatar' => $this->getUploadedFile(),
+      'region_id' => $city->region_id,
+      'city_id' => $city->id,
     ]);
   }
 
@@ -226,10 +203,10 @@ class UserTest extends TestCase
       $uuid = $notification->toArray($user)['uuid'];
       $code = $notification->toArray($user)['code'];
 
-      $this->post(route('api.reset.verify'), ['uuid' => $uuid, 'code' => $code])
+      $this->post(route('api.reset.verify'), compact('uuid', 'code'))
         ->assertOk();
 
-      $this->post(route('api.reset.set', ['uuid' => $uuid]), $form)
+      $this->post(route('api.reset.set', compact('uuid')), $form)
         ->assertOk();
 
       return true;
@@ -268,6 +245,7 @@ class UserTest extends TestCase
     $this->post(route('api.user.update.profile'), $form)
       ->assertOk();
 
+    /* @var User $user */
     $user = User::query()->find($user->id);
 
     $this->assertEquals($name, $user->first_name);
@@ -297,8 +275,23 @@ class UserTest extends TestCase
     $this->assertEquals('example@email.com', User::query()->find($user->id)->email);
 
     // Send request to change phone
+    $this->changeUserPhone($user);
+
+    // Delete user
+    Auth::logout();
+    User::query()->forceDelete();
+  }
+
+  protected function changeUserPhone(User $user) {
     $newPhone = '99512461251';
-    $form = ['phone' => $newPhone, 'password' => $password];
+
+    $form = ['phone' => $newPhone];
+    $this->put(route('api.user.update.phone'), $form)
+      ->assertStatus(403);
+
+    $verUuid = $this->verifyNumber($user->getPhone());
+
+    $form = ['phone' => $newPhone, 'verification_uuid' => $verUuid];
     $verificationUuid = $this->put(route('api.user.update.phone'), $form)
       ->assertOk()
       ->json('verification_uuid');
@@ -319,10 +312,20 @@ class UserTest extends TestCase
 
       return true;
     });
+  }
 
+  protected function verifyNumber(string $phone) {
+    // Send request to set mobile phone
+    $uuid = $this->post(route('api.phones'), compact('phone'))
+      ->assertOk()
+      ->json('verification_uuid');
 
-    // Delete user
-    Auth::logout();
-    User::query()->forceDelete();
+    // Verify mobile phones
+    $code = $this->storeVerifying->get($uuid)['code'];
+
+    $this->post(route('api.verify', compact('uuid')), compact('code'))
+      ->assertOk();
+
+    return $uuid;
   }
 }

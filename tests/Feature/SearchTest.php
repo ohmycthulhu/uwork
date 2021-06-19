@@ -25,7 +25,7 @@ class SearchTest extends TestCase
     // Create profiles, regions, cities and districts
     $this->fillDatabase(true);
 
-    $this->get(route('api.profiles.search'))
+    $response = $this->get(route('api.profiles.search'))
       ->assertOk()
       ->assertJsonStructure([
         'result' => [
@@ -36,6 +36,11 @@ class SearchTest extends TestCase
         ]
       ]);
 
+    // Check the structure of request
+    $profiles = $response->json('result.data');
+    foreach ($profiles as $profile) {
+      $this->assertNotNull($profile['speciality'] ?? null);
+    }
 
     // Load profiles by region
     $region = Region::query()->inRandomOrder()->first();
@@ -126,10 +131,10 @@ class SearchTest extends TestCase
       ->assertOk()
       ->json('result.data');
 
+
+
     $this->assertEmpty(array_filter($profiles, function ($profile) use ($priceMin, $priceMax) {
-      return !empty(array_filter($profile['specialities'], function ($spec) use ($priceMin, $priceMax) {
-        return $spec['price'] < $priceMin || $spec['price'] > $priceMax;
-      }));
+      return $profile['speciality']['price'] < $priceMin || $profile['speciality']['price'] > $priceMax;
     }));
 
     $this->clearDatabase();

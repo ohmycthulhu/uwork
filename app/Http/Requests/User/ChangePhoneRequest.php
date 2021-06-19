@@ -15,6 +15,7 @@ class ChangePhoneRequest extends ApiRequest
   {
     return [
       'phone' => 'required|string|min:7',
+      'verification_uuid' => 'required|string',
     ];
   }
 }

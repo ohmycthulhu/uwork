@@ -46,9 +46,9 @@ class AuthenticationController extends Controller
     public function promptPhone(RegisterPhoneRequest $request): JsonResponse {
       $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
-      if ($this->user::query()->phone($phone)->first()) {
-        return $this->returnError(__('Phone is already occupied'), 403);
-      }
+//      if ($this->user::query()->phone($phone)->first()) {
+//        return $this->returnError(__('Phone is already occupied'), 403);
+//      }
 
       // Generate verification uuid
       $uuid = PhoneVerificationFacade::createSession(null, null, null, $phone);

@@ -178,6 +178,7 @@
       open_count: Number,
       is_approved: Boolean,
       specialities: Speciality[]
+      speciality: Speciality|Null
     }
     </td>
     <td>Entity of speciality</td>
@@ -1145,6 +1146,15 @@ To delete avatar, send DELETE request to /api/user/avatar.
 </p>
 <hr />
 <p>
+  To change user phone, follow the steps:
+</p>
+<oi>
+<li>Send request to /api/phones with existing phone number</li>
+<li>Verify the phone number using phone verification API</li>
+<li>Send request to /api/user/phones with new phone number and verification uuid from previous requests</li>
+</oi>
+<hr />
+<p>
   List of available settings:
 </p>
 <table>
@@ -1267,7 +1277,8 @@ To delete avatar, send DELETE request to /api/user/avatar.
         </td>
         <td>
             {
-                phone: String
+                phone: String,
+                verification_uuid: String
             }
         </td>
         <td>

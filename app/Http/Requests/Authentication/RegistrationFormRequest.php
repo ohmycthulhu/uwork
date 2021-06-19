@@ -24,8 +24,8 @@ class RegistrationFormRequest extends ApiRequest
       'avatar' => 'nullable|image|max:10485760',
       'birthdate' => 'nullable|date',
       'is_male' => 'nullable|boolean',
-      'region_id' => 'nullable|numeric|exists:regions,id',
-      'city_id' => 'nullable|numeric|exists:cities,id',
+      'region_id' => 'required|numeric|exists:regions,id',
+      'city_id' => 'required|numeric|exists:cities,id',
       'district_id' => 'nullable|numeric|exists:districts,id',
       'subway_id' => 'nullable|numeric|exists:subways,id',
     ];

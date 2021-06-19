@@ -75,13 +75,13 @@ class ProfileSearchController extends Controller
     $profiles->load(['specialities.category', 'user']);
 
     $profiles = $profiles->map(function (Profile $profile) use ($categoryId, $priceMin, $priceMax) {
-      $specialities = $profile->specialities
+      $speciality = $profile->specialities
         ->filter(function (ProfileSpeciality $speciality) use ($categoryId, $priceMin, $priceMax) {
         return $speciality->belongsToCategory($categoryId) &&
           ($priceMin == null || $speciality->price >= $priceMin) &&
           ($priceMax == null || $speciality->price <= $priceMax);
-      })->values();
-      return array_merge($profile->toArray(), ['specialities' => $specialities]);
+      })->first();
+      return array_merge($profile->toArray(), compact('speciality'));
     });
 
     if ($keyword) {

@@ -21,7 +21,6 @@ class SearchController extends Controller
   /**
    * Creates class instance
    *
-   * @param Profile $profile
    * @param Category $category
    */
   public function __construct(Category $category)

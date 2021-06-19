@@ -92,9 +92,16 @@ class UserController extends Controller
     /* @var ?User $user */
     $user = Auth::user();
 
-    $phone = PhoneVerificationFacade::normalizePhone($request->input('phone'));
+    $verUuid = $request->input('verification_uuid');
+    if ($user->phone !== PhoneVerificationFacade::getVerifiedPhone($verUuid)) {
+      return $this->returnError(__('Old phone number is not verified'), 405);
+    }
 
-    $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phone);
+    PhoneVerificationFacade::removeVerifiedPhone($verUuid);
+
+    $phoneNew = PhoneVerificationFacade::normalizePhone($request->input('phone'));
+
+    $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phoneNew);
 
     return $this->returnSuccess([
       'user' => $user,
