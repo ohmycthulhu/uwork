@@ -75,7 +75,7 @@ $response->send();
 
 $times['sending'] = getTime();
 
-//$kernel->terminate($request, $response);
+$kernel->terminate($request, $response);
 
 $times['terminating'] = getTime();
 $keys = array_keys($times);

@@ -106,6 +106,7 @@ class UserTest extends TestCase
     $this->assertEquals($phone, User::find($userId)->phone);
     $this->assertNotNull($user->avatar);
     $this->assertNotNull($user->avatarUrl);
+    $this->assertNotNull($user->avatarImage);
 
     // Repeat request but with another code
     $form = $this->userForm($uuid2);

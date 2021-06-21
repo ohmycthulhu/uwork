@@ -5,6 +5,7 @@ namespace Tests\Feature\UseCase;
 use App\Facades\PhoneVerificationFacade;
 use App\Helpers\PhoneVerificationHelper;
 use App\Models\Categories\Category;
+use App\Models\Location\City;
 use App\Models\User;
 use App\Models\User\Profile;
 use App\Notifications\VerifyPhoneNotification;
@@ -103,6 +104,9 @@ class BasicUseCaseTest extends TestCase
       $form['verification_uuid'] = $this->verifyPhone($phone);
       $form['password'] = Str::random();
       $form['password_confirmation'] = $form['password'];
+      $city = City::query()->first();
+      $form['city_id'] = $city->id;
+      $form['region_id'] = $city->region_id;
 
       $response = $this->post(route('api.register'), $form)
         ->assertOk()
