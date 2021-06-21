@@ -575,9 +575,12 @@ class Profile extends Model
       $query->must(['range' => ['specialities.price' => $range]]);
     }
 
-    foreach (($categories ?? []) as $cat) {
-      $query->should(["match" => ["specialities.categoryId" => $cat]]);
+    if ($categories = ($categories ?? [])) {
+      foreach ($categories as $cat) {
+        $query->should(["match" => ["specialities.categoryId" => $cat]]);
+      }
     }
+    $query->minimumShouldMatch(empty($categories) ? 0 : 1);
 
     if ($userId) {
       $userConstraints = ['match' => ["user_id" => $userId]];
@@ -586,7 +589,6 @@ class Profile extends Model
 
     // Filter only by confirmed
     $query->must(['match' => ['isConfirmed' => "1"]]);
-    $query->minimumShouldMatch(empty($categories) ? 0 : 1);
 
     $sortingColumn = static::getSortingColumn($searchColumn);
     $sortingDir = static::getSortingColumn($searchDir);

@@ -6,6 +6,7 @@ use App\Models\Categories\Category;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
+use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
@@ -43,35 +44,38 @@ class SearchTest extends TestCase
     }
 
     // Load profiles by region
-    $region = Region::query()->inRandomOrder()->first();
+    $region = Profile::query()->inRandomOrder()->first()->region_id;
 
-    $response = $this->get(route('api.profiles.search', ['region_id' => $region->id]))
+    $response = $this->get(route('api.profiles.search', ['region_id' => $region]))
       ->assertOk()
       ->json('result.data');
 
     $this->assertIsArray($response);
+    $this->assertNotEmpty($response);
     foreach ($response as $p) {
-      $this->assertEquals($region->id, $p['region_id']);
+      $this->assertEquals($region, $p['region_id']);
     }
 
     // Search profiles by cities
-    $city = City::query()->inRandomOrder()->first();
-    $profiles = $this->get(route('api.profiles.search', ['city_id' => $city->id]))
+    $city = Profile::query()->inRandomOrder()->first()->city_id;
+    $profiles = $this->get(route('api.profiles.search', ['city_id' => $city]))
       ->assertOk()
       ->json('result.data');
 
+    $this->assertNotEmpty($profiles);
     foreach ($profiles as $profile) {
-      $this->assertEquals($city->id, $profile['city_id']);
+      $this->assertEquals($city, $profile['city_id']);
     }
 
     // Search profiles by districts
-    $district = District::query()->inRandomOrder()->first();
-    $profiles = $this->get(route('api.profiles.search', ['district_id' => $district->id]))
+    $district = Profile::query()->whereNotNull('district_id')->inRandomOrder()->first()->district_id;
+    $profiles = $this->get(route('api.profiles.search', ['district_id' => $district]))
       ->assertOk()
       ->json('result.data');
 
+    $this->assertNotEmpty($profiles);
     foreach ($profiles as $profile) {
-      $this->assertEquals($district->id, $profile['district_id']);
+      $this->assertEquals($district, $profile['district_id']);
     }
 
     // Search profile by categories
