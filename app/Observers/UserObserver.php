@@ -15,12 +15,12 @@ class UserObserver
   public function updating(User $user)
   {
     $profile = $user->profile()->first();
-    if ($user->isDirty(['region_id', 'city_id', 'district_id']) && $profile) {
-      $profile->region_id = $user->region_id;
-      $profile->city_id = $user->city_id;
-      $profile->district_id = $user->district_id;
-      $profile->subway_id = $user->subway_id;
-      $profile->save();
+    $fields = $user::getSynchFields();
+    if ($user->isDirty($fields) && $profile) {
+      foreach ($fields as $field) {
+        $profile->{$field} = $user->{$field};
+        $profile->save();
+      }
     }
   }
 }

@@ -35,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
   protected $fillable = [
     'first_name', 'last_name', 'father_name',
     'email', 'phone', 'password',
+    'about',
     'region_id', 'city_id', 'district_id', 'subway_id',
     'birthdate', 'is_male',
   ];
@@ -91,6 +92,18 @@ class User extends Authenticatable implements JWTSubject
 //  }
 
   /**
+   * Returns shared fields between user and profile
+   *
+   * @return array
+  */
+  public static function getSynchFields(): array {
+    return [
+      'region_id', 'city_id', 'district_id', 'subway_id',
+      'about'
+    ];
+  }
+
+  /**
    * Sets email address
    * @param string $email
    * @return $this
@@ -123,6 +136,15 @@ class User extends Authenticatable implements JWTSubject
   */
   public function getPhone(): string {
     return $this->phone;
+  }
+
+  /**
+   * Get about
+   *
+   * @return ?string
+  */
+  public function getAbout(): ?string {
+    return $this->about;
   }
 
   /**

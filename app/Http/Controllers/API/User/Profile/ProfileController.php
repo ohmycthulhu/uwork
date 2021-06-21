@@ -72,13 +72,16 @@ class ProfileController extends Controller
     }
 
     // Get params
-    $params = $request->only(['about']);
     $phone = $request->input('phone', $user->getPhone());
     $specialities = $request->input('specialities', []);
+    $params = [
+      'about' => $request->input('about', $user->getAbout()),
+      'phone' => $request->input('phone', $user->getPhone()),
+    ];
 
     /* @var Profile $profile */
     // Create profile
-    $profile = $user->profile()->create(array_merge($params, ['phone' => $phone]));
+    $profile = $user->profile()->create($params);
 
     // Attach specialities
     foreach ($specialities as $speciality) {
