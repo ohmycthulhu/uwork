@@ -1,6 +1,6 @@
 FROM php:7.3-apache
 
-RUN apt-get update
+RUN apt-get update && apt-get upgrade -y
 
 # 1. Development packages
 RUN apt-get install -y \
@@ -13,12 +13,12 @@ RUN apt-get install -y \
     libzip-dev \
     libicu-dev \
     libbz2-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
     libpng-dev \
-    libjpeg-dev \
     libghc-gd-dev \
     libmcrypt-dev \
     libreadline-dev \
-    libfreetype6-dev \
     g++
 
 # 2. Apache configs + document root
@@ -32,6 +32,9 @@ RUN a2enmod rewrite headers
 # 4. Start with base php config, then add extensions
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
+RUN docker-php-ext-configure gd --with-jpeg-dir=/usr \
+    && docker-php-ext-install -j$(nproc) gd
+
 RUN docker-php-ext-install \
     bz2 \
     exif \
@@ -42,7 +45,6 @@ RUN docker-php-ext-install \
     calendar \
     mbstring \
     pdo_mysql \
-    gd  \
     zip
 
 # Enable Redis
