@@ -112,6 +112,10 @@ class ProfileController extends Controller
       null
     );
 
+    $profile->load([
+      'specialities.category.parent', 'specialities.media', 'user', 'region', 'city', 'district'
+    ]);
+
     // Return results
     return $this->returnSuccess([
       'profile' => $profile,
