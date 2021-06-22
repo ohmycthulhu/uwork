@@ -50,7 +50,7 @@ class LocationController extends Controller
   {
     $isDetailed = $request->input('detailed', true);
     $regions = $this->cacheAccessor->get(
-      'regions-all-' . $isDetailed,
+      "regions-all-$isDetailed",
       function () use ($isDetailed) {
         $query = $this->region::query();
         if ($isDetailed) {

@@ -7,6 +7,7 @@ use App\Http\Requests\GetCategoryByIdRequest;
 use App\Models\Categories\Category;
 use App\Utils\CacheAccessor;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
@@ -38,12 +39,13 @@ class CategoriesController extends Controller
    *
    * @return JsonResponse
    */
-  public function index(): JsonResponse
+  public function index(Request $request): JsonResponse
   {
+    $isDetailed = $request->input('detailed', true);
     $categories = $this->cacheAccessor->get(
-      'all',
-      function () {
-        return $this->loadCategories();
+      "all-$isDetailed",
+      function () use ($isDetailed) {
+        return $this->loadCategories($isDetailed);
       },
       true
     );
@@ -56,14 +58,20 @@ class CategoriesController extends Controller
   /**
    * Get list of categories
    *
+   * @param boolean $isDetailed
+   *
    * @return Collection
    */
-  protected function loadCategories(): Collection
+  protected function loadCategories(bool $isDetailed = true): Collection
   {
-    return $this->category::query()
-      ->with(['children'])
-      ->top()
-      ->get();
+    $query = $this->category::query()
+      ->top();
+
+    if ($isDetailed) {
+      $query->with(['children']);
+    }
+
+    return $query->get();
   }
 
   /**
@@ -95,8 +103,9 @@ class CategoriesController extends Controller
    * @param int $id
    *
    * @return JsonResponse
-  */
-  public function byId(GetCategoryByIdRequest $request, int $id): JsonResponse {
+   */
+  public function byId(GetCategoryByIdRequest $request, int $id): JsonResponse
+  {
     $query = $this->category::query()
       ->id($id);
 

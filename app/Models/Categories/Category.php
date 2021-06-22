@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 
@@ -24,9 +26,12 @@ class Category extends Model implements Slugable
 
   protected $fillable = ['name', 'icon_default', 'icon_selected'];
 
-  protected $visible = ['id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_hidden', 'is_shown', 'category_path'];
+  protected $visible = [
+    'id', 'name', 'slug', 'parent_id', 'children', 'parent', 'is_hidden', 'is_shown', 'category_path',
+    'icons',
+  ];
 
-  protected $appends = ['is_shown'];
+  protected $appends = ['is_shown', 'icons'];
 
   /**
    * Method to search similar categories
@@ -332,5 +337,21 @@ class Category extends Model implements Slugable
       return [];
     }
     return explode('  ', trim($this->category_path));
+  }
+
+  /**
+   * Attribute to get icons
+   *
+   * @return array
+  */
+  public function getIconsAttribute(): array {
+    return [
+      'selected' => $this->getImageFullPath($this->icon_selected),
+      'default' => $this->getImageFullPath($this->icon_default),
+    ];
+  }
+
+  protected function getImageFullPath(?string $path): ?string {
+    return $path ? URL::to(Storage::url($path)) : null;
   }
 }
