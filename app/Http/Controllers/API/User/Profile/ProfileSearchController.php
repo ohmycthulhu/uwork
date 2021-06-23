@@ -10,6 +10,7 @@ use App\Http\Requests\SearchCategoriesRequest;
 use App\Models\Categories\Category;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
+use App\Search\Builders\ProfileSearchBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -44,35 +45,57 @@ class ProfileSearchController extends Controller
    */
   public function search(ProfileSearchRequest $request): JsonResponse {
     $page = $request->input('page', 1);
-    // Create query
-    $keyword = $request->input('keyword');
     // Get similar categories
-    $categories = $request->input('categories', []);
+    $builder = new ProfileSearchBuilder($this->profile);
+
     $categoryId = $request->input('category_id');
+    if ($request->hasAny('categories') || $categoryId) {
+      $builder->setCategories(
+        $request->input('categories', []),
+        $request->input('category_id')
+      );
+    }
+
+    if ($request->anyFilled([
+      'region_id', 'city_id',
+      'district_id', 'subway_id'
+    ])) {
+      $builder->setLocation(
+        $request->input('region_id'),
+        $request->input('city_id'),
+        $request->input('district_id'),
+        $request->input('subway_id')
+      );
+    }
+
+    if (Auth::check()) {
+      $builder->setCurrentUser(Auth::id());
+    }
+
     $priceMin = $request->input('price_min');
     $priceMax = $request->input('price_max');
+    if ($priceMin != null || $priceMax) {
+      $builder->setPriceRange(
+        $request->input('price_min'),
+        $request->input('price_max')
+      );
+    }
 
-    $sortColumn = $request->input('sort_by', '');
-    $sortDir = $request->input('sort_dir', 'asc');
+    if ($request->has('sort_by')) {
+      $builder->setSorting(
+        $request->input('sort_by'),
+        $request->input('sort_dir', 'asc')
+      );
+    }
 
-    $specQuery = $this->profile::completeSearch(
-      $categoryId,
-      $categories,
-      $request->input('region_id'),
-      $request->input('city_id'),
-      $request->input('district_id'),
-      $request->input('subway_id'),
-      Auth::id(),
-      $priceMin,
-      $priceMax,
-      $sortColumn,
-      $sortDir,
-      $page,
-      $request->input('per_page', 15)
+    $builder->setPagination(
+      $request->input('per_page', 15),
+      $page
     );
 
-    $profiles = $specQuery->models();
-    $profiles->load(['specialities.category', 'user']);
+    $result = $builder->execute();
+
+    $profiles = $result->getModels()->load(['specialities.category', 'user']);
 
     $profiles = $profiles->map(function (Profile $profile) use ($categoryId, $priceMin, $priceMax) {
       $speciality = $profile->specialities
@@ -84,15 +107,15 @@ class ProfileSearchController extends Controller
       return array_merge($profile->toArray(), compact('speciality'));
     });
 
-    if ($keyword) {
-      SearchFacade::registerSearch($keyword);
-    }
+//    if ($keyword) {
+//      SearchFacade::registerSearch($keyword);
+//    }
 
     // Return response
     return $this->returnSuccess([
       'result' => [
         'data' => $profiles,
-        'total' => $specQuery->total(),
+        'total' => $result->getTotal(),
         'current_page' => $page,
         'next_page_url' => route('api.profiles.search', array_merge($request->all(), ['page' => $page + 1]))
       ]
