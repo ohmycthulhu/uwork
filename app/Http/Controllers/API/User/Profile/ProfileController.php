@@ -219,7 +219,10 @@ class ProfileController extends Controller
 
     $profile->load(['specialities', 'specialities.media', 'user', 'region', 'city', 'district']);
 
-    $specialities = ProfileSpeciality::includeCategoriesPath($profile['specialities']);
+    $specialities = ProfileSpeciality::includeIsFavouriteField(
+      ProfileSpeciality::includeCategoriesPath($profile['specialities']),
+      Auth::user()
+    );
 
     return $this->returnSuccess([
       'profile' => array_merge(

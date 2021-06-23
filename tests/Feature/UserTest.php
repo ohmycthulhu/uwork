@@ -290,7 +290,7 @@ class UserTest extends TestCase
     $this->put(route('api.user.update.phone'), $form)
       ->assertStatus(403);
 
-    $verUuid = $this->verifyNumber($user->getPhone());
+    $verUuid = $this->verifyNumber($user->getPhone(), true);
 
     $form = ['phone' => $newPhone, 'verification_uuid' => $verUuid];
     $verificationUuid = $this->put(route('api.user.update.phone'), $form)
@@ -315,9 +315,9 @@ class UserTest extends TestCase
     });
   }
 
-  protected function verifyNumber(string $phone) {
+  protected function verifyNumber(string $phone, bool $existing = false) {
     // Send request to set mobile phone
-    $uuid = $this->post(route('api.phones'), compact('phone'))
+    $uuid = $this->post(route('api.phones'), compact('phone', 'existing'))
       ->assertOk()
       ->json('verification_uuid');
 

@@ -1150,7 +1150,7 @@ To delete avatar, send DELETE request to /api/user/avatar.
   To change user phone, follow the steps:
 </p>
 <oi>
-<li>Send request to /api/phones with existing phone number</li>
+<li>Send request to /api/phones with existing phone number and parameter 'existing' as 1</li>
 <li>Verify the phone number using phone verification API</li>
 <li>Send request to /api/user/phones with new phone number and verification uuid from previous requests</li>
 </oi>

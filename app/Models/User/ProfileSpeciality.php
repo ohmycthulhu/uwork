@@ -62,6 +62,33 @@ class ProfileSpeciality extends Model implements HasMedia
     });
   }
 
+  /**
+   * Method for including is favourite field
+   *
+   * @param Collection $specialities
+   * @param ?User      $user
+   *
+   * @return Collection
+  */
+  public static function includeIsFavouriteField(Collection $specialities, ?User $user): Collection {
+    if ($user) {
+      $specIds = $user->favouriteServices()
+        ->whereIn('id', $specialities->pluck('id'))
+        ->pluck('id');
+      $isFavouriteCallback = function ($id) use ($specIds) {
+        return $specIds->contains($id);
+      };
+    } else {
+      $isFavouriteCallback = function () { return false; };
+    }
+
+    return $specialities->map(function ($speciality) use ($isFavouriteCallback) {
+      return array_merge(
+        is_array($speciality) ? $speciality : $speciality->toArray(),
+        ['is_favourite' => $isFavouriteCallback($speciality['id'])]
+      );
+    });
+  }
 
   /**
    * Method to update speciality
