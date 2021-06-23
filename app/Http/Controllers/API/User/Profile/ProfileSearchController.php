@@ -92,7 +92,7 @@ class ProfileSearchController extends Controller
     return $this->returnSuccess([
       'result' => [
         'data' => $profiles,
-        'total' => $specQuery->count(),
+        'total' => $specQuery->total(),
         'current_page' => $page,
         'next_page_url' => route('api.profiles.search', array_merge($request->all(), ['page' => $page + 1]))
       ]
