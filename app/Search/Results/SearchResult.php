@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 /**
  * Class for storing the result of search query
 */
-class ProfileSearchResult
+class SearchResult
 {
   /* @var Collection $models */
   protected $models;

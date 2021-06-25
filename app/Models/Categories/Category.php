@@ -34,35 +34,6 @@ class Category extends Model implements Slugable
   protected $appends = ['is_shown', 'icons'];
 
   /**
-   * Method to search similar categories
-   *
-   * @param string $name
-   * @param ?int $parentId
-   * @param int $size
-   *
-   * @return Collection
-   */
-  public static function searchByName(string $name, ?int $parentId = null, int $size = 10)/*: Collection*/
-  {
-    $nameToSearch = Str::lower(trim(($name)));
-    $keyword = str_replace(" ", "*", $nameToSearch);
-    $query = static::boolSearch()
-      ->size($size);
-
-    if ($keyword) {
-      $query->should(['wildcard' => ['name' => "*$keyword*"]])
-        ->minimumShouldMatch(1);
-    }
-
-    if ($parentId) {
-      $query->must(['match' => ['category_path' => $parentId]]);
-    }
-
-    return $query->execute()
-      ->models();
-  }
-
-  /**
    * Method to append total and count fields for services
    *
    * @param Collection $categories

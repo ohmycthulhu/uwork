@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\Info;
 use App\Http\Controllers\Controller;
 use App\Models\Complaints\ComplaintType;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ComplaintTypesController extends Controller
 {

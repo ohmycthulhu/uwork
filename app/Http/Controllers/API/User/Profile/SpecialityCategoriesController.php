@@ -2,23 +2,13 @@
 
 namespace App\Http\Controllers\API\User\Profile;
 
-use App\Facades\MediaFacade;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Common\UpdateImageRequest;
-use App\Http\Requests\Common\UploadImageRequest;
-use App\Http\Requests\Profile\CreateMultipleSpecialityFormRequest;
-use App\Http\Requests\Profile\CreateSpecialityFormRequest;
 use App\Http\Requests\Profile\SearchSpecialityCategoriesController;
-use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
 use App\Models\Categories\Category;
-use App\Models\Media\Image;
 use App\Models\User\Profile;
-use App\Models\User\ProfileSpeciality;
-use Exception;
+use App\Search\Builders\CategoriesSearchBuilder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class SpecialityCategoriesController extends Controller
 {
@@ -89,12 +79,20 @@ class SpecialityCategoriesController extends Controller
     $profile = $this->getProfile();
 
     // Extract parameters
-    $keyword = $request->input('keyword');
     $parentId = $request->input('parent_id');
     $size = $request->input('size', 15);
 
     // Search categories
-    $categories = Category::searchByName($keyword, $parentId, $size);
+    $searchBuilder = new CategoriesSearchBuilder($this->category);
+    $searchBuilder->setSize($size);
+    if ($keyword = $request->input('keyword')) {
+      $searchBuilder->setName($keyword);
+    }
+    if ($parentId) {
+      $searchBuilder->setParentId($parentId);
+    }
+
+    $categories = $searchBuilder->execute()->getModels();
 
     // Map categories
     $result = Category::addServicesFields($categories, $profile, $parentId, true, false);

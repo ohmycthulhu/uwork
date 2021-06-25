@@ -8,7 +8,6 @@ use App\Http\Requests\Common\UpdateImageRequest;
 use App\Http\Requests\Common\UploadImageRequest;
 use App\Http\Requests\Profile\CreateMultipleSpecialityFormRequest;
 use App\Http\Requests\Profile\CreateSpecialityFormRequest;
-use App\Http\Requests\Profile\SearchSpecialityCategoriesController;
 use App\Http\Requests\Profile\UpdateSpecialityFormRequest;
 use App\Models\Categories\Category;
 use App\Models\Media\Image;

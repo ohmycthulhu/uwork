@@ -16,7 +16,6 @@ use App\Models\Profile\Review;
 use App\Models\Traits\HasComplaints;
 use App\Models\User;
 use ElasticScoutDriverPlus\CustomSearch;
-use ElasticScoutDriverPlus\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

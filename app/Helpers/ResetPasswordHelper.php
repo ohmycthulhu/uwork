@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Notifications\PasswordResetNotification;
 use App\Utils\CacheAccessor;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Str;
 
 class ResetPasswordHelper extends VerificationHelperBase
 {

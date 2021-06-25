@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers\API\User\Profile;
 
-use App\Facades\SearchFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ProfileSearchRequest;
 use App\Http\Requests\Profile\RandomProfilesRequest;
-use App\Http\Requests\SearchCategoriesRequest;
 use App\Models\Categories\Category;
 use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use App\Search\Builders\ProfileSearchBuilder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileSearchController extends Controller

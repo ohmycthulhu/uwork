@@ -4,21 +4,16 @@
 namespace App\Search\Builders;
 
 use App\Models\User\Profile;
-use App\Search\Results\ProfileSearchResult;
-use ElasticScoutDriverPlus\Builders\BoolQueryBuilder;
 
 /**
  * Class for performing complex search on profiles
  *
  */
-class ProfileSearchBuilder
+class ProfileSearchBuilder extends SearchBuilder
 {
   const SORT_PRICE = 'price_avg';
   const SORT_DISTRICT = 'district';
   const SORT_RATING = 'rating';
-
-  /* @var BoolQueryBuilder $queryBuilder */
-  protected $queryBuilder;
 
   /**
    * Instantiates an object
@@ -27,7 +22,7 @@ class ProfileSearchBuilder
    */
   public function __construct(Profile $model)
   {
-    $this->queryBuilder = $model::boolSearch();
+    parent::__construct($model);
 
     $this->queryBuilder->must(['match' => ['isConfirmed' => "1"]]);
   }
@@ -130,21 +125,6 @@ class ProfileSearchBuilder
   }
 
   /**
-   * Sets pagination configuration
-   *
-   * @param int $pageNumber
-   * @param int $pageSize
-   *
-   * @return self
-   */
-  public function setPagination(int $pageSize, int $pageNumber): self
-  {
-    $this->queryBuilder
-      ->paginate($pageSize, 'page', $pageNumber);
-    return $this;
-  }
-
-  /**
    * Sets sorting
    *
    * @param string $column
@@ -177,17 +157,5 @@ class ProfileSearchBuilder
       case 'rating': return static::SORT_RATING;
       default: return null;
     }
-  }
-
-  /**
-   * Execute the query
-   *
-   * @return ProfileSearchResult
-   */
-  public function execute(): ProfileSearchResult
-  {
-    $result = $this->queryBuilder->execute();
-
-    return new ProfileSearchResult($result->models(), $result->total());
   }
 }

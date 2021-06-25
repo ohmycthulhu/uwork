@@ -136,10 +136,12 @@ class SearchTest extends TestCase
       ->json('result.data');
 
 
+    $r = array_filter($profiles, function ($profile) use ($priceMin, $priceMax) {
+      return $profile['speciality'] && (
+      $profile['speciality']['price'] < $priceMin || $profile['speciality']['price'] > $priceMax);
+    });
 
-    $this->assertEmpty(array_filter($profiles, function ($profile) use ($priceMin, $priceMax) {
-      return $profile['speciality']['price'] < $priceMin || $profile['speciality']['price'] > $priceMax;
-    }));
+    $this->assertEmpty($r);
 
     $this->clearDatabase();
   }
