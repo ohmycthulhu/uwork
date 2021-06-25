@@ -4,6 +4,7 @@
 namespace App\Search\Builders;
 
 
+use App\Models\User\Profile;
 use App\Search\Results\SearchResult;
 use ElasticScoutDriverPlus\Builders\BoolQueryBuilder;
 
@@ -28,13 +29,14 @@ abstract class SearchBuilder
    * @param int $pageNumber
    * @param int $pageSize
    *
-   * @return self
+   * @return SearchResult
    */
-  public function setPagination(int $pageSize, int $pageNumber): self
+  public function paginate(int $pageSize, int $pageNumber): SearchResult
   {
-    $this->queryBuilder
+    $result = $this->queryBuilder
       ->paginate($pageSize, 'page', $pageNumber);
-    return $this;
+
+    return new SearchResult($result->models(), $result->total());
   }
 
   /**

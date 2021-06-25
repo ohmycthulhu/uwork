@@ -84,12 +84,10 @@ class ProfileSearchController extends Controller
       );
     }
 
-    $builder->setPagination(
-      $request->input('per_page', 15),
-      $page
-    );
-
-    $result = $builder->execute();
+    $result = $builder->paginate(
+        $request->input('per_page', 15),
+        $page
+      );
 
     $profiles = $result->getModels()->load(['specialities.category', 'user']);
 

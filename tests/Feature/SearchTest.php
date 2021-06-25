@@ -26,7 +26,8 @@ class SearchTest extends TestCase
     // Create profiles, regions, cities and districts
     $this->fillDatabase(true);
 
-    $response = $this->get(route('api.profiles.search'))
+    $count = 3;
+    $response = $this->get(route('api.profiles.search', ['per_page' => $count]))
       ->assertOk()
       ->assertJsonStructure([
         'result' => [
@@ -42,6 +43,7 @@ class SearchTest extends TestCase
     foreach ($profiles as $profile) {
       $this->assertNotNull($profile['speciality'] ?? null);
     }
+    $this->assertLessThanOrEqual($count, sizeof($profiles));
 
     // Load profiles by region
     $region = Profile::query()->inRandomOrder()->first()->region_id;
