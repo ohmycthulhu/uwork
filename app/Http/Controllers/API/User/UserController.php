@@ -97,8 +97,6 @@ class UserController extends Controller
       return $this->returnError(__('Old phone number is not verified'), 405);
     }
 
-    PhoneVerificationFacade::removeVerifiedPhone($verUuid);
-
     $phoneNew = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
     $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phoneNew);
