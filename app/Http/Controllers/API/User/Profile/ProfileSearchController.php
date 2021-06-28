@@ -10,6 +10,7 @@ use App\Models\User\Profile;
 use App\Models\User\ProfileSpeciality;
 use App\Search\Builders\ProfileSearchBuilder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileSearchController extends Controller
@@ -91,14 +92,23 @@ class ProfileSearchController extends Controller
 
     $profiles = $result->getModels()->load(['specialities.category', 'user']);
 
-    $profiles = $profiles->map(function (Profile $profile) use ($categoryId, $priceMin, $priceMax) {
+    $specialities = new Collection();
+    foreach ($profiles as $profile) {
       $speciality = $profile->specialities
         ->filter(function (ProfileSpeciality $speciality) use ($categoryId, $priceMin, $priceMax) {
-        return $speciality->belongsToCategory($categoryId) &&
-          ($priceMin == null || $speciality->price >= $priceMin) &&
-          ($priceMax == null || $speciality->price <= $priceMax);
-      })->first();
-      return array_merge($profile->toArray(), compact('speciality'));
+          return $speciality->belongsToCategory($categoryId) &&
+            ($priceMin == null || $speciality->price >= $priceMin) &&
+            ($priceMax == null || $speciality->price <= $priceMax);
+        })->first();
+      if ($speciality) {
+        $specialities[$profile->id] = $speciality;
+      }
+    }
+
+    $specialities = ProfileSpeciality::includeIsFavouriteField($specialities, Auth::user());
+
+    $profiles = $profiles->map(function (Profile $profile) use ($specialities) {
+      return array_merge($profile->toArray(), ['speciality' => $specialities[$profile->id] ?? null]);
     });
 
 //    if ($keyword) {
