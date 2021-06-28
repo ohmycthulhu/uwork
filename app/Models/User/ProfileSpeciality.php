@@ -73,8 +73,8 @@ class ProfileSpeciality extends Model implements HasMedia
   public static function includeIsFavouriteField(Collection $specialities, ?User $user): Collection {
     if ($user) {
       $specIds = $user->favouriteServices()
-        ->whereIn('id', $specialities->pluck('id'))
-        ->pluck('id');
+        ->whereIn('profile_specialities.id', $specialities->pluck('id'))
+        ->pluck('profile_specialities.id');
       $isFavouriteCallback = function ($id) use ($specIds) {
         return $specIds->contains($id);
       };
