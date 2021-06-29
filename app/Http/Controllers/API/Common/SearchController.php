@@ -6,6 +6,7 @@ use App\Facades\SearchFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchCategoriesRequest;
 use App\Models\Categories\Category;
+use App\Modifiers\CategoriesModifier;
 use App\Search\Builders\CategoriesSearchBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,7 +60,11 @@ class SearchController extends Controller
       $searchBuilder->setParentId($parentCategory);
     }
     $categories = $searchBuilder->execute()->getModels()->load(['parent', 'children']);
-    $categories = $this->category::appendBreadcrumbs($categories);
+
+    $categories = CategoriesModifier::make($categories)
+      ->addBreadcrumbs()
+      ->addProfilesCount()
+      ->execute();
 
     return $this->returnSuccess(compact('categories'));
   }

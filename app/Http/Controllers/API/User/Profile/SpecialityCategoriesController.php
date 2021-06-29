@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\SearchSpecialityCategoriesController;
 use App\Models\Categories\Category;
 use App\Models\User\Profile;
+use App\Modifiers\CategoriesModifier;
 use App\Search\Builders\CategoriesSearchBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,9 @@ class SpecialityCategoriesController extends Controller
     $profile = $this->getProfile();
 
     $categories = Category::query()->top()->alphabetical()->get();
-    $result = Category::addServicesFields($categories, $profile, null, false, false);
+    $result = CategoriesModifier::make($categories)
+      ->addServices($categories, $profile, null, false, false)
+      ->execute();
     return $this->returnSuccess(compact('result'));
   }
 

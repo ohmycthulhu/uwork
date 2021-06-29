@@ -44,10 +44,4 @@ class CategoriesSearchBuilder extends SearchBuilder
     $this->queryBuilder->must(['match' => ['category_path' => $parentId]]);
     return $this;
   }
-
-  /**
-   * Set the size of chunk
-   *
-   * @param
-  */
 }
