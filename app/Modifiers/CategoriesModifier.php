@@ -57,7 +57,7 @@ class CategoriesModifier extends Modifier
       return $this->appendServices($data, $params);
     }
     if ($name === 'profilesCount') {
-
+      return $this->appendProfilesCount($data);
     }
     return $data;
   }
@@ -74,7 +74,7 @@ class CategoriesModifier extends Modifier
     $parentCategoriesIds = $categories->reduce(function (Collection $acc, Category $category) {
       return $acc->merge($category->getCategoryPathIdsAttribute())->unique();
     }, new Collection());
-    $parentCategories = static::query()
+    $parentCategories = Category::query()
       ->whereIn('id', $parentCategoriesIds)
       ->get();
 
