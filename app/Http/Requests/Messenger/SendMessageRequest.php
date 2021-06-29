@@ -15,7 +15,7 @@ class SendMessageRequest extends ApiRequest
   {
     return [
       'text' => 'required_without_all:attachment|string',
-      'attachment' => 'required_without_all:text|image|max:10485760'
+      'attachment' => 'required_without_all:text|mimes:jpeg,bmp,png|max:10485760'
     ];
   }
 }

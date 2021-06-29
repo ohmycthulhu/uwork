@@ -14,7 +14,7 @@ class UploadImageRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|image|max:10485760',
+            'image' => 'required|mimes:jpeg,bmp,png|max:10485760',
         ];
     }
 }

@@ -21,7 +21,7 @@ class RegistrationFormRequest extends ApiRequest
       'password' => ['required', 'string', 'min:6', new PasswordRule],
       'email' => 'nullable|unique:users|email:rfc,dns',
       'verification_uuid' => 'required|string|min:11',
-      'avatar' => 'nullable|image|max:10485760',
+      'avatar' => 'nullable|mimes:jpeg,bmp,png|max:10485760',
       'birthdate' => 'nullable|date',
       'is_male' => 'nullable|boolean',
       'region_id' => 'required|numeric|exists:regions,id',

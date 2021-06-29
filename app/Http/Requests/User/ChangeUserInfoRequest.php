@@ -17,7 +17,7 @@ class ChangeUserInfoRequest extends ApiRequest
       'first_name' => 'nullable|string',
       'last_name' => 'nullable|string',
       'father_name' => 'nullable|string',
-      'avatar' => 'nullable|image|max:10485760',
+      'avatar' => 'nullable|mimes:jpeg,bmp,png|max:10485760',
       'about' => 'nullable|string',
       'birthdate' => 'nullable|date',
       'region_id' => 'nullable|numeric|exists:regions,id',
