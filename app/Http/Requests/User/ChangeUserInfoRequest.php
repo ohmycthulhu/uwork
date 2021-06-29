@@ -25,7 +25,7 @@ class ChangeUserInfoRequest extends ApiRequest
       'district_id' => 'nullable|numeric|exists:districts,id',
       'subway_id' => 'nullable|numeric|exists:subways,id',
       'is_male' => 'nullable|boolean',
-      'email' => 'nullable|email',
+      'email' => 'nullable|email|unique:users,email',
     ];
   }
 }

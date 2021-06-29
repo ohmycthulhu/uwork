@@ -99,6 +99,10 @@ class UserController extends Controller
 
     $phoneNew = PhoneVerificationFacade::normalizePhone($request->input('phone'));
 
+    if ($user::query()->phone($phoneNew)->first()) {
+      return $this->returnError(__('Phone is already occupied'), 405);
+    }
+
     $uuid = PhoneVerificationFacade::createSession($user, User::class, $user->id, $phoneNew);
 
     return $this->returnSuccess([
