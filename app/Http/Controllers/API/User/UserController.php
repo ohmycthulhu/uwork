@@ -31,9 +31,8 @@ class UserController extends Controller
 
     if ($image = $request->file('avatar')) {
       $user->setAvatar($image);
+      $user->load('avatarImage');
     }
-
-    $user->load('avatarImage');
 
     return $this->returnSuccess(compact('user'));
   }

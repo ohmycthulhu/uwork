@@ -96,6 +96,7 @@ class AuthenticationController extends Controller
 
       if ($avatar = $request->file('avatar')) {
         $user->setAvatar($avatar);
+        $user->load('avatarImage');
       }
 
       $token = Auth::login($user);
