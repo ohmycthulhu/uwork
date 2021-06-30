@@ -101,7 +101,7 @@ class RealCategoriesSeeder extends Seeder
     if ($category && $subCategories) {
       $category->update([
           'icon_default' => $info->icon_default ?? null,
-          'icon_selected' => $info->icon_default ?? null,
+          'icon_selected' => $info->icon_selected ?? null,
       ]);
 
       foreach ($subCategories as $subCategory) {
