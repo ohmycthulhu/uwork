@@ -33,6 +33,8 @@ class UserController extends Controller
       $user->setAvatar($image);
     }
 
+    $user->load('avatarImage');
+
     return $this->returnSuccess(compact('user'));
   }
 
