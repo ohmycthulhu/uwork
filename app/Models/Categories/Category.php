@@ -92,7 +92,7 @@ class Category extends Model implements Slugable
    */
   public function scopeName(Builder $query, string $name): Builder
   {
-    return $query->where('name', 'like', "%\"$name\"%");
+    return $query->where('name', $name);
   }
 
   /**
