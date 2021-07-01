@@ -180,6 +180,7 @@ class UserController extends Controller
     $user = Auth::user();
 
     $user->removeAvatar();
+    $user->load('avatarImage');
 
     return $this->returnSuccess(compact('user'));
   }
