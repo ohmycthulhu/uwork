@@ -2017,7 +2017,7 @@ Specification
                 subway_id: int|null,
                 per_page: int|null,
                 page: int|null,
-                sort_by: "price"|null,
+                sort_by: "price"|"district"|"rating"|null,
                 sort_dir: "asc"|"desc"|null,
                 price_min: Number|null,
                 price_max: Number|null

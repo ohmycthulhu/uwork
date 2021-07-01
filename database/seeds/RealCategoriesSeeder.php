@@ -39,6 +39,8 @@ class RealCategoriesSeeder extends Seeder
       throw new Exception("These icons do not exists: " . join(', ', $invalidIcons));
     }
 
+    $this->copyIcons($categoriesInfo);
+
     foreach ($categoriesInfo as $index => $categoryInfo) {
       echo "Importing categories | " . ($index + 1) . " / " . (sizeof($categoriesInfo)) . "\n";
       $this->createCategoryTree(
@@ -79,7 +81,40 @@ class RealCategoriesSeeder extends Seeder
    */
   protected function checkIconExists(?string $path): bool
   {
-    return !$path || file_exists(public_path("storage/$path"));
+    return !$path || file_exists(storage_path("data/icons/$path"));
+  }
+
+  /**
+   * Populate the icons
+   *
+   * @param array $categories
+   */
+  protected function copyIcons(array $categories) {
+      \Illuminate\Support\Facades\File::ensureDirectoryExists(
+          public_path("storage/categories")
+      );
+
+      foreach ($categories as $category) {
+          if ($icon = ($category->icon_default ?? null)) {
+              $this->copyIcon($icon);
+          }
+          if ($icon = ($category->icon_selected ?? null)) {
+              $this->copyIcon($icon);
+          }
+      }
+  }
+
+  /**
+   * Copy the icon
+   *
+   * @param string $path
+   */
+  protected function copyIcon(string $path)
+  {
+    \Illuminate\Support\Facades\File::copy(
+      storage_path("data/icons/$path"),
+      public_path("storage/$path")
+    );
   }
 
   /**
@@ -100,8 +135,8 @@ class RealCategoriesSeeder extends Seeder
     // Create subcategories for category
     if ($category && $subCategories) {
       $category->update([
-          'icon_default' => $info->icon_default ?? null,
-          'icon_selected' => $info->icon_selected ?? null,
+        'icon_default' => $info->icon_default ?? null,
+        'icon_selected' => $info->icon_selected ?? null,
       ]);
 
       foreach ($subCategories as $subCategory) {
@@ -136,7 +171,7 @@ class RealCategoriesSeeder extends Seeder
     $category = (clone $q)->name($name)->first();
 
     if (!$category) {
-        echo "$name not found\n";
+      echo "$name not found\n";
       $category = $q->create(['name' => $name, 'is_hidden' => $isHidden]);
     }
 
