@@ -1,8 +1,8 @@
 [
   {
     "name": "Домашний мастер",
-    "icon_default": "categories/master.svg",
-    "icon_selected": "categories/master_w.svg",
+    "icon_default": "categories/master.png",
+    "icon_selected": "categories/master_w.png",
     "categories": [
       {
         "name": "Сантехник",
@@ -1743,8 +1743,8 @@
   },
   {
     "name": "Отделочные работы",
-    "icon_default": "categories/paint.svg",
-    "icon_selected": "categories/paint_w.svg",
+    "icon_default": "categories/paint.png",
+    "icon_selected": "categories/paint_w.png",
     "categories": [
       {
         "name": "Ремонт квартир",
@@ -4784,8 +4784,8 @@
   },
   {
     "name": "Клининговые услуги",
-    "icon_default": "categories/cleaning.svg",
-    "icon_selected": "categories/cleaning_w.svg",
+    "icon_default": "categories/cleaning.png",
+    "icon_selected": "categories/cleaning_w.png",
     "categories": [
       {
         "name": "Уборка квартир",
@@ -5280,8 +5280,8 @@
   },
   {
     "name": "Курьерские услуги",
-    "icon_default": "categories/courier.svg",
-    "icon_selected": "categories/courier_w.svg",
+    "icon_default": "categories/courier.png",
+    "icon_selected": "categories/courier_w.png",
     "categories": [
       {
         "name": "Курьерская доставка",
@@ -5465,8 +5465,8 @@
   },
   {
     "name": "Строительные работы",
-    "icon_default": "categories/construction.svg",
-    "icon_selected": "categories/construction_w.svg",
+    "icon_default": "categories/construction.png",
+    "icon_selected": "categories/construction_w.png",
     "categories": [
       {
         "name": "Разнорабочие",
@@ -6820,8 +6820,8 @@
   },
   {
     "name": "Ремонт техники",
-    "icon_default": "categories/repair.svg",
-    "icon_selected": "categories/repair_w.svg",
+    "icon_default": "categories/repair.png",
+    "icon_selected": "categories/repair_w.png",
     "categories": [
       {
         "name": "Ремонт крупной бытовой техники",
@@ -11273,8 +11273,8 @@
   },
   {
     "name": "Логистические и складские услуги",
-    "icon_default": "categories/logistics.svg",
-    "icon_selected": "categories/logistics_w.svg",
+    "icon_default": "categories/logistics.png",
+    "icon_selected": "categories/logistics_w.png",
     "categories": [
       {
         "name": "Грузоперевозки",
@@ -11605,8 +11605,8 @@
   },
   {
     "name": "Бытовые услуги",
-    "icon_default": "categories/home.svg",
-    "icon_selected": "categories/home_w.svg",
+    "icon_default": "categories/home.png",
+    "icon_selected": "categories/home_w.png",
     "categories": [
       {
         "name": "Сад и огород",
@@ -12607,8 +12607,8 @@
   },
   {
     "name": "Мебельные работы",
-    "icon_default": "categories/furniture.svg",
-    "icon_selected": "categories/furniture_w.svg",
+    "icon_default": "categories/furniture.png",
+    "icon_selected": "categories/furniture_w.png",
     "categories": [
       {
         "name": "Изготовление мебели",
@@ -13415,8 +13415,8 @@
   },
   {
     "name": "Работа в Интернете",
-    "icon_default": "categories/web.svg",
-    "icon_selected": "categories/web_w.svg",
+    "icon_default": "categories/web.png",
+    "icon_selected": "categories/web_w.png",
     "categories": [
       {
         "name": "Копирайтинг",
@@ -13553,8 +13553,8 @@
   },
   {
     "name": "Дизайн",
-    "icon_default": "categories/design.svg",
-    "icon_selected": "categories/design_w.svg",
+    "icon_default": "categories/design.png",
+    "icon_selected": "categories/design_w.png",
     "categories": [
       {
         "name": "Разработка логотипов",
@@ -14053,8 +14053,8 @@
   },
   {
     "name": "Разработка сайтов и приложений",
-    "icon_default": "categories/websites.svg",
-    "icon_selected": "categories/websites_w.svg",
+    "icon_default": "categories/websites.png",
+    "icon_selected": "categories/websites_w.png",
     "categories": [
       {
         "name": "Создание сайтов",
@@ -14467,8 +14467,8 @@
   },
   {
     "name": "Бюро переводов",
-    "icon_default": "categories/translation.svg",
-    "icon_selected": "categories/translation_w.svg",
+    "icon_default": "categories/translation.png",
+    "icon_selected": "categories/translation_w.png",
     "categories": [
       {
         "name": "Письменные переводы",
@@ -14863,8 +14863,8 @@
   },
   {
     "name": "Реклама в Интернете",
-    "icon_default": "categories/ads.svg",
-    "icon_selected": "categories/ads_w.svg",
+    "icon_default": "categories/ads.png",
+    "icon_selected": "categories/ads_w.png",
     "categories": [
       {
         "name": "Реклама в социальных сетях",
@@ -15042,8 +15042,8 @@
   },
   {
     "name": "Распространение рекламы",
-    "icon_default": "categories/ads_prop.svg",
-    "icon_selected": "categories/ads_prop_w.svg",
+    "icon_default": "categories/ads_prop.png",
+    "icon_selected": "categories/ads_prop_w.png",
     "categories": [
       {
         "name": "Раздача флаеров",
@@ -15114,8 +15114,8 @@
   },
   {
     "name": "Фото- и видео- услуги",
-    "icon_default": "categories/photo.svg",
-    "icon_selected": "categories/photo_w.svg",
+    "icon_default": "categories/photo.png",
+    "icon_selected": "categories/photo_w.png",
     "categories": [
       {
         "name": "Фотограф",
@@ -15439,8 +15439,8 @@
   },
   {
     "name": "Организация праздников",
-    "icon_default": "categories/organization.svg",
-    "icon_selected": "categories/organization_w.svg",
+    "icon_default": "categories/organization.png",
+    "icon_selected": "categories/organization_w.png",
     "categories": [
       {
         "name": "Услуги ведущего",
@@ -16024,8 +16024,8 @@
   },
   {
     "name": "Деловые услуги",
-    "icon_default": "categories/business.svg",
-    "icon_selected": "categories/business_w.svg",
+    "icon_default": "categories/business.png",
+    "icon_selected": "categories/business_w.png",
     "categories": [
       {
         "name": "Бухгалтерские услуги",
@@ -16592,8 +16592,8 @@
   },
   {
     "name": "Услуги репетиторов",
-    "icon_default": "categories/teacher.svg",
-    "icon_selected": "categories/teacher_w.svg",
+    "icon_default": "categories/teacher.png",
+    "icon_selected": "categories/teacher_w.png",
     "categories": [
       {
         "name": "Преподаватели по предметам",
@@ -17096,8 +17096,8 @@
   },
   {
     "name": "Услуги тренеров",
-    "icon_default": "categories/coach.svg",
-    "icon_selected": "categories/coach_w.svg",
+    "icon_default": "categories/coach.png",
+    "icon_selected": "categories/coach_w.png",
     "categories": [
       {
         "name": "Йога",
@@ -17416,8 +17416,8 @@
   },
   {
     "name": "Услуги красоты и здоровья",
-    "icon_default": "categories/cosmetics.svg",
-    "icon_selected": "categories/cosmetics_w.svg",
+    "icon_default": "categories/cosmetics.png",
+    "icon_selected": "categories/cosmetics_w.png",
     "categories": [
       {
         "name": "Массаж",
@@ -18599,8 +18599,8 @@
   },
   {
     "name": "Ремонт авто",
-    "icon_default": "categories/auto.svg",
-    "icon_selected": "categories/auto_w.svg",
+    "icon_default": "categories/auto.png",
+    "icon_selected": "categories/auto_w.png",
     "categories": [
       {
         "name": "Помощь в дороге",
@@ -20057,8 +20057,8 @@
   },
   {
     "name": "Услуги для животных",
-    "icon_default": "categories/animals.svg",
-    "icon_selected": "categories/animals_w.svg",
+    "icon_default": "categories/animals.png",
+    "icon_selected": "categories/animals_w.png",
     "categories": [
       {
         "name": "Уход за котами",
