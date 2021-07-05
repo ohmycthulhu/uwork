@@ -28,7 +28,7 @@ trait HasComplaints
    * @param ?string $ip
    * @param ?int $complaintTypeId
    * @param ?string $complaintReason
-   * @param string $text
+   * @param ?string $text
    *
    * @return ?Complaint
    */
@@ -37,11 +37,11 @@ trait HasComplaints
     ?string $ip,
     ?int $complaintTypeId,
     ?string $complaintReason,
-    string $text
+    ?string $text
   ): ?Model {
     // Check if similar exists
     // If yes, return null
-    if ($this->complaints()->similar($user, $ip)->count() > 0) {
+    if ($this->complaints()->similar($user, $ip)->count() > config('app.debug') ? 100 : 0) {
       return null;
     }
 

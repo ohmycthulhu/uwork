@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\User\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\CreateComplaintRequest;
 use App\Models\User;
 use App\Models\User\Profile;
 use Illuminate\Http\JsonResponse;
@@ -14,12 +15,12 @@ class CreateComplaintController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  CreateComplaintRequest  $request
      * @param Profile $profile
      *
      * @return JsonResponse
      */
-    public function __invoke(Request $request, Profile $profile): JsonResponse
+    public function __invoke(CreateComplaintRequest $request, Profile $profile): JsonResponse
     {
       /* @var User $user */
       $user = Auth::user();
@@ -41,7 +42,7 @@ class CreateComplaintController extends Controller
         return $this->returnSuccess(compact($complaint));
       } else {
         // Otherwise, return error
-        return $this->returnError(__('Error on creating complaint'), 405);
+        return $this->returnError(__('Error on creating complaint'), 403);
       }
     }
 }
