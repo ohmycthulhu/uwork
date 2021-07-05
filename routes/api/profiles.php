@@ -29,7 +29,7 @@ Route::post('/{profile}/views', 'ViewsController@add')
   ->name('views.create');
 
 // Complaints
-Route::post('/{profile}/complaints', 'ProfileController@createComplaint')
+Route::post('/{profile}/complaints', 'CreateComplaintController')
   ->name('complaints.create');
 
 Route::group([

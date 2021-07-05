@@ -58,4 +58,4 @@ Route::post('/appeals', 'CommunicationController@create')
   ->name('appeals.create');
 
 // Complaints
-Route::get('/complaint-types', 'Info\\ComplaintTypesController@index');
+Route::get('/complaint-types', 'ComplaintTypesController@index');

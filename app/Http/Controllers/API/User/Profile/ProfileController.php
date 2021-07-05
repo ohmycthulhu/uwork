@@ -230,37 +230,4 @@ class ProfileController extends Controller
       )
     ]);
   }
-
-  /**
-   * Creates new complaint
-   *
-   * @param CreateComplaintRequest $request
-   * @param Profile $profile
-   *
-   * @return JsonResponse
-  */
-  public function createComplaint(CreateComplaintRequest $request, Profile $profile): JsonResponse {
-    /* @var User $user */
-    $user = Auth::user();
-
-    if ($user->id == $profile->user_id) {
-      return $this->returnError('You can\'t complaint to own profile', 403);
-    }
-
-    $complaint = $profile->createComplaint(
-      $user,
-      $request->ip(),
-      $request->input('type_id'),
-      $request->input('reason_other'),
-      $request->input('text')
-    );
-
-    if ($complaint) {
-      // Return success if could create
-      return $this->returnSuccess(compact($complaint));
-    } else {
-      // Otherwise, return error
-      return $this->returnError(__('Error on creating complaint'), 405);
-    }
-  }
 }
