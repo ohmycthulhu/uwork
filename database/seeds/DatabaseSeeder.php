@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MessengerSeeder::class);
         $this->call(NotificationSeeder::class);
         $this->call(InfoSeeder::class);
+        $this->call(ComplaintTypeSeeder::class);
       }
     }
 }
