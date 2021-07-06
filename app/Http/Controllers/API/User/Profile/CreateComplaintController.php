@@ -25,7 +25,7 @@ class CreateComplaintController extends Controller
       /* @var User $user */
       $user = Auth::user();
 
-      if ($user->id == $profile->user_id) {
+      if ($user && $user->id == $profile->user_id) {
         return $this->returnError('You can\'t complaint to own profile', 403);
       }
 
