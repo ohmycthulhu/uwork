@@ -14,7 +14,7 @@ class CreateReviewFormRequest extends ApiRequest
   public function rules(): array
   {
     return [
-      'headline' => 'required|string',
+      'headline' => 'nullable|string',
       'text' => 'required|string',
       'rating_quality' => 'required|numeric|min:1|max:5',
       'rating_time' => 'required|numeric|min:1|max:5',
