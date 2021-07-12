@@ -2020,7 +2020,9 @@ Specification
                 sort_by: "price"|"district"|"rating"|null,
                 sort_dir: "asc"|"desc"|null,
                 price_min: Number|null,
-                price_max: Number|null
+                price_max: Number|null,
+                rating_min: Number|null,
+                rating_max: Number|null
             }
         </td>
         <td>

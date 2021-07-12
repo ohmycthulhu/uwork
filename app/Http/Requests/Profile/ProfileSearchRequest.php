@@ -27,6 +27,9 @@ class ProfileSearchRequest extends ApiRequest
       'price_min' => 'nullable|numeric|min:0',
       'price_max' => 'nullable|numeric|min:0',
 
+      'rating_min' => 'nullable|numeric|min:0',
+      'rating_max' => 'nullable|numeric|min:0',
+
       'sort_by' => 'nullable|string',
       'sort_dir' => 'nullable|string',
     ];

@@ -78,6 +78,12 @@ class ProfileSearchController extends Controller
       );
     }
 
+    $ratingMin = $request->input('rating_min');
+    $ratingMax = $request->input('rating_max');
+    if ($ratingMin != null || $ratingMax != null) {
+      $builder->setRatingRange($ratingMin, $ratingMax);
+    }
+
     if ($request->has('sort_by')) {
       $builder->setSorting(
         $request->input('sort_by'),

@@ -82,6 +82,24 @@ class ProfileSearchBuilder extends SearchBuilder
   }
 
   /**
+   * Set rating range
+   *
+   * @param ?float $ratingMin
+   * @param ?float $ratingMax
+   *
+   * @return self
+  */
+  public function setRatingRange(?float $ratingMin, ?float $ratingMax): self {
+    $range = [];
+    if ($ratingMin != null) $range['gte'] = $ratingMin;
+    if ($ratingMax != null) $range['lte'] = $ratingMax;
+    $this->queryBuilder->must([
+      'range' => ['rating' => $range]
+    ]);
+    return $this;
+  }
+
+  /**
    * Filters out the current user
    *
    * @param int $userId
