@@ -65,7 +65,9 @@ class SpecialityCategoriesController extends Controller
       ->alphabetical()
       ->get();
 
-    $result = Category::addServicesFields($subcategories, $profile, $categoryId, true, true);
+    $result = CategoriesModifier::make($subcategories)
+      ->addServices($profile, $categoryId, true, true)
+      ->execute();
 
     return $this->returnSuccess(compact('result'));
   }
@@ -98,7 +100,9 @@ class SpecialityCategoriesController extends Controller
     $categories = $searchBuilder->execute()->getModels();
 
     // Map categories
-    $result = Category::addServicesFields($categories, $profile, $parentId, true, false);
+    $result = CategoriesModifier::make($categories)
+      ->addServices($profile, $parentId, true, false)
+      ->execute();
 
     return $this->returnSuccess(compact('result'));
   }
