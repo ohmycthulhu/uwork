@@ -45,7 +45,7 @@ class SpecialityCategoriesController extends Controller
 
     $categories = Category::query()->top()->alphabetical()->get();
     $result = CategoriesModifier::make($categories)
-      ->addServices($categories, $profile, null, false, false)
+      ->addServices($profile, null, false, false)
       ->execute();
     return $this->returnSuccess(compact('result'));
   }
