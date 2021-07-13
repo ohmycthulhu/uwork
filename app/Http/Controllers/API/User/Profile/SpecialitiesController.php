@@ -31,16 +31,23 @@ class SpecialitiesController extends Controller
   /**
    * Method to get profile of current user
    *
+   * @param bool $createOnFail
+   *
    * @return ?Profile
    */
-  protected function getProfile(): ?Profile
+  protected function getProfile(bool $createOnFail = false): ?Profile
   {
     $user = Auth::user();
+
     if (!$user) {
       return null;
     }
 
-    return $user->profile()->first();
+    $result = $user->profile()->first();
+    if ($createOnFail && !$result) {
+      $result = $user->createProfile();
+    }
+    return $result;
   }
 
   /**
@@ -53,12 +60,7 @@ class SpecialitiesController extends Controller
   public function create(CreateSpecialityFormRequest $request): JsonResponse
   {
     // Check if user has profile
-    $profile = $this->getProfile();
-
-    // If not, return error
-    if (!$profile) {
-      return $this->returnError(__('User does not have profile'), 403);
-    }
+    $profile = $this->getProfile(true);
 
     // Check if category can be used to create
     /* @var ?Category $category */
@@ -115,12 +117,7 @@ class SpecialitiesController extends Controller
    */
   public function createMultiple(CreateMultipleSpecialityFormRequest $request, Category $category): JsonResponse {
     // Check if user has profile
-    $profile = $this->getProfile();
-
-    // If not, return error
-    if (!$profile) {
-      return $this->returnError(__('User does not have profile'), 403);
-    }
+    $profile = $this->getProfile(true);
 
     // Search if user has exact same speciality
     $existingSpecialities = $profile->specialities()

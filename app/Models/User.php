@@ -92,6 +92,21 @@ class User extends Authenticatable implements JWTSubject
 //  }
 
   /**
+   * Create profile
+   *
+   * @param ?string $phone
+   * @param ?string $about
+   *
+   * @return Profile
+  */
+  public function createProfile(?string $phone = null, ?string $about = null): Profile {
+    return $this->profile()->create([
+      'phone' => $phone ?? $this->getPhone(),
+      'about' => $about ?? $this->getAbout(),
+    ]);
+  }
+
+  /**
    * Returns shared fields between user and profile
    *
    * @return array

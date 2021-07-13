@@ -60,8 +60,8 @@ class ProfileSearchController extends Controller
       $builder->setLocation(
         $request->input('region_id'),
         $request->input('city_id'),
-        $request->input('district_id'),
-        $request->input('subway_id')
+        $request->input('districts', $request->input('district_id')),
+        $request->input('subways', $request->input('subway_id'))
       );
     }
 
@@ -82,6 +82,10 @@ class ProfileSearchController extends Controller
     $ratingMax = $request->input('rating_max');
     if ($ratingMin != null || $ratingMax != null) {
       $builder->setRatingRange($ratingMin, $ratingMax);
+    }
+
+    if ($ratings = $request->input('ratings')) {
+      $builder->setRatingRanges($ratings);
     }
 
     if ($request->has('sort_by')) {

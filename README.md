@@ -336,6 +336,15 @@
     <td>Reason for appealing</td>
 </tr>
 <tr>
+    <td>Range</td>
+    <td>{
+            min: float,
+            max: float,
+        }
+    </td>
+    <td>Reason for appealing</td>
+</tr>
+<tr>
     <td>Appeal</td>
     <td>{
             id: int,
@@ -2014,7 +2023,9 @@ Specification
                 region_id: int|null,
                 city_id: int|null,
                 district_id: int|null,
+                districts: Array&lt;int&gt;|null,
                 subway_id: int|null,
+                subways: Array&lt;int&gt;|null,
                 per_page: int|null,
                 page: int|null,
                 sort_by: "price"|"district"|"rating"|null,
@@ -2022,7 +2033,8 @@ Specification
                 price_min: Number|null,
                 price_max: Number|null,
                 rating_min: Number|null,
-                rating_max: Number|null
+                rating_max: Number|null,
+                ratings: Array&lt;Range&gt;|null
             }
         </td>
         <td>

@@ -32,19 +32,27 @@ class ProfileSearchBuilder extends SearchBuilder
    *
    * @param ?int $regionId
    * @param ?int $cityId
-   * @param ?int $districtId
-   * @param ?int $subwayId
+   * @param int | array | null $districtId
+   * @param int | array | null $subwayId
    *
    * @return self
    */
-  public function setLocation(?int $regionId, ?int $cityId, ?int $districtId, ?int $subwayId): self
+  public function setLocation(?int $regionId, ?int $cityId, $districtId, $subwayId): self
   {
     $locations = [];
     /* Prepare location constraints */
     if ($subwayId) {
-      $locations['subwayId'] = $subwayId;
+      if (is_array($subwayId)) {
+        $this->setArraySearch('subwayId', $subwayId);
+      } else {
+        $locations['subwayId'] = $subwayId;
+      }
     } elseif ($districtId) {
-      $locations["districtId"] = $districtId;
+      if (is_array($districtId)) {
+        $this->setArraySearch('districtId', $districtId);
+      } else  {
+        $locations["districtId"] = $districtId;
+      }
     } elseif ($cityId) {
       $locations["cityId"] = $cityId;
     } elseif ($regionId) {
@@ -90,13 +98,46 @@ class ProfileSearchBuilder extends SearchBuilder
    * @return self
   */
   public function setRatingRange(?float $ratingMin, ?float $ratingMax): self {
-    $range = [];
-    if ($ratingMin != null) $range['gte'] = $ratingMin;
-    if ($ratingMax != null) $range['lte'] = $ratingMax;
-    $this->queryBuilder->must([
-      'range' => ['rating' => $range]
-    ]);
+    if ($query = $this->getRatingRange($ratingMin, $ratingMax)) {
+      $this->queryBuilder->must($query);
+    }
     return $this;
+  }
+
+  /**
+   * Set ratings ranges
+   *
+   * @param array $ratingRanges
+   *
+   * @return self
+  */
+  public function setRatingRanges(array $ratingRanges): self {
+    $queries = [];
+    foreach ($ratingRanges as $range) {
+      if ($query = $this->getRatingRange($range['min'] ?? null, $range['max'] ?? null)) {
+        $queries[] = $query;
+      }
+    }
+    $this->queryBuilder->must(['bool' => ['should' => $queries]]);
+    return $this;
+  }
+
+  /**
+   * Set rating range
+   *
+   * @param ?float $min
+   * @param ?float $max
+   *
+   * @return ?array
+  */
+  protected function getRatingRange(?float $min, ?float $max): ?array {
+    $range = [];
+    if ($min != null) $range['gte'] = $min;
+    if ($max != null) $range['lte'] = $max;
+    if ($range) {
+      return ['range' => ['rating' => $range]];
+    }
+    return null;
   }
 
   /**
@@ -175,5 +216,18 @@ class ProfileSearchBuilder extends SearchBuilder
       case 'rating': return static::SORT_RATING;
       default: return null;
     }
+  }
+
+  /**
+   * Set array search
+   *
+   * @param string $field
+   * @param array $values
+   *
+   * @return $this
+  */
+  protected function setArraySearch(string $field, array $values): self {
+    $this->queryBuilder->must(['terms' => [$field => $values]]);
+    return $this;
   }
 }

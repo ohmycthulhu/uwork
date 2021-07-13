@@ -71,9 +71,10 @@ class FavouritesTest extends TestCase
       $this->assertEquals($count, $user->favouriteServices()->count());
 
       // Get favourites and check if they are same
-      $servicesCount = $this->get(route('api.user.fav.list'))
-        ->assertOk()
-        ->json('services.total');
+      $response = $this->get(route('api.user.fav.list'))
+        ->assertOk();
+      var_dump($response->content());
+      $servicesCount = $response->json('profiles.total');
       $this->assertEquals($count, $servicesCount);
     }
 }
