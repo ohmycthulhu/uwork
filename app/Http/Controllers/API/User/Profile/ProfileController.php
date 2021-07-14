@@ -81,7 +81,7 @@ class ProfileController extends Controller
     foreach ($specialities as $speciality) {
       $profile->addSpeciality(
         $speciality['category_id'],
-        $speciality['price'] ?? null,
+        $speciality['price'],
         $speciality['name'] ?? '',
         $speciality['description'] ?? '',
         $speciality['images'] ?? null,

@@ -18,7 +18,7 @@ class CreateProfileRequest extends ApiRequest
       'phone' => 'nullable|string|min:7',
       'specialities' => 'nullable|array',
       'specialities.*.category_id' => 'required|exists:App\Models\Categories\Category,id',
-      'specialities.*.price' => 'nullable|numeric',
+      'specialities.*.price' => 'required|numeric',
       'specialities.*.name' => 'nullable|string',
       'specialities.*.description' => 'nullable|string',
       'specialities.*.images' => 'nullable|array',

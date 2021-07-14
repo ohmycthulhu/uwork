@@ -1358,7 +1358,7 @@ To delete avatar, send DELETE request to /api/user/avatar.
     server will return 403 error.
 </p>
 <p>
-    For creating profiles, /api/user/profiles are used.
+    For creating profiles, /api/user/profile are used.
     Once profile is created, it can't be deleted manually.
     Each user can have one profile with multiple specialities.
     Specialities contain information about price of work and
