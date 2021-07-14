@@ -54,7 +54,7 @@ class Complaint extends Resource
     return $this->makeReadonly([
       ID::make(__('ID'), 'id')->sortable(),
 
-      BelongsTo::make(__('Reason'), 'type')->sortable(),
+      BelongsTo::make(__('Reason'), 'type', ComplaintType::class)->sortable(),
 
       BelongsTo::make(__('User'), 'user', User::class),
 
