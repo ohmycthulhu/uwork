@@ -69,14 +69,11 @@ class Profile extends Model
 
       // Update overall rating
       if ($reviewsCount > 0) {
-        $ratProd = array_reduce($ratingTypes, function ($acc, $type) {
-          return $acc * $this->{$type} / 5;
-        }, 1);
         $ratSum = array_reduce($ratingTypes, function ($acc, $type) {
           return $acc + $this->{$type} / 5;
         }, 0);
-        $this->rating = sizeof($ratingTypes) * $ratProd / $ratSum;
-        $this->positive_rating_ratio = $this->reviews()->averageRating(3)->count() / $reviewsCount;
+        $this->rating = $ratSum / sizeof($ratingTypes);
+        $this->positive_rating_ratio = 100 * $this->reviews()->averageRating(3)->count() / $reviewsCount;
       } else {
         $this->rating = 0;
         $this->positive_rating_ratio = 0;
