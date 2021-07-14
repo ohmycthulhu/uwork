@@ -32,13 +32,9 @@ class FavouritesController extends Controller
    * @return JsonResponse
    */
   public function get(): JsonResponse {
-    $services = Auth::user()->favouriteServices()->groupBy('profile_id')->paginate(12);
+    $services = Auth::user()->favouriteServices()->with('profile.user')->paginate(12);
 
-    return $this->returnSuccess([
-      'profiles' => array_merge($services->toArray(), [
-        'data' => $services->pluck('profile')
-      ]),
-    ]);
+    return $this->returnSuccess(compact('services'));
   }
 
   /**

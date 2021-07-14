@@ -74,7 +74,7 @@ class FavouritesTest extends TestCase
       $response = $this->get(route('api.user.fav.list'))
         ->assertOk();
       var_dump($response->content());
-      $servicesCount = $response->json('profiles.total');
+      $servicesCount = $response->json('services.total');
       $this->assertEquals($count, $servicesCount);
     }
 }
