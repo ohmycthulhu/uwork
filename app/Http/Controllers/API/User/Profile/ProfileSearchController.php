@@ -55,7 +55,8 @@ class ProfileSearchController extends Controller
 
     if ($request->anyFilled([
       'region_id', 'city_id',
-      'district_id', 'subway_id'
+      'district_id', 'subway_id',
+      'districts', 'subways'
     ])) {
       $builder->setLocation(
         $request->input('region_id'),

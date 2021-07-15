@@ -2113,12 +2113,28 @@ can't have favourites.
         </td>
         <td>
             {
-                page: int|null
+                category_id: int|null,
+                categories: Array&lt;int&gt;
+                region_id: int|null,
+                city_id: int|null,
+                district_id: int|null,
+                districts: Array&lt;int&gt;|null,
+                subway_id: int|null,
+                subways: Array&lt;int&gt;|null,
+                per_page: int|null,
+                page: int|null,
+                sort_by: "price"|"district"|"rating"|null,
+                sort_dir: "asc"|"desc"|null,
+                price_min: Number|null,
+                price_max: Number|null,
+                rating_min: Number|null,
+                rating_max: Number|null,
+                ratings: Array&lt;Range&gt;|null
             }
         </td>
         <td>
             {
-                services: Services&lt;Profile&gt;
+                result: Pagination&lt;Speciality&gt;
             }
         </td>
     </tr>

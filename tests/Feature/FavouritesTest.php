@@ -19,7 +19,7 @@ class FavouritesTest extends TestCase
      */
     public function testFavourites()
     {
-      $this->fillDatabase();
+      $this->fillDatabase(true);
 
       // Get some speciality
       $service = ProfileSpeciality::query()
@@ -74,7 +74,7 @@ class FavouritesTest extends TestCase
       $response = $this->get(route('api.user.fav.list'))
         ->assertOk();
       var_dump($response->content());
-      $servicesCount = $response->json('services.total');
+      $servicesCount = $response->json('result.total');
       $this->assertEquals($count, $servicesCount);
     }
 }

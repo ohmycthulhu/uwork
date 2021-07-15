@@ -62,4 +62,17 @@ abstract class SearchBuilder
 
     return new SearchResult($result->models(), $result->total());
   }
+
+  /**
+   * Set array search
+   *
+   * @param string $field
+   * @param array $values
+   *
+   * @return $this
+   */
+  protected function setArraySearch(string $field, array $values): self {
+    $this->queryBuilder->must(['terms' => [$field => $values]]);
+    return $this;
+  }
 }

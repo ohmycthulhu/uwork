@@ -3,28 +3,31 @@
 
 namespace App\Search\Builders;
 
+use App\Models\DAO\DAO;
+use App\Models\DAO\UserFavouriteService;
+use App\Models\User;
 use App\Models\User\Profile;
 
 /**
- * Class for performing complex search on profiles
- *
+ * Class for performing complex search on favourite services
  */
-class ProfileSearchBuilder extends SearchBuilder
+class FavouritesSearchBuilder extends SearchBuilder
 {
-  const SORT_PRICE = 'price_avg';
-  const SORT_DISTRICT = 'district';
-  const SORT_RATING = 'rating';
+  const SORT_PRICE = 'service.price';
+  const SORT_DISTRICT = 'profile.district';
+  const SORT_RATING = 'profile.rating';
 
   /**
    * Instantiates an object
    *
-   * @param Profile $model
+   * @param UserFavouriteService $model
+   * @param User $user
    */
-  public function __construct(Profile $model)
+  public function __construct(UserFavouriteService $model, User $user)
   {
     parent::__construct($model);
 
-    $this->queryBuilder->must(['match' => ['isConfirmed' => "1"]]);
+    $this->setCurrentUser($user);
   }
 
   /**
@@ -43,20 +46,20 @@ class ProfileSearchBuilder extends SearchBuilder
     /* Prepare location constraints */
     if ($subwayId) {
       if (is_array($subwayId)) {
-        $this->setArraySearch('subwayId', $subwayId);
+        $this->setArraySearch('profile.subwayId', $subwayId);
       } else {
-        $locations['subwayId'] = $subwayId;
+        $locations['profile.subwayId'] = $subwayId;
       }
     } elseif ($districtId) {
       if (is_array($districtId)) {
-        $this->setArraySearch('districtId', $districtId);
+        $this->setArraySearch('profile.districtId', $districtId);
       } else  {
-        $locations["districtId"] = $districtId;
+        $locations["profile.districtId"] = $districtId;
       }
     } elseif ($cityId) {
-      $locations["cityId"] = $cityId;
+      $locations["profile.cityId"] = $cityId;
     } elseif ($regionId) {
-      $locations["regionId"] = $regionId;
+      $locations["profile.regionId"] = $regionId;
     }
     if ($locations) {
       $this->queryBuilder->must(["match" => $locations]);
@@ -82,7 +85,7 @@ class ProfileSearchBuilder extends SearchBuilder
     if ($range) {
       $this->queryBuilder->must([
         'range' => [
-          'specialities.price' => $range
+          'speciality.price' => $range
         ]
       ]);
     }
@@ -96,7 +99,7 @@ class ProfileSearchBuilder extends SearchBuilder
    * @param ?float $ratingMax
    *
    * @return self
-  */
+   */
   public function setRatingRange(?float $ratingMin, ?float $ratingMax): self {
     if ($query = $this->getRatingRange($ratingMin, $ratingMax)) {
       $this->queryBuilder->must($query);
@@ -110,7 +113,7 @@ class ProfileSearchBuilder extends SearchBuilder
    * @param array $ratingRanges
    *
    * @return self
-  */
+   */
   public function setRatingRanges(array $ratingRanges): self {
     $queries = [];
     foreach ($ratingRanges as $range) {
@@ -129,13 +132,13 @@ class ProfileSearchBuilder extends SearchBuilder
    * @param ?float $max
    *
    * @return ?array
-  */
+   */
   protected function getRatingRange(?float $min, ?float $max): ?array {
     $range = [];
     if ($min != null) $range['gte'] = $min;
     if ($max != null) $range['lte'] = $max;
     if ($range) {
-      return ['range' => ['rating' => $range]];
+      return ['range' => ['profile.rating' => $range]];
     }
     return null;
   }
@@ -143,15 +146,15 @@ class ProfileSearchBuilder extends SearchBuilder
   /**
    * Filters out the current user
    *
-   * @param int $userId
+   * @param User $user
    *
    * @return self
    */
-  public function setCurrentUser(int $userId): self
+  public function setCurrentUser(User $user): self
   {
-    $this->queryBuilder->mustNot([
+    $this->queryBuilder->must([
       'match' => [
-        'userId' => $userId,
+        'userId' => $user->getKey(),
       ]
     ]);
     return $this;
@@ -169,13 +172,13 @@ class ProfileSearchBuilder extends SearchBuilder
   {
     if ($parentCategoryId) {
       $this->queryBuilder->must([
-        "match" => ["specialities.catPath" => $parentCategoryId]
+        "match" => ["speciality.catPath" => $parentCategoryId]
       ]);
     }
     if ($categories) {
       foreach ($categories as $cat) {
         $this->queryBuilder->should([
-          "match" => ["specialities.categoryId" => $cat]
+          "match" => ["speciality.categoryId" => $cat]
         ]);
       }
       $this->queryBuilder->minimumShouldMatch(1);
@@ -208,7 +211,7 @@ class ProfileSearchBuilder extends SearchBuilder
    * @param string $column
    *
    * @return ?string
-  */
+   */
   protected function getSortingColumn(string $column): ?string {
     switch (strtolower($column)) {
       case 'price': return static::SORT_PRICE;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DAO\UserFavouriteService;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Region;
@@ -213,10 +214,10 @@ class User extends Authenticatable implements JWTSubject
   /**
    * Relation to favourite services
    *
-   * @return BelongsToMany
+   * @return HasMany
   */
-  public function favouriteServices(): BelongsToMany {
-    return $this->belongsToMany(ProfileSpeciality::class, 'user_favourite_services', 'user_id', 'service_id');
+  public function favouriteServices(): HasMany {
+    return $this->hasMany(UserFavouriteService::class, 'user_id');
   }
 
   /**

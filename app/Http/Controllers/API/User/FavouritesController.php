@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ProfileSearchRequest;
+use App\Models\DAO\UserFavouriteService;
+use App\Models\User;
 use App\Models\User\ProfileSpeciality;
+use App\Search\Builders\FavouritesSearchBuilder;
+use App\Search\Builders\ProfileSearchBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,12 +34,77 @@ class FavouritesController extends Controller
   /**
    * Method to get list of favourites
    *
+   * @param ProfileSearchRequest $request
+   *
    * @return JsonResponse
    */
-  public function get(): JsonResponse {
-    $services = Auth::user()->favouriteServices()->with('profile.user')->paginate(12);
+  public function get(ProfileSearchRequest $request): JsonResponse {
+    $page = $request->input('page', 1);
+    /* @var User $user */
+    $user = Auth::user();
+    // Get similar categories
+    $builder = new FavouritesSearchBuilder(new UserFavouriteService, $user);
 
-    return $this->returnSuccess(compact('services'));
+    $categoryId = $request->input('category_id');
+    if ($request->hasAny('categories') || $categoryId) {
+      $builder->setCategories(
+        $request->input('categories', []),
+        $request->input('category_id')
+      );
+    }
+
+    if ($request->anyFilled([
+      'region_id', 'city_id',
+      'district_id', 'subway_id',
+      'districts', 'subways'
+    ])) {
+      $builder->setLocation(
+        $request->input('region_id'),
+        $request->input('city_id'),
+        $request->input('districts', $request->input('district_id')),
+        $request->input('subways', $request->input('subway_id'))
+      );
+    }
+
+    $priceMax = $request->input('price_max');
+    if (($priceMin = $request->input('price_min')) != null || $priceMax) {
+      $builder->setPriceRange(
+        $priceMin,
+        $priceMax
+      );
+    }
+
+    $ratingMax = $request->input('rating_max');
+    if (($ratingMin = $request->input('rating_min')) != null || $ratingMax != null) {
+      $builder->setRatingRange($ratingMin, $ratingMax);
+    }
+
+    if ($ratings = $request->input('ratings')) {
+      $builder->setRatingRanges($ratings);
+    }
+
+    if ($sortColumn = $request->has('sort_by')) {
+      $builder->setSorting(
+        $sortColumn,
+        $request->input('sort_dir', 'asc')
+      );
+    }
+
+    $result = $builder->paginate(
+      $request->input('per_page', 15),
+      $page
+    );
+
+    $services = $result->getModels()->load(['service.profile.user', 'service.media'])->pluck('service');
+
+    return $this->returnSuccess([
+      'result' => [
+        'data' => $services,
+        'total' => $result->getTotal(),
+        'current_page' => $page,
+        'next_page_url' => route('api.user.fav.list', array_merge($request->all(), ['page' => $page + 1]))
+      ]
+    ]);
   }
 
   /**
@@ -60,7 +130,7 @@ class FavouritesController extends Controller
     }
 
     // Attach service as favourite
-    $user->favouriteServices()->attach($service->id);
+    $user->favouriteServices()->create(['service_id' => $service->id]);
 
     return $this->returnSuccess();
   }
@@ -75,7 +145,9 @@ class FavouritesController extends Controller
   public function remove(string $serviceId): JsonResponse {
     $user = Auth::user();
 
-    $user->favouriteServices()->detach($serviceId);
+    $query = $user->favouriteServices()->serviceId($serviceId);
+    $query->forceDelete();
+
     return $this->returnSuccess();
   }
 }
