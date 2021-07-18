@@ -145,8 +145,8 @@ class FavouritesController extends Controller
   public function remove(string $serviceId): JsonResponse {
     $user = Auth::user();
 
-    $query = $user->favouriteServices()->serviceId($serviceId);
-    $query->forceDelete();
+    $service = $user->favouriteServices()->serviceId($serviceId)->first();
+    $service->delete();
 
     return $this->returnSuccess();
   }
