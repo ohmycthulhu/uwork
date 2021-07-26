@@ -68,4 +68,9 @@ abstract class Resource extends NovaResource
     protected function makeReadonly(array $fields): array {
       return array_map(function ($f) { return $f->readonly(); }, $fields);
     }
+
+    public static function group()
+    {
+      return __(parent::group());
+    }
 }

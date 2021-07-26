@@ -33,7 +33,7 @@ class ComplaintType extends Resource
         'id', 'name',
     ];
 
-    public static $group = 'Compalints';
+    public static $group = 'Complaints';
 
     /**
      * Get the fields displayed by the resource.
