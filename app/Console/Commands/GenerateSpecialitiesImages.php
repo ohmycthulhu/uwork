@@ -72,9 +72,11 @@ class GenerateSpecialitiesImages extends Command
     echo "Processing speciality #{$speciality->id}\n";
 
     shuffle($images);
-    array_slice($images, 0, rand($this->imageCountMin, $this->imageCountMax));
 
-    return $this->updateImages($speciality, $images);
+    return $this->updateImages(
+      $speciality,
+      array_slice($images, 0, rand($this->imageCountMin, $this->imageCountMax))
+    );
   }
 
   /**
