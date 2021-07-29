@@ -8,7 +8,6 @@ use App\Models\DAO\UserFavouriteService;
 use App\Models\User;
 use App\Models\User\ProfileSpeciality;
 use App\Search\Builders\FavouritesSearchBuilder;
-use App\Search\Builders\ProfileSearchBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,14 +17,14 @@ class FavouritesController extends Controller
    * Variable to hold the class of service
    *
    * @var ProfileSpeciality
-  */
+   */
   protected $service;
 
   /**
    * Method to create instance of controller
    *
    * @param ProfileSpeciality $service
-  */
+   */
   public function __construct(ProfileSpeciality $service)
   {
     $this->service = $service;
@@ -38,7 +37,8 @@ class FavouritesController extends Controller
    *
    * @return JsonResponse
    */
-  public function get(ProfileSearchRequest $request): JsonResponse {
+  public function get(ProfileSearchRequest $request): JsonResponse
+  {
     $page = $request->input('page', 1);
     /* @var User $user */
     $user = Auth::user();
@@ -96,10 +96,21 @@ class FavouritesController extends Controller
     );
 
     $services = $result->getModels()->load(['service.profile.user', 'service.media'])->pluck('service');
+    $profiles = $services
+      // Delete services with no profile
+      ->filter(function (ProfileSpeciality $service) {
+        return $service->profile;
+      })
+      // Map service to profile
+      ->map(function (ProfileSpeciality $service) {
+        return array_merge($service->profile->toArray(), [
+          'service' => $service,
+        ]);
+      });
 
     return $this->returnSuccess([
       'result' => [
-        'data' => $services,
+        'data' => $profiles,
         'total' => $result->getTotal(),
         'current_page' => $page,
         'next_page_url' => route('api.user.fav.list', array_merge($request->all(), ['page' => $page + 1]))
@@ -114,7 +125,8 @@ class FavouritesController extends Controller
    *
    * @return JsonResponse
    */
-  public function add(string $serviceId): JsonResponse {
+  public function add(string $serviceId): JsonResponse
+  {
     $user = Auth::user();
 
     // Check if service exists
@@ -142,7 +154,8 @@ class FavouritesController extends Controller
    *
    * @return JsonResponse
    * */
-  public function remove(string $serviceId): JsonResponse {
+  public function remove(string $serviceId): JsonResponse
+  {
     $user = Auth::user();
 
     $service = $user->favouriteServices()->serviceId($serviceId)->first();

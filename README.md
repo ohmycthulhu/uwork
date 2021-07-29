@@ -2134,7 +2134,7 @@ can't have favourites.
         </td>
         <td>
             {
-                result: Pagination&lt;Speciality&gt;
+                result: Pagination&lt;Profile&gt;
             }
         </td>
     </tr>

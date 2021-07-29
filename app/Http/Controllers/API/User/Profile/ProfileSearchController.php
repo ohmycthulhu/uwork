@@ -106,11 +106,13 @@ class ProfileSearchController extends Controller
     $specialities = new Collection();
     foreach ($profiles as $profile) {
       $speciality = $profile->specialities
+        ->shuffle()
         ->filter(function (ProfileSpeciality $speciality) use ($categoryId, $priceMin, $priceMax) {
           return $speciality->belongsToCategory($categoryId) &&
             ($priceMin == null || $speciality->price >= $priceMin) &&
             ($priceMax == null || $speciality->price <= $priceMax);
-        })->first();
+        })
+        ->first();
       if ($speciality) {
         $specialities[$profile->id] = $speciality;
       }

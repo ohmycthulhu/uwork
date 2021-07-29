@@ -31,9 +31,6 @@ class SpecialitiesTest extends TestCase
 
     $user = $this->createUser();
     Auth::login($user);
-    // Try to create speciality without profile
-    $this->post(route('api.user.profile.specialities.create'), $form)
-      ->assertStatus(403);
 
     // Create profile
     $profile = $this->createProfile($user);

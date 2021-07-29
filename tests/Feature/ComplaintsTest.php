@@ -78,7 +78,7 @@ class ComplaintsTest extends TestCase
       $this->post(route('api.profiles.complaints.create', ['profile' => $profile->id]), [
         'type_id' => $complaintTypes->random()->id,
         'text' => 'Some other text'
-      ])->assertStatus($i ? 405 : 200);
+      ])->assertStatus($i ? 403 : 200);
       $this->assertEquals(
         1,
         $profile->complaints()->count()
