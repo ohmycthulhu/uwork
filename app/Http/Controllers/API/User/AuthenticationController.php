@@ -332,7 +332,9 @@ class AuthenticationController extends Controller
 
       ResetPasswordFacade::removeUuid($uuid);
 
-      return $this->returnSuccess();
+      $access_token = Auth::login($user);
+
+      return $this->returnSuccess(compact('user', 'access_token'));
     }
 
     /**

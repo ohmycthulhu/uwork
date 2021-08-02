@@ -1092,6 +1092,8 @@ Registration is performed in 3 steps:
                 errors: String[]|null,
                 error: String|null,
                 status: String|null,
+                access_token: String|null,
+                user: User|null
             }
         </td>
     </tr>

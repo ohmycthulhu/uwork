@@ -207,8 +207,11 @@ class UserTest extends TestCase
       $this->post(route('api.reset.verify'), compact('uuid', 'code'))
         ->assertOk();
 
-      $this->post(route('api.reset.set', compact('uuid')), $form)
-        ->assertOk();
+      $accessToken = $this->post(route('api.reset.set', compact('uuid')), $form)
+        ->assertOk()
+        ->json('access_token');
+
+      $this->assertNotNull($accessToken);
 
       return true;
     });
