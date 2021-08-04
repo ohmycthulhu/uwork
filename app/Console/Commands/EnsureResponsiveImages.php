@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Facades\MediaFacade;
 use App\Models\Media\Image;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class EnsureResponsiveImages extends Command
 {
@@ -56,7 +57,13 @@ class EnsureResponsiveImages extends Command
 
     Image::query()->batchExecute(function (Image $image, $index) use ($totalAmount) {
       echo "Processing image #{$image->id} | $index / $totalAmount\n";
-      return MediaFacade::ensureExistingResponsiveImages($image, $this->sizes);
+      try {
+        return MediaFacade::ensureExistingResponsiveImages($image, $this->sizes);
+      } catch (\Exception $exception) {
+        echo "Failed to process image. {$exception->getMessage()}\n";
+        Log::error($exception->getMessage());
+        return null;
+      }
     }, 15);
 
     echo "Ended processing files\n";
