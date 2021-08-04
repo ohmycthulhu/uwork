@@ -20,9 +20,9 @@ trait HasBatchExecute
 
     do {
       $items = (clone $query)->limit($batchSize)->skip($result)->get();
-      $items->each(function ($model) use ($callback, $result) {
-        return $callback($model, $result++);
-      });
+      foreach ($items as $model) {
+        $callback($model, $result++);
+      }
     } while($items->count() > 0);
 
     return $result;
