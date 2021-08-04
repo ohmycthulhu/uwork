@@ -43,13 +43,24 @@ class EnsureResponsiveImages extends Command
    */
   public function handle()
   {
+    echo "Started to fixing images\n";
     /***
      * For each image ensure that all sizes exists
      *
      */
-    Image::query()->batchExecute(function (Image $image) {
+    $query = Image::query();
+
+    $totalAmount = $query->count();
+
+    echo "{$query->count()} images in system\n";
+
+    Image::query()->batchExecute(function (Image $image, $index) use ($totalAmount) {
+      echo "Processing image #{$image->id} | $index / $totalAmount\n";
       return MediaFacade::ensureExistingResponsiveImages($image, $this->sizes);
     }, 15);
+
+    echo "Ended processing files\n";
+
     return 0;
   }
 }

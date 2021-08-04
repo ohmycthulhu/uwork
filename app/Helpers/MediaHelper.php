@@ -125,15 +125,18 @@ class MediaHelper
   public function ensureExistingResponsiveImages(Image $image, array $sizes): Image {
     $sizesExisting = json_decode($image->responsive_images, true) ?? [];
 
-    $sizesToAdd = json_decode(json_encode($sizes));
+    $sizesToAdd = json_decode(json_encode($sizes), true);
+
     /* Remove all existing keys */
     foreach ($sizes as $key => $size) {
-      unset($sizesToAdd[$key]);
+      if (key_exists($key, $sizesExisting)) {
+        unset($sizesToAdd[$key]);
+      }
     }
 
     if (!empty($sizesToAdd)) {
-      $responsiveNew = $this->createResponsiveImages($image, $sizesToAdd);
-      $image->responsize_images = json_encode(array_merge($sizesExisting, $responsiveNew));
+      $responsiveNew = json_decode($this->createResponsiveImages($image, $sizesToAdd), true);
+      $image->responsive_images = json_encode(array_merge($sizesExisting, $responsiveNew));
       $image->save();
     }
 
