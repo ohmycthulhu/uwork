@@ -115,6 +115,33 @@ class MediaHelper
   }
 
   /**
+   * Ensure existing of responsive images
+   *
+   * @param Image $image
+   * @param array $sizes
+   *
+   * @return Image
+  */
+  public function ensureExistingResponsiveImages(Image $image, array $sizes): Image {
+    $sizesExisting = json_decode($image->responsive_images, true) ?? [];
+
+    $sizesToAdd = json_decode(json_encode($sizes));
+    /* Remove all existing keys */
+    foreach ($sizes as $key => $size) {
+      unset($sizesToAdd[$key]);
+    }
+
+    if (!empty($sizesToAdd)) {
+      $responsiveNew = $this->createResponsiveImages($image, $sizesToAdd);
+      $image->responsize_images = json_encode(array_merge($sizesExisting, $responsiveNew));
+      $image->save();
+    }
+
+    return $image;
+  }
+
+
+  /**
    * Prepare responsive images
    *
    * @param Image $image

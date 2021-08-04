@@ -2,6 +2,7 @@
 
 namespace App\Models\Media;
 
+use App\Models\Traits\HasBatchExecute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
@@ -11,6 +12,8 @@ use Spatie\MediaLibrary\Models\Media;
 
 class Image extends Media
 {
+  use HasBatchExecute;
+
   protected $table = 'media';
 
   protected $appends = ['url', 'responsive_image_urls'];

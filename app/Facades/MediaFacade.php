@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @method static Image upload(UploadedFile $file, ?string $collectionName, ?string $class = null, ?int $id = null, ?string $disk = null)
  * @method static Collection attachImages(string $class, int $id, array $images)
+ * @method static Image ensureExistingResponsiveImages(Image $image, array $sizes)
 */
 class MediaFacade extends Facade
 {
