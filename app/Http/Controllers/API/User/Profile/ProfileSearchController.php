@@ -66,9 +66,9 @@ class ProfileSearchController extends Controller
       );
     }
 
-    if (Auth::check()) {
-      $builder->setCurrentUser(Auth::id());
-    }
+//    if (Auth::check()) {
+//      $builder->setCurrentUser(Auth::id());
+//    }
 
     $priceMin = $request->input('price_min');
     $priceMax = $request->input('price_max');

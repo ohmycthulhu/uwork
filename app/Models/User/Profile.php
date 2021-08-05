@@ -434,6 +434,16 @@ class Profile extends Model
   }
 
   /**
+   * Attribute to check the status
+   *
+   * @return bool
+   */
+  public function getIsRejectedAttribute(): bool
+  {
+    return $this->failed_audition;
+  }
+
+  /**
    * Search section
    *
    */

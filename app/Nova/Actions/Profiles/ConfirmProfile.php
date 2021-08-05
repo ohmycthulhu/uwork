@@ -24,7 +24,9 @@ class ConfirmProfile extends Action
     {
         foreach ($models as $model) {
           /* @var Profile $model */
-          $model->confirm();
+          if (!$model->isApproved) {
+            $model->confirm();
+          }
         }
         return true;
     }

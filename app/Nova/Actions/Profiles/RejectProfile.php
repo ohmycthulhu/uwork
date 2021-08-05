@@ -24,7 +24,9 @@ class RejectProfile extends Action
     {
         foreach ($models as $model) {
           /* @var Profile $model */
-          $model->reject();
+          if (!$model->getI) {
+            $model->reject();
+          }
         }
         return true;
     }
