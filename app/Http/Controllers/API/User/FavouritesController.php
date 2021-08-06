@@ -159,7 +159,9 @@ class FavouritesController extends Controller
     $user = Auth::user();
 
     $service = $user->favouriteServices()->serviceId($serviceId)->first();
-    $service->delete();
+    if ($service) {
+      $service->delete();
+    }
 
     return $this->returnSuccess();
   }
