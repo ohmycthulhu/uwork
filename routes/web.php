@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'Web\\HomeController@index');
 
 Route::get('/exception', 'Web\\HomeController@error');
+Route::get('/sitemap.xml', 'Web\\GenerateSitemapController');
